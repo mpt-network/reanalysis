@@ -423,8 +423,6 @@ c2ht %>%
 ##                          Quad Model                          ##
 ##################################################################
 
-## asked jimmy if he really used new pirors.
-
 f_qm1 <- list.files("data/quad-model/", pattern = "RData$",full.names = TRUE)
 qm1 <- load_combine(f_qm1)
 get_info_df(qm1)
@@ -509,15 +507,10 @@ qm_i <- load_combine_info(f_qmi) %>%
   ))
 
 all( sort(unique(qm$dataset)) %in% sort(unique(qm_i$dataset)) )
+all( sort(unique(qm_i$dataset)) %in% sort(unique(qm$dataset)) )
 all( unique(qm$orig_model) %in% unique(qm_i$orig_model) )
 
 qm <- left_join(qm, qm_i)
-qm %>% 
-  select(n_tree, rel_tree, model_df, model_exp, data_tree) %>% 
-  summarise_all(list(null = ~any(map_lgl(., is.null)), 
-                     na = ~any(map_lgl(., ~isTRUE(is.na(.)))))) %>% 
-  as.data.frame()
-
 
 #################################################################
 ##                    2HTSM - Source Memory                    ##
@@ -1048,14 +1041,23 @@ dput(unique(dm$model))
 model_levels <- c("2htsm", "c2ht", "pc", "pd", "pm", "hb", "rm", "real", "quad")
 model2_levels <- c("2htsm_4", "2htsm_5d", "2htsm_6e", 
                    "c2ht6", "c2ht8", "pc", "pd_s", "pd_e", 
-                   "pm", "hb", "rm", "real")
+                   "pm", "hb", "rm", "real", "quad")
 
 dm <- dm %>% 
   mutate(model2 = factor(model2, levels = model2_levels),
          model = factor(model, levels = model_levels)
   )
-any(is.na(dm$model))  ## must be FALSE
-any(is.na(dm$model2))  ## must be FALSE
+stopifnot(!any(is.na(dm$model)))  ## must be TRUE
+stopifnot(!any(is.na(dm$model2)))
+
+dm %>% 
+  group_by(model) %>% 
+  tally
+
+# dm %>% 
+#   filter(is.na(model2)) %>% 
+#   group_by(model) %>% 
+#   tally
 
 # dm_l <- list(
 #   pm = pm,
