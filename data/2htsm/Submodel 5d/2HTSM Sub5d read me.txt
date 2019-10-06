@@ -1,0 +1,11 @@
+Core parameters not correctly identified (all should be TRUE):
+KM2000_E3
+KM2000_E4
+DS2000_E1
+
+Convergence issue:
+KM2000_E4: for trait Rhat > 1.05 for one parameter, could not reach convergence so far even with many (400k) iterations for trait
+
+n.eff not reached:
+DS2000_E1: could not reach n.eff > 2000 for most parameters despite many iterations for simple.no
+DS2000_E4: could not reach n.eff > 2000 for most parameters despite many iterations for trait

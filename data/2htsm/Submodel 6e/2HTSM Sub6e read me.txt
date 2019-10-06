@@ -1,0 +1,8 @@
+Model file: Sub6e & Buchnermodel sind identisch
+
+Core parameters not correctly identified (all should be TRUE):
+Bell et al. (2015) E1
+Bell et al. (2015) E2
+
+n.eff not reached:
+n.eff not reached for some rhos in Mieth et al. (2016) beta
