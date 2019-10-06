@@ -3,16 +3,11 @@ library("MPTmultiverse")
 library("tidyverse")
 source("fun_prep.R")
 
-##---------------------------------------------------------------
-##                          Mostly Done                         -
-##---------------------------------------------------------------
-
 ##################################################################
 ##                      Prospective Memory                      ##
 ##################################################################
 ## Nina Arnhold & Sebastian Horn
 
-## waiting for response regarding missing beta MPTs
 ## latent class missing
 
 f_pm <- list.files("data/prospective-memory/", full.names = TRUE)
@@ -1079,21 +1074,30 @@ dm %>%
 
 ###
 
-# n_participants <- dm %>% 
-#   unnest(est_indiv) %>% 
-#   group_by(model, dataset, orig_condition, inter, model2, id) %>% 
-#   summarise(parameter = first(parameter)) %>% 
-#   tally(name = "n_participant")
+n_participants <- dm %>%
+  unnest(est_indiv) %>%
+  group_by(model, dataset, orig_condition, inter, model2, id) %>%
+  summarise(parameter = first(parameter)) %>%
+  tally(name = "n_participant")
+
+n_participants %>%
+  group_by(model, dataset, orig_condition, model2) %>%
+  summarise(check = all(n_participant == first(n_participant))) %>%
+  {all(.$check)}  %>% 
+  stopifnot
+
+# n_participants %>%
+#   group_by(model, dataset, orig_condition, model2) %>%
+#   filter(dataset == "CalanchiniEtAl2014_PI_skinMCMC")
 # 
-# n_participants %>% 
-#   group_by(model, dataset, orig_condition, model2) %>% 
-#   summarise(check = all(n_participant == first(n_participant))) %>% 
-#   {all(.$check)}  ## should be TRUE
-# 
-# n_participants <- n_participants %>% 
-#   group_by(model, dataset, orig_condition, model2) %>% 
-#   summarise(n_participant = first(n_participant)) %>% 
-#   ungroup()
+# n_participants %>%
+#   group_by(model, dataset, orig_condition, model2) %>%
+#   filter(dataset == "CalanchiniEtAl2014_PI_straightMCMC")
+
+n_participants <- n_participants %>%
+  group_by(model, dataset, orig_condition, model2) %>%
+  summarise(n_participant = first(n_participant)) %>%
+  ungroup()
 # 
 # n_study <- dm %>% 
 #   group_by(model) %>% 
@@ -1103,5 +1107,6 @@ dm %>%
 #   unnest(gof_indiv) %>% 
 #   print(n = 100)
 
-save(dm, file = "combined_results.RData", compress = "xz")  #
+save(dm, n_participants, 
+     file = "combined_results.RData", compress = "xz")  #
 
