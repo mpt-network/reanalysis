@@ -300,6 +300,22 @@ hb %>%
                      na = ~any(map_lgl(., ~isTRUE(is.na(.)))))) %>% 
   as.data.frame()
 
+### following email from Julia from 06/10/2019 after discussion with Edgar,
+### retain only "within" condition from Erdfelder2007
+for (i in seq_len(nrow(hb))) {
+  if (hb[i,]$dataset == "ErdfelderBrandtBröder2007Exp1.csv") {
+    for (j in seq_along(hb)) {
+      if (is.data.frame(hb[i,][[j]][[1]]) && 
+          ("condition" %in% colnames(hb[i,][[j]][[1]]))) {
+        #print("new")
+        #print(nrow(hb[i,][[j]][[1]]))
+        hb[i,][[j]][[1]] <- hb[i,][[j]][[1]] %>% 
+          filter(condition == "within")
+        #print(nrow(hb[i,][[j]][[1]]))
+      }
+    }
+  }
+}
 
 #################################################################
 ##                       Pair Clustering                       ##
