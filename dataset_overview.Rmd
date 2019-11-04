@@ -1,0 +1,340 @@
+---
+title: "Data Set"
+author: "MPT Reanalysis Project"
+date: "Results from: `r Sys.Date()`"
+output: html_document
+---
+
+<style>
+  .main-container {
+    max-width: 1300px !important;
+  }
+</style>
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+options(width = 150)
+```
+
+```{r, include=FALSE}
+library("MPTmultiverse")
+library("tidyverse")
+tmpe <- new.env()
+source("fun_prep.R", local = tmpe)
+check_set <- get(x = "check_set",envir = tmpe)
+check_core_pars <- get(x = "check_core_pars",envir = tmpe)
+load("combined_results.RData")
+source("fun_analysis.R")
+
+## check that datasets are unique:
+dm %>% 
+  filter(inter == "Comp MLE") %>% 
+  group_by(dataset) %>% 
+  tally() %>% 
+  {stopifnot(all(.$n == 1))}
+
+```
+
+## Models
+
+The results include 9 different models (some of which with additional submodels):
+
+- `2htsm`: 2-high threshold source memory model
+- `c2ht`: confidence-rating 2-high threshold memory model
+- `pc`: pair-clustering model
+- `pd`: process-dissociation
+- `pm`: prospective memory model
+- `hb`: hindsight-bias model
+- `rm`: r-model
+- `real`: real model (IAT)
+- `quad`: quad model (IAT)
+
+## Participants and Studies
+
+```{r}
+n_participants <- dm %>%
+  unnest(est_indiv) %>%
+  group_by(model, dataset, orig_condition, inter, model2, id) %>%
+  summarise(parameter = first(parameter)) %>%
+  tally(name = "n_participant")
+
+n_participants %>%
+  group_by(model, dataset, orig_condition, model2) %>%
+  summarise(check = all(n_participant == first(n_participant))) %>%
+  {all(.$check)}  %>% 
+  stopifnot()
+
+# n_participants %>%
+#   group_by(model, dataset, orig_condition, model2) %>%
+#   summarise(check = all(n_participant == first(n_participant))) %>%
+#   filter(!check)
+
+n_participants <- n_participants %>%
+  group_by(model, dataset, orig_condition, model2) %>%
+  summarise(n_participant = first(n_participant)) %>%
+  ungroup()
+```
+
+
+The following table gives an overview of the number of conditions (`n_within_between` is the number of conditions that each provide at least one parameter per model that otherwise would not be unique given the base-model equations, this includes both within-subjects and between-conditions; `n_between` is the number of between-subjects conditions), number of participants (`par`), and number of data sets (`n_study`). The final table shows the overall results.
+
+```{r}
+n_wb <- dm %>% 
+  filter(inter == "Comp MLE") %>% 
+  unnest(est_group) %>% 
+  group_by(model, condition, dataset) %>% 
+  summarise(parameter = first(parameter)) %>% 
+  group_by(model) %>% 
+  tally(name = "n_within_between")
+
+n_study <- dm %>% 
+  filter(inter == "Comp MLE") %>% 
+  unnest(est_group) %>% 
+  group_by(model, dataset) %>% 
+  summarise(parameter = first(parameter)) %>% 
+  group_by(model) %>% 
+  tally(name = "n_study")
+
+n_tab <- n_participants %>% 
+  group_by(model) %>% 
+  summarise(n_between = n(), 
+            par = sum(n_participant)) %>% 
+  left_join(n_study, by = "model") %>% 
+  left_join(n_wb, by = "model") %>% 
+  select(model, par, n_within_between, n_between, n_study)
+
+n_tab
+n_tab %>% 
+  summarise_if(is.numeric, sum)
+```
+
+We can also make this table by submodel.
+
+```{r}
+n_wb <- dm %>% 
+  filter(inter == "Comp MLE") %>% 
+  unnest(est_group) %>% 
+  group_by(model2, condition, dataset) %>% 
+  summarise(parameter = first(parameter)) %>% 
+  group_by(model2) %>% 
+  tally(name = "n_within_between")
+
+n_study <- dm %>% 
+  filter(inter == "Comp MLE") %>% 
+  unnest(est_group) %>% 
+  group_by(model2, dataset) %>% 
+  summarise(parameter = first(parameter)) %>% 
+  group_by(model2) %>% 
+  tally(name = "n_study")
+
+n_tab <- n_participants %>% 
+  group_by(model2) %>% 
+  summarise(n_between = n(), 
+            par = sum(n_participant)) %>% 
+  left_join(n_study, by = "model2") %>% 
+  left_join(n_wb, by = "model2") %>% 
+  select(model2, par, n_within_between, n_between, n_study)
+
+n_tab
+n_tab %>% 
+  summarise_if(is.numeric, sum)
+```
+
+
+## Methods
+
+The following table gives the proportion of data sets for which a given method (in columns) produced usable results (i.e., also considering our convergence criteria). This first table is separated by models.
+
+```{r}
+dm$use <- NA
+for (i in seq_len(nrow(dm))) {
+  dm[i, "use"] <- check_fit(dm[i,])
+}
+#prop.table(table(dm$use, useNA = "ifany"))
+
+meth_over <- dm %>% 
+  filter(use) %>% 
+  select(model, dataset, inter) %>% 
+  reshape2::dcast(model + dataset ~ inter, fun.aggregate = length, 
+                  value.var = "inter") %>% 
+  as_tibble
+
+meth_over %>% 
+  group_by(model) %>% 
+  summarise_if(is.numeric, .funs = mean)
+
+#levels(dm$inter)
+
+exclude_methods <- c("LC PP") ## could be a value of inter
+
+results <- dm %>% 
+  filter(use) %>% 
+  filter(!(inter %in% exclude_methods)) %>% 
+  droplevels
+```
+
+One thing that is clear is that the latent class approach (`LC PP`) is missing in the vast majority of cases. 
+
+We can also look at this across all models.
+
+```{r}
+meth_over %>% 
+  #group_by(model) %>% 
+  summarise_if(is.numeric, .funs = mean)
+```
+
+
+## Methods per Data Set
+
+The following tables, which are separated by model, provide an overview of whether each method is usable (`TRUE`), misses our convergence criteria (`FALSE`), or is missing (`NA`).
+
+```{r}
+dm %>% 
+  select(model, dataset, inter, use) %>% 
+  reshape2::dcast(model + dataset ~ inter,  
+                  value.var = "use") %>% 
+  as_tibble %>% 
+  group_split(model) %>% 
+  walk(print, n = Inf)
+```
+
+## Core Parameters Per Model
+
+The following gives an overview of the core and (if present) non-core parameters for each model.
+
+```{r}
+dm %>% 
+  group_split(model) %>% 
+  walk(~{
+    cat(paste(.$model[1]), "\n")
+    check_core_pars(.)
+    cat("\n")
+    })
+```
+
+## Pairwise Plots of Core Parameters
+
+We plot the core parameters for each condition that are usable in the following plot.
+
+```{r, fig.width=12, fig.height=12, warning=FALSE}
+results <- dm %>% 
+  filter(use) %>% 
+  #filter(!(inter %in% exclude_methods)) %>% 
+  droplevels
+
+all_pars <- unnest(results, est_group) %>% 
+  filter(core) %>% 
+  droplevels()
+
+pairs <- combn(sort(levels(all_pars$inter)), 2)
+pairs <- combn(levels(all_pars$inter), 2)
+
+all_pars_l <- vector("list", ncol(pairs))
+
+for (i in seq_len(ncol(pairs))) {
+  tmp_dat <- all_pars %>% 
+    filter(inter %in% pairs[,i]) %>% 
+    mutate(inter = factor(inter, 
+                           levels = unique(as.character(unlist(pairs[,i]))))) %>% 
+    select(model, model_type, dataset, condition, parameter, est, inter) %>% 
+    spread(key = inter, value = est)
+  colnames(tmp_dat)[(ncol(tmp_dat)-1):ncol(tmp_dat)] <- c("x", "y")
+  tmp_dat$cond_x <- pairs[1,i]
+  tmp_dat$cond_y <- pairs[2,i]
+  all_pars_l[[i]] <- tmp_dat 
+}
+all_pars2 <- bind_rows(all_pars_l)
+#all_pars2 <- left_join(all_pars2, trials)
+all_pars2 <- all_pars2 %>% 
+  mutate(
+    cond_x = factor(cond_x, levels = 
+                      levels(all_pars$inter)[unique(all_pars2$cond_x) %in% levels(all_pars$inter)]),
+    cond_y = factor(cond_y, levels = 
+                      levels(all_pars$inter)[unique(all_pars2$cond_y) %in% levels(all_pars$inter)])
+    )
+
+all_pars3 <- all_pars2 %>%
+  # filter(restriction == "rrest", parameter %in% c("Do", "Dn", "g")) %>%
+  # mutate(parameter = factor(parameter,
+  #                           levels = c("Do", "Dn", "g"))) %>%
+  mutate(cond_x2 = cond_y,
+         cond_y2 = cond_x)
+
+pars_plot <- all_pars3 
+
+pars_plot %>% 
+  ggplot(aes(x = x, y = y)) +
+  geom_abline(slope = 1, intercept = 0) +
+  geom_point(alpha = 0.2) + #aes(size = trials)
+  facet_grid(cond_x2~ cond_y2, switch = "both", as.table = FALSE) +
+  # geom_text(data=plot_text,
+  #           aes(x = 0.2, y = 0.9, label=ccc), 
+  #           parse = TRUE, inherit.aes=FALSE, size = 5) +
+  coord_fixed(xlim = c(0, 1), ylim = c(0, 1)) +
+  scale_size(range = c(0.5, 2.5)) +
+  labs(x = "", y = "") +
+  theme(legend.position = "none")
+
+```
+
+
+## All Pairwise Plots
+
+We can also plot all pairwise plots (instead of only the upper half of the pairs-matrix) and overlay each plot with a GAM.
+
+```{r, fig.width=12, fig.height=12, warning=FALSE}
+
+pairs <- expand.grid(cond_x = sort(levels(all_pars$inter)), 
+                     cond_y = sort(levels(all_pars$inter)))
+
+
+
+all_pars_l2 <- vector("list", nrow(pairs))
+
+for (i in seq_len(nrow(pairs))) {
+  tmp_dat <- all_pars %>% 
+    filter(core) %>% 
+    filter(inter %in% unlist(pairs[i,])) %>% 
+    mutate(inter2 = factor(inter, 
+                           levels = unique(as.character(unlist(pairs[i,]))))) %>% 
+    select(model, model_type, dataset, condition, parameter, est, inter2) %>% 
+    spread(key = inter2, value = est)
+  if ( (colnames(tmp_dat)[ncol(tmp_dat)-1]) == "parameter" ) {
+    tmp_dat$y <- tmp_dat[[ncol(tmp_dat)]]
+  }
+  colnames(tmp_dat)[(ncol(tmp_dat)-1):ncol(tmp_dat)] <- c("x", "y")
+  tmp_dat$cond_x <- pairs[i, 1]
+  tmp_dat$cond_y <- pairs[i, 2]
+  all_pars_l2[[i]] <- tmp_dat 
+}
+all_pars_a2 <- bind_rows(all_pars_l2)
+#all_pars2 <- left_join(all_pars2, trials)
+all_pars_a2 <- all_pars_a2 %>% 
+  mutate(
+    cond_x = factor(cond_x, levels = 
+                      levels(results$inter)),
+    cond_y = factor(cond_y, levels = 
+                      levels(results$inter))
+    )
+all_pars_a3 <- all_pars_a2 %>%
+  # filter(restriction == "rrest", parameter %in% c("Do", "Dn", "g")) %>%
+  # mutate(parameter = factor(parameter,
+  #                           levels = c("Do", "Dn", "g"))) %>%
+  mutate(cond_x2 = cond_y,
+         cond_y2 = cond_x) %>% 
+  filter(!(str_detect(dataset, "Smith et al 2014")))
+
+all_pars_a3 %>% 
+  filter(!(model %in% "pm")) %>% 
+  ggplot(aes(x = x, y = y)) +
+  geom_abline(slope = 1, intercept = 0) +
+  geom_point(alpha = 0.2) + #aes(size = trials)
+  facet_grid(cond_x2~ cond_y2, switch = "both", as.table = FALSE) +
+  coord_fixed(xlim = c(0, 1), ylim = c(0, 1)) +
+  scale_size(range = c(0.5, 2.5)) +
+  geom_smooth() +
+  labs(x = "", y = "") +
+  theme(legend.position = "none")
+```
+
