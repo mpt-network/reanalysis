@@ -1088,6 +1088,11 @@ n_participants %>%
 
 # n_participants %>%
 #   group_by(model, dataset, orig_condition, model2) %>%
+#   summarise(check = all(n_participant == first(n_participant))) %>% 
+#   filter(!check)
+
+# n_participants %>%
+#   group_by(model, dataset, orig_condition, model2) %>%
 #   filter(dataset == "CalanchiniEtAl2014_PI_skinMCMC")
 # 
 # n_participants %>%
