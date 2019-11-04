@@ -21,11 +21,11 @@ options(width = 150)
 library("MPTmultiverse")
 library("tidyverse")
 tmpe <- new.env()
-source("fun_prep.R", local = tmpe)
+source("../fun_prep.R", local = tmpe)
 check_set <- get(x = "check_set",envir = tmpe)
 check_core_pars <- get(x = "check_core_pars",envir = tmpe)
-load("combined_results.RData")
-source("fun_analysis.R")
+load("../combined_results.RData")
+source("../fun_analysis.R")
 
 ## check that datasets are unique:
 dm %>% 
