@@ -93,7 +93,72 @@ ggsave(filename = "figures/abs_dev_cmle_data_poly.png",
 
 dv_cmle_lt_nopc <- all_pars_a4 %>% 
   filter(cond_x == "Comp MLE") %>%
-  filter(cond_y == "Trait PP") 
+  filter(cond_y == "Trait PP") %>% 
+  mutate(parameter_only = str_remove(as.character(parameter), ".+:"))
+
+#### plots
+
+dv_cmle_lt_nopc %>% 
+  ggplot(aes(adev)) +
+  geom_histogram() +
+  facet_wrap(vars(model), scales = "free_y")
+
+dv_cmle_lt_nopc %>% 
+  ggplot(aes(x = x, y = adev)) +
+  geom_point(alpha = 0.2) +
+  facet_wrap(vars(model))
+
+dv_cmle_lt_nopc %>% 
+  ggplot(aes(x = x, y = adev)) +
+  geom_point(alpha = 0.2) +
+  facet_wrap(vars(parameter))  + 
+theme(
+  strip.background = element_blank(),
+  strip.text.x = element_blank()
+)
+
+dput(unique(dv_cmle_lt_nopc$parameter_only))
+
+dv_cmle_lt_nopc %>% 
+  filter(!(parameter_only %in% c("C_Exclusion", "C_Inclusion"))) %>% 
+  ggplot(aes(x = x, y = adev)) +
+  geom_point(alpha = 0.2, size = 2.0) +
+  facet_wrap(vars(model)) +
+  ylab("Absolute Deviation") +
+  xlab("Complete Pooling MLE Estimate") + 
+  theme_bw(base_size = 18)
+ggsave(filename = "figures/adev_by_model.png", 
+       width = 24, height = 19, units = "cm", 
+       dpi = 500)
+
+dv_cmle_lt_nopc %>% 
+  filter(!(parameter_only %in% c("C_Exclusion", "C_Inclusion"))) %>% 
+  ggplot(aes(x = x, y = adev)) +
+  geom_point(alpha = 0.2) +
+  facet_wrap(vars(model, parameter_only)) +
+  ylab("Absolute Deviation") +
+  xlab("Complete Pooling MLE Estimate") + 
+  theme_bw(base_size = 12)
+ggsave(filename = "figures/adev_by_parameter.png", 
+       width = 28, height = 19, units = "cm", 
+       dpi = 500)
+
+dv_cmle_lt_nopc %>% 
+  filter(!(parameter_only %in% c("C_Exclusion", "C_Inclusion"))) %>% 
+  ggplot(aes(x = x, y = adev)) +
+  geom_point(alpha = 0.2) +
+  facet_wrap(vars(model, parameter_only))  +
+  ylab("Absolute Deviation") +
+  xlab("Complete Pooling MLE Estimate")  + 
+  theme(
+    strip.background = element_blank(),
+    strip.text.x = element_blank()
+  )
+ggsave(filename = "figures/adev_by_parameter_no-strip.png", 
+       width = 28, height = 19, units = "cm", 
+       dpi = 500)
+
+#### models
 
 mm_cmle_lt_m <- lmer(adev ~ model + (1|orig_condition:dataset),
                      data = dv_cmle_lt_nopc, REML = FALSE)
@@ -156,8 +221,19 @@ do.call(anova, c(mm_cmle_lt_m, mm_cmle_lt_p, mm_cmle_lt_0, mm_cmle_lt_1))
 # ---
 # Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-map(c(mm_cmle_lt_p, mm_cmle_lt_0, mm_cmle_lt_1), performance::r2)
+performance::r2(mm_cmle_lt_p)$R2_marginal
 
+# lmm_sel <- 
+tibble(
+  model = map_chr(c(mm_cmle_lt_m, mm_cmle_lt_p, mm_cmle_lt_0, mm_cmle_lt_1), 
+                  ~deparse(.@call$formula)),
+  r2 = map_dbl(c(mm_cmle_lt_m, mm_cmle_lt_p, mm_cmle_lt_0, mm_cmle_lt_1), 
+               ~performance::r2(.)$R2_marginal)
+) %>% 
+  print(n = Inf)
+
+
+mm_cmle_lt_m_lm <- lm(adev ~ model, data = dv_cmle_lt_nopc)
 mm_cmle_lt_p_lm <- lm(adev ~ parameter, data = dv_cmle_lt_nopc)
 mm_cmle_lt_0_lm <- fit_polynomials_lm(
   formula = adev ~ poly(x, DEG), 
@@ -166,14 +242,18 @@ mm_cmle_lt_1_lm <- fit_polynomials_lm(
   formula = adev ~ poly(x, DEG) + parameter, 
   data = dv_cmle_lt_nopc, max_degree = 10)
 
+lm_model_list <- c(list(mm_cmle_lt_m_lm), list(mm_cmle_lt_p_lm), 
+                    mm_cmle_lt_0_lm, mm_cmle_lt_1_lm)
+
 lm_sel <- tibble(
-  model = map_chr(c(list(mm_cmle_lt_p_lm), mm_cmle_lt_0_lm, mm_cmle_lt_1_lm), 
-              ~deparse(.$call$formula)), 
-  aic = map_dbl(c(list(mm_cmle_lt_p_lm), mm_cmle_lt_0_lm, mm_cmle_lt_1_lm), AIC),
-  bic = map_dbl(c(list(mm_cmle_lt_p_lm), mm_cmle_lt_0_lm, mm_cmle_lt_1_lm), BIC),
-  r2 = map_dbl(c(list(mm_cmle_lt_p_lm), mm_cmle_lt_0_lm, mm_cmle_lt_1_lm), 
-               ~summary(.)$r.squared)
+  model = map_chr(lm_model_list, ~deparse(.$call$formula)), 
+  aic = map_dbl(lm_model_list, AIC),
+  bic = map_dbl(lm_model_list, BIC),
+  r2 = map_dbl(lm_model_list, ~summary(.)$r.squared)
 )
+lm_sel %>% 
+  print(n = Inf)
+
 lm_sel %>% 
   arrange(aic)
 
@@ -185,12 +265,323 @@ lm_sel %>%
   print(n = Inf)
 
 
+
+
 ### IVs:
 
 ## "model"
 ivs <- c("parameter", "log1p_hetero", "chisq", "")
 
+#####
 
+### WARNING: entering fungibility dramatuically reduces N! 
+### Needs to be taken into account.
+
+### x alone
+
+mm_cmle_lt_x <- lmer(adev ~ x + (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+summary(mm_cmle_lt_x)
+
+performance::r2(mm_cmle_lt_x)
+
+mm_cmle_lt_x6 <- lmer(adev ~ poly(x, 6) + (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+
+performance::r2(mm_cmle_lt_x6)
+
+
+### Model alone
+
+mm_cmle_lt_model <- lmer(adev ~ model + (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+performance::r2(mm_cmle_lt_model)
+
+emmeans(mm_cmle_lt_model, "model")
+
+### Null Model
+
+mm_cmle_lt_null <- lmer(adev ~ parameter + (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+anova(mm_cmle_lt_null)
+fixef(mm_cmle_lt_null)
+
+performance::r2(mm_cmle_lt_null)
+
+psych::describe(fixef(mm_cmle_lt_null)[2:30])
+
+### hetereogeneity 1
+mm_cmle_lt_hetero_1 <- lmer(adev ~ log1p_hetero + (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+anova(mm_cmle_lt_hetero_1)
+performance::r2(mm_cmle_lt_hetero_1)
+
+mm_cmle_lt_hetero_2 <- lmer(adev ~ chisq + (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+anova(mm_cmle_lt_hetero_2)
+performance::r2(mm_cmle_lt_hetero_2)
+
+### Correlation: rho
+mm_cmle_lt_rho_1 <- lmer(adev ~ rho + (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+anova(mm_cmle_lt_rho_1)
+performance::r2(mm_cmle_lt_rho_1)
+
+mm_cmle_lt_rho_2 <- lmer(adev ~ log(rho) + (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+anova(mm_cmle_lt_rho_2)
+performance::r2(mm_cmle_lt_rho_2)
+
+
+### Correlation: fungibility
+mm_cmle_lt_fungi_1 <- lmer(adev ~ fungi + (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+anova(mm_cmle_lt_fungi_1)
+summary(mm_cmle_lt_fungi_1)
+performance::r2(mm_cmle_lt_fungi_1)
+
+mm_cmle_lt_fungi_2 <- lmer(adev ~ log(fungi) + (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+anova(mm_cmle_lt_fungi_2)
+performance::r2(mm_cmle_lt_fungi_2)
+
+### Model fit
+mm_cmle_lt_fit_1 <- lmer(adev ~ log1p_fit_x + log1p_fit_y +
+                           (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+anova(mm_cmle_lt_fit_1)
+performance::r2(mm_cmle_lt_fit_1)
+
+mm_cmle_lt_fit_2 <- lmer(adev ~ p_fit_x + p_fit_y +
+                           (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+anova(mm_cmle_lt_fit_2)
+summary(mm_cmle_lt_fit_2)
+performance::r2(mm_cmle_lt_fit_2)
+
+### Standard Error
+mm_cmle_lt_se_0x <- lmer(adev ~ se_x + 
+                           (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+anova(mm_cmle_lt_se_0x)
+performance::r2(mm_cmle_lt_se_0x)
+summary(mm_cmle_lt_se_0x)
+
+mm_cmle_lt_se_0y <- lmer(adev ~ se_y +
+                           (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+anova(mm_cmle_lt_se_0y)
+performance::r2(mm_cmle_lt_se_0y)
+summary(mm_cmle_lt_se_0y)
+
+
+mm_cmle_lt_se_1 <- lmer(adev ~ se_x + se_y +
+                           (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+anova(mm_cmle_lt_se_1)
+performance::r2(mm_cmle_lt_se_1)
+summary(mm_cmle_lt_se_1)
+
+mm_cmle_lt_se_2 <- lmer(adev ~ scale(se_x)*scale(se_y) +
+                           (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+anova(mm_cmle_lt_se_2)
+performance::r2(mm_cmle_lt_se_2)
+summary(mm_cmle_lt_se_2)
+
+### Relative parameter information
+
+mm_cmle_lt_rel_par_0x <- lmer(adev ~ rel_par_weight_x + 
+                           (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+anova(mm_cmle_lt_rel_par_0x)
+summary(mm_cmle_lt_rel_par_0x)
+performance::r2(mm_cmle_lt_rel_par_0x)
+
+mm_cmle_lt_rel_par_0y <- lmer(adev ~ rel_par_weight_y + 
+                           (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+anova(mm_cmle_lt_rel_par_0y)
+performance::r2(mm_cmle_lt_rel_par_0y)
+summary(mm_cmle_lt_rel_par_0y)
+
+mm_cmle_lt_rel_par_1 <- lmer(adev ~ rel_par_weight_x + rel_par_weight_y +
+                           (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+anova(mm_cmle_lt_rel_par_1)
+performance::r2(mm_cmle_lt_rel_par_1)
+summary(mm_cmle_lt_rel_par_1)
+
+mm_cmle_lt_rel_par_2 <- lmer(adev ~ scale(rel_par_weight_x)*
+                               scale(rel_par_weight_y) +
+                           (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+anova(mm_cmle_lt_rel_par_2)
+performance::r2(mm_cmle_lt_rel_par_2)
+summary(mm_cmle_lt_rel_par_2)
+
+### Relative parameter N
+mm_cmle_lt_rel_n_1 <- lmer(adev ~ scale(rel_n_x) + scale(rel_n_y) +
+                           (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+anova(mm_cmle_lt_rel_n_1)
+performance::r2(mm_cmle_lt_rel_n_1)
+summary(mm_cmle_lt_rel_n_1)
+
+mm_cmle_lt_rel_n_2 <- lmer(adev ~ scale(rel_n_x)*scale(rel_n_y) +
+                           (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+anova(mm_cmle_lt_rel_n_2)
+performance::r2(mm_cmle_lt_rel_n_2)
+summary(mm_cmle_lt_rel_n_2)
+
+##### joint models
+
+mm_cmle_lt_joint_1 <- lmer(adev ~ fungi +
+                             p_fit_x + p_fit_y +
+                             scale(se_x)*scale(se_y) +
+                             scale(rel_par_weight_x)*scale(rel_par_weight_y) +
+                             scale(rel_n_x)*scale(rel_n_y) +
+                           (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+anova(mm_cmle_lt_joint_1)
+performance::r2(mm_cmle_lt_joint_1)
+summary(mm_cmle_lt_joint_1)
+
+mm_cmle_lt_joint_2 <- lmer(adev ~ poly(x, 3) +
+                             fungi +
+                             p_fit_x + p_fit_y +
+                             scale(se_x)*scale(se_y) +
+                             scale(rel_par_weight_x)*scale(rel_par_weight_y) +
+                             scale(rel_n_x)*scale(rel_n_y) +
+                           (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+anova(mm_cmle_lt_joint_2)
+performance::r2(mm_cmle_lt_joint_2)
+summary(mm_cmle_lt_joint_2)
+
+mm_cmle_lt_joint_3 <- lmer(adev ~ model +
+                             fungi +
+                             p_fit_x + p_fit_y +
+                             scale(se_x)*scale(se_y) +
+                             scale(rel_par_weight_x)*scale(rel_par_weight_y) +
+                             scale(rel_n_x)*scale(rel_n_y) +
+                           (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+anova(mm_cmle_lt_joint_3)
+performance::r2(mm_cmle_lt_joint_3)
+summary(mm_cmle_lt_joint_3)
+
+
+mm_cmle_lt_joint_4 <- lmer(adev ~ parameter +
+                             fungi +
+                             p_fit_x + p_fit_y +
+                             scale(se_x)*scale(se_y) +
+                             scale(rel_par_weight_x)*scale(rel_par_weight_y) +
+                             scale(rel_n_x)*scale(rel_n_y) +
+                           (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+anova(mm_cmle_lt_joint_4)
+performance::r2(mm_cmle_lt_joint_4)
+summary(mm_cmle_lt_joint_4)
+
+mm_cmle_lt_joint_5 <- lmer(adev ~ poly(x, 3) + parameter +
+                             fungi + 
+                             p_fit_x + p_fit_y +
+                             scale(se_x)*scale(se_y) +
+                             scale(rel_par_weight_x)*scale(rel_par_weight_y) +
+                             scale(rel_n_x)*scale(rel_n_y) +
+                           (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+anova(mm_cmle_lt_joint_5)
+performance::r2(mm_cmle_lt_joint_5)
+summary(mm_cmle_lt_joint_5)
+
+pars_tmp <- fixef(mm_cmle_lt_joint_5)
+range(pars_tmp[str_detect(names(pars_tmp), "^parameter")])
+pars_tmp["scale(se_y)"]
+
+emtrends(mm_cmle_lt_joint_5, "se_y", var = "se_y", 
+         at = list(se_y = 0.5))
+emtrends(mm_cmle_lt_joint_5, "se_y", var = "se_y", 
+         at = list(se_y = 0.5, se_x = 0.5))
+
+mm_cmle_lt_joint_6 <- lmer(adev ~ poly(x, 3) + parameter +
+                             scale(se_x) +
+                           (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE)
+anova(mm_cmle_lt_joint_6)
+performance::r2(mm_cmle_lt_joint_6)
+summary(mm_cmle_lt_joint_6)
+
+mm_cmle_lt_joint_7 <- lmer(adev ~ poly(x, 3) + parameter +
+                             fungi + 
+                             #p_fit_x + #p_fit_y +
+                             log1p(se_x) + 
+                             se_y +
+                             #scale(rel_par_weight_x) +
+                             # scale(rel_n_x) + #scale(rel_n_y) +
+                           (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE) 
+anova(mm_cmle_lt_joint_7)
+performance::r2(mm_cmle_lt_joint_7)
+summary(mm_cmle_lt_joint_7)
+
+pars_tmp <- fixef(mm_cmle_lt_joint_7)
+range(pars_tmp[str_detect(names(pars_tmp), "^parameter")])
+length(pars_tmp[str_detect(names(pars_tmp), "^parameter")])
+
+emtrends(mm_cmle_lt_joint_7, "se_y", var = "se_y")
+emtrends(mm_cmle_lt_joint_7, "se_x", var = "se_x")
+
+mm_cmle_lt_joint_8 <- lmer(adev ~ poly(x, 3) + parameter +
+                             #fungi + 
+                             #p_fit_x + #p_fit_y +
+                             log1p(se_x) + 
+                             se_y +
+                             #scale(rel_par_weight_x) +
+                             # scale(rel_n_x) + #scale(rel_n_y) +
+                           (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE) 
+anova(mm_cmle_lt_joint_8)
+performance::r2(mm_cmle_lt_joint_8)
+summary(mm_cmle_lt_joint_8)
+
+emtrends(mm_cmle_lt_joint_8, "se_y", var = "se_y")
+emtrends(mm_cmle_lt_joint_8, "se_x", var = "se_x")
+
+
+mm_cmle_lt_joint_9 <- lmer(adev ~ poly(x, 3) + 
+                             fungi + 
+                             #p_fit_x + #p_fit_y +
+                             log1p(se_x) + 
+                             se_y +
+                             #scale(rel_par_weight_x) +
+                             # scale(rel_n_x) + #scale(rel_n_y) +
+                           (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE) 
+anova(mm_cmle_lt_joint_9)
+performance::r2(mm_cmle_lt_joint_9)
+emtrends(mm_cmle_lt_joint_9, "se_x", var = "se_x")
+
+summary(mm_cmle_lt_joint_9)
+
+mm_cmle_lt_joint_10 <- lmer(adev ~ poly(x, 3) + 
+                             #fungi + 
+                             #p_fit_x + #p_fit_y +
+                             log1p(se_x) + 
+                             se_y +
+                             #scale(rel_par_weight_x) +
+                             # scale(rel_n_x) + #scale(rel_n_y) +
+                           (1|condition:dataset),
+                     data = dv_cmle_lt_nopc, REML = FALSE) 
+anova(mm_cmle_lt_joint_10)
+performance::r2(mm_cmle_lt_joint_10)
+
+summary(mm_cmle_lt_joint_10)
+
+dv_cmle_lt_nopc %>% 
+  {range(.$fungi, na.rm = TRUE)}
 
 ##################################################################
 ##                       Regression Trees                       ##
