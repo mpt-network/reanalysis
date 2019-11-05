@@ -186,3 +186,14 @@ fit_polynomials <- function(formula, data, ..., max_degree = 8) {
   }
   out
 }
+
+fit_polynomials_lm <- function(formula, data, ..., max_degree = 8) {
+  out <- vector("list", max_degree)
+  for (i in seq_len(max_degree)) {
+    tmpf <- do.call("substitute", list(formula, list(DEG=i)))
+    out[[i]] <- lm(formula = tmpf, data = data, ...)
+    out[[i]]$call$formula <- tmpf
+    out[[i]]$call$data <- substitute(data)
+  }
+  out
+}
