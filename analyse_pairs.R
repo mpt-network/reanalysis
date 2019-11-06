@@ -22,13 +22,13 @@ emm_options(lmer.df = "asymptotic")
 
 ##############
 
-dv_trait <- all_pars_a4 %>% 
+dv_trait <- par_pairs %>% 
   filter(cond_x == "Trait PP")
 
-dv_cmle <- all_pars_a4 %>% 
+dv_cmle <- par_pairs %>% 
   filter(cond_x == "Comp MLE")
 
-dv_cmle_nopc <- all_pars_a4 %>% 
+dv_cmle_nopc <- par_pairs %>% 
   filter(cond_x == "Comp MLE") %>% 
   filter(!(model %in% "pc"))
 
@@ -91,7 +91,7 @@ ggsave(filename = "figures/abs_dev_cmle_data_poly.png",
 ##---------------------------------------------------------------
 
 
-dv_cmle_lt_nopc <- all_pars_a4 %>% 
+dv_cmle_lt_nopc <- par_pairs %>% 
   filter(cond_x == "Comp MLE") %>%
   filter(cond_y == "Trait PP") %>% 
   mutate(parameter_only = str_remove(as.character(parameter), ".+:"))
@@ -305,6 +305,7 @@ mm_cmle_lt_null <- lmer(adev ~ parameter + (1|condition:dataset),
                      data = dv_cmle_lt_nopc, REML = FALSE)
 anova(mm_cmle_lt_null)
 fixef(mm_cmle_lt_null)
+summary(mm_cmle_lt_null)
 
 performance::r2(mm_cmle_lt_null)
 
