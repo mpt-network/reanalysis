@@ -1,0 +1,402 @@
+model,model2,dataset,orig_condition
+2htsm,2htsm_4,A2013,encoding
+2htsm,2htsm_4,A2013,retrieval
+2htsm,2htsm_4,BG2008,OA_hi_after
+2htsm,2htsm_4,BG2008,OA_hi_before
+2htsm,2htsm_4,BG2008,OA_lo_after
+2htsm,2htsm_4,BG2008,OA_lo_before
+2htsm,2htsm_4,BG2008,YA_hi_after
+2htsm,2htsm_4,BG2008,YA_hi_before
+2htsm,2htsm_4,BG2008,YA_lo_after
+2htsm,2htsm_4,BG2008,YA_lo_before
+2htsm,2htsm_4,BK2011_E1,div_att
+2htsm,2htsm_4,BK2011_E1,full_att
+2htsm,2htsm_4,BK2011_E2,cons
+2htsm,2htsm_4,BK2011_E2,incons
+2htsm,2htsm_4,BK2011_E2,zero
+2htsm,2htsm_4,Giang et al. (2012),all
+2htsm,2htsm_4,K2012_E1,enc_incid
+2htsm,2htsm_4,K2012_E1,enc_intent
+2htsm,2htsm_4,K2012_E1,ret_incid
+2htsm,2htsm_4,K2016_E1,OA_f
+2htsm,2htsm_4,K2016_E1,OA_m
+2htsm,2htsm_4,K2016_E1,YA_s_f
+2htsm,2htsm_4,K2016_E1,YA_s_m
+2htsm,2htsm_4,K2016_E1,YA_w_f
+2htsm,2htsm_4,K2016_E1,YA_w_m
+2htsm,2htsm_4,K2016_E2,long
+2htsm,2htsm_4,K2016_E2,retention
+2htsm,2htsm_4,K2016_E2,short
+2htsm,2htsm_4,KT2017,OA_pers_instr
+2htsm,2htsm_4,KT2017,OA_pers_spt
+2htsm,2htsm_4,KT2017,OA_text_instr
+2htsm,2htsm_4,KT2017,OA_text_spt
+2htsm,2htsm_4,KT2017,YA_pers_instr
+2htsm,2htsm_4,KT2017,YA_pers_spt
+2htsm,2htsm_4,KT2017,YA_text_instr
+2htsm,2htsm_4,KT2017,YA_text_spt
+2htsm,2htsm_4,M2003,impression
+2htsm,2htsm_4,M2003,memory
+2htsm,2htsm_4,MH2001,group_sources
+2htsm,2htsm_4,MH2001,town_sources
+2htsm,2htsm_4,S2002_E1,Control
+2htsm,2htsm_4,S2002_E1,SemDementia
+2htsm,2htsm_4,S2002_E2,Control
+2htsm,2htsm_4,S2002_E2,SemDementia
+2htsm,2htsm_4,S2002_E3,FrontDementia
+2htsm,2htsm_4,Schuetz & Broeder,1
+2htsm,2htsm_4,Schuetz & Broeder,2
+2htsm,2htsm_4,Schuetz & Broeder,3
+2htsm,2htsm_4,Schuetz & Broeder,4
+2htsm,2htsm_4,Schuetz & Broeder,5
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex1,1
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex1,2
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex1,3
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex1,4
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex1,5
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex3,1
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex3,2
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex3,3
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex3,4
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex3,5
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex4,1
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex4,2
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex4,3
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex4,4
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex4,5
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex5,1
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex5,2
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex5,3
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex5,4
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex5,5
+2htsm,2htsm_5d,Bell et al. (2015) Ex3,all
+2htsm,2htsm_5d,Bell et al. (2015) Ex4,all
+2htsm,2htsm_5d,DS2000_E1,all
+2htsm,2htsm_5d,DS2000_E3,all
+2htsm,2htsm_5d,DS2000_E4,all
+2htsm,2htsm_5d,KM2000_E3,fewdis
+2htsm,2htsm_5d,KM2000_E3,manydis
+2htsm,2htsm_5d,KM2000_E4,behaviors
+2htsm,2htsm_5d,KM2000_E4,names
+2htsm,2htsm_5d,Kueppers & Bayen 2014,all
+2htsm,2htsm_5d,Mieth et al. (2016) Ex1,all
+2htsm,2htsm_5d,Mieth et al. (2016) Ex2,all
+2htsm,2htsm_5d,Mieth et al. (2016) Ex3,all
+2htsm,2htsm_5d,Suessenbach et al. (2016),all
+2htsm,2htsm_6e,Bell et al. (2015) Ex1,all
+2htsm,2htsm_6e,Bell et al. (2015) Ex2,all
+2htsm,2htsm_6e,KB2018,all
+2htsm,2htsm_6e,Mieth et al. (2016),all
+c2ht,c2ht6,Dube_2012-P,Dube_2012-P
+c2ht,c2ht6,Dube_2012-W,Dube_2012-W
+c2ht,c2ht6,Heathcote_2006_e1,Heathcote_2006_e1
+c2ht,c2ht6,Heathcote_2006_e2,Heathcote_2006_e2
+c2ht,c2ht6,Jaeger_2012,Jaeger_2012
+c2ht,c2ht6,Jang_2009,Jang_2009
+c2ht,c2ht6,Koen-2013_full,Koen-2013_full
+c2ht,c2ht6,Koen-2013_immediate,Koen-2013_immediate
+c2ht,c2ht6,Koen_2010_pure,Koen_2010_pure
+c2ht,c2ht6,Koen_2011,Koen_2011
+c2ht,c2ht6,Pratte_2010,Pratte_2010
+c2ht,c2ht6,Slotnick16,slotnick16
+c2ht,c2ht6,Smith_2004,Smith_2004
+c2ht,c2ht8,Benjamin_2013,Benjamin_2013
+c2ht,c2ht8,Onyper_2010-Pics,Onyper_2010-Pics
+c2ht,c2ht8,Onyper_2010-Words,Onyper_2010-Words
+pc,pc,Broeder et al 2008 Aggregat.csv,mild cognitive impairments
+pc,pc,Broeder et al 2008 Aggregat.csv,old controls
+pc,pc,Broeder et al 2008 Aggregat.csv,young controls
+pc,pc,Broeder et al 2008 Trial1.csv,mild cognitive impairments
+pc,pc,Broeder et al 2008 Trial1.csv,old controls
+pc,pc,Broeder et al 2008 Trial1.csv,young controls
+pc,pc,Broeder et al 2008 Trial2.csv,mild cognitive impairments
+pc,pc,Broeder et al 2008 Trial2.csv,old controls
+pc,pc,Broeder et al 2008 Trial2.csv,young controls
+pc,pc,Broeder et al 2008 Trial3.csv,mild cognitive impairments
+pc,pc,Broeder et al 2008 Trial3.csv,old controls
+pc,pc,Broeder et al 2008 Trial3.csv,young controls
+pc,pc,Broeder et al 2008 Trial4.csv,mild cognitive impairments
+pc,pc,Broeder et al 2008 Trial4.csv,old controls
+pc,pc,Broeder et al 2008 Trial4.csv,young controls
+pc,pc,Broeder et al 2008 Trial5.csv,mild cognitive impairments
+pc,pc,Broeder et al 2008 Trial5.csv,old controls
+pc,pc,Broeder et al 2008 Trial5.csv,young controls
+pc,pc,Broeder et al 2008 Trial6.csv,mild cognitive impairments
+pc,pc,Broeder et al 2008 Trial6.csv,old controls
+pc,pc,Broeder et al 2008 Trial6.csv,young controls
+pc,pc,data_matzke2015_HFMP_HFMS.csv,HFMP_HFMS
+pc,pc,data_matzke2015_HFPP_HFPS.csv,HFPP_HFPS
+pc,pc,data_matzke2015_LFMP_LFMS.csv,LFMP_LFMS
+pc,pc,data_matzke2015_LFPP_LFPS.csv,LFPP_LFPS
+pc,pc,Francis et al 2018_Englisch Ausschließlich C1.csv,Englisch Ausschließlich C1
+pc,pc,Francis et al 2018_Englisch Ausschließlich C2.csv,Englisch Ausschließlich C2
+pc,pc,Francis et al 2018_Englisch Ausschließlich R1.csv,Englisch Ausschließlich R1
+pc,pc,Francis et al 2018_Englisch Ausschließlich R2.csv,Englisch Ausschließlich R2
+pc,pc,Francis et al 2018_EnglischDominantEC.csv,EnglischDominantEC
+pc,pc,Francis et al 2018_EnglischDominantR.csv,EnglischDominantR
+pc,pc,Francis et al 2018_EnglischDominantSC.csv,EnglischDominantSC
+pc,pc,Francis et al 2018_EnglischDominantSR.csv,EnglischDominantSR
+pc,pc,Francis et al 2018_SpanischDominantC.csv,SpanischDominantC
+pc,pc,Francis et al 2018_SpanischDominantC_Englisch.csv,SpanischDominantC_Englisch
+pc,pc,Francis et al 2018_SpanischDominantR.csv,SpanischDominantR
+pc,pc,Francis et al 2018_SpanischDominantR_Englisch.csv,SpanischDominantR_Englisch
+pc,pc,Golz Erdfelder 2004 Nachmittag Aggregat.csv,Nacom
+pc,pc,Golz Erdfelder 2004 Nachmittag Aggregat.csv,Placebo
+pc,pc,Golz Erdfelder 2004 Vormittag Aggregat.csv,Nacom
+pc,pc,Golz Erdfelder 2004 Vormittag Aggregat.csv,Placebo
+pc,pc,Golz Erdfelder 2004_Nachmittag_Trial1.csv,Nacom
+pc,pc,Golz Erdfelder 2004_Nachmittag_Trial1.csv,Placebo
+pc,pc,Golz Erdfelder 2004_Nachmittag_Trial2.csv,Nacom
+pc,pc,Golz Erdfelder 2004_Nachmittag_Trial2.csv,Placebo
+pc,pc,Golz Erdfelder 2004_Nachmittag_Trial3.csv,Nacom
+pc,pc,Golz Erdfelder 2004_Nachmittag_Trial3.csv,Placebo
+pc,pc,Golz Erdfelder 2004_Nachmittag_Trial4.csv,Nacom
+pc,pc,Golz Erdfelder 2004_Nachmittag_Trial4.csv,Placebo
+pc,pc,Golz Erdfelder 2004_Nachmittag_Trial5.csv,Nacom
+pc,pc,Golz Erdfelder 2004_Nachmittag_Trial5.csv,Placebo
+pc,pc,Golz Erdfelder 2004_Nachmittag_Trial6.csv,Nacom
+pc,pc,Golz Erdfelder 2004_Nachmittag_Trial6.csv,Placebo
+pc,pc,Golz Erdfelder 2004_Vormittag_Trial1.csv,Nacom
+pc,pc,Golz Erdfelder 2004_Vormittag_Trial1.csv,Placebo
+pc,pc,Golz Erdfelder 2004_Vormittag_Trial2.csv,Nacom
+pc,pc,Golz Erdfelder 2004_Vormittag_Trial2.csv,Placebo
+pc,pc,Golz Erdfelder 2004_Vormittag_Trial3.csv,Nacom
+pc,pc,Golz Erdfelder 2004_Vormittag_Trial3.csv,Placebo
+pc,pc,Golz Erdfelder 2004_Vormittag_Trial4.csv,Nacom
+pc,pc,Golz Erdfelder 2004_Vormittag_Trial4.csv,Placebo
+pc,pc,Golz Erdfelder 2004_Vormittag_Trial5.csv,Nacom
+pc,pc,Golz Erdfelder 2004_Vormittag_Trial5.csv,Placebo
+pc,pc,Golz Erdfelder 2004_Vormittag_Trial6.csv,Nacom
+pc,pc,Golz Erdfelder 2004_Vormittag_Trial6.csv,Placebo
+pc,pc,Riefer 2002 Alkoholiker Aggregat.csv,alcohol controls
+pc,pc,Riefer 2002 Alkoholiker Aggregat.csv,organic alcohols
+pc,pc,Riefer 2002 Schizophrene Aggregat.csv,schizophrenic controls
+pc,pc,Riefer 2002 Schizophrene Aggregat.csv,schizophrenics
+pc,pc,Riefer2002_Trial1 - Alcoholic.csv,alcohol controls
+pc,pc,Riefer2002_Trial1 - Alcoholic.csv,organic alcohols
+pc,pc,Riefer2002_Trial1.csv,schizophrenic controls
+pc,pc,Riefer2002_Trial1.csv,schizophrenics
+pc,pc,Riefer2002_Trial2 - Alcoholic.csv,alcohol controls
+pc,pc,Riefer2002_Trial2 - Alcoholic.csv,organic alcohols
+pc,pc,Riefer2002_Trial2.csv,schizophrenic controls
+pc,pc,Riefer2002_Trial2.csv,schizophrenics
+pc,pc,Riefer2002_Trial3 - Alcoholic.csv,alcohol controls
+pc,pc,Riefer2002_Trial3 - Alcoholic.csv,organic alcohols
+pc,pc,Riefer2002_Trial3.csv,schizophrenic controls
+pc,pc,Riefer2002_Trial3.csv,schizophrenics
+pc,pc,Riefer2002_Trial4 - Alcoholic.csv,alcohol controls
+pc,pc,Riefer2002_Trial4 - Alcoholic.csv,organic alcohols
+pc,pc,Riefer2002_Trial4.csv,schizophrenic controls
+pc,pc,Riefer2002_Trial4.csv,schizophrenics
+pc,pc,Riefer2002_Trial5 - Alcoholic.csv,alcohol controls
+pc,pc,Riefer2002_Trial5 - Alcoholic.csv,organic alcohols
+pc,pc,Riefer2002_Trial5.csv,schizophrenic
+pc,pc,Riefer2002_Trial5.csv,schizophrenic controls
+pc,pc,Riefer2002_Trial6 - Alcoholic.csv,alcohol controls
+pc,pc,Riefer2002_Trial6 - Alcoholic.csv,organic alcohols
+pc,pc,Riefer2002_Trial6.csv,schizophrenic controls
+pc,pc,Riefer2002_Trial6.csv,schizophrenics
+pd,pd_s,bodner_2000_exp2.txt,no_condition
+pd,pd_s,bodner_2000_exp4.txt,no_condition
+pd,pd_s,caldwell_masson_2001_exp1.txt,older
+pd,pd_s,caldwell_masson_2001_exp1.txt,younger
+pd,pd_s,caldwell_masson_2001_exp2.txt,no_condition
+pd,pd_s,rouder_2008_exp1.dat,no_condition
+pd,pd_s,rouder_2008_exp2.dat,no_condition
+pd,pd_s,stahl_2015_exp1.csv,no_cued
+pd,pd_s,stahl_2015_exp1.csv,no_free
+pd,pd_s,stahl_2015_exp1.csv,permuted_cued
+pd,pd_s,stahl_2015_exp1.csv,permuted_free
+pd,pd_s,stahl_2015_exp1.csv,random_cued
+pd,pd_s,stahl_2015_exp1.csv,random_free
+pd,pd_e,klauer_2015_exp1.csv,no_condition
+pd,pd_e,klauer_2015_exp3.csv,no_condition
+pd,pd_e,klauer_2015_exp5.csv,no_condition
+pm,pm,ArnoldBayenBoehm2015_data.csv,1
+pm,pm,Data Schnitzspahn et al 2012.csv,older
+pm,pm,Data Schnitzspahn et al 2012.csv,younger
+pm,pm,Horn_et_al_2011_Exp2A.csv,Exp2A
+pm,pm,Horn_et_al_2011_Exp2B.csv,Exp2B
+pm,pm,Pavawalla_etal2012_data.csv,1
+pm,pm,Pavawalla_etal2012_data.csv,2
+pm,pm,Rummeletal2011_data.csv,1
+pm,pm,Rummeletal2011_data.csv,2
+pm,pm,Smith & Hunt 2013.csv,CMI_old
+pm,pm,Smith & Hunt 2013.csv,CMI_youngdiff
+pm,pm,Smith & Hunt 2013.csv,CMI_youngeasy
+pm,pm,Smith & Hunt 2013.csv,PMI_old
+pm,pm,Smith & Hunt 2013.csv,PMI_youngdiff
+pm,pm,Smith & Hunt 2013.csv,PMI_youngeasy
+pm,pm,Smith et al 2014 Exp1.csv,ImplInt
+pm,pm,Smith et al 2014 Exp1.csv,PMI
+pm,pm,Smith et al 2014 Exp1.csv,Standard
+pm,pm,SmithBayen2005_Experiment1.csv,1
+pm,pm,SmithBayen2005_Experiment1.csv,2
+pm,pm,SmithBayen2005_Experiment2.csv,1
+pm,pm,SmithBayen2005_Experiment2.csv,2
+pm,pm,SmithBayenMartin2010_data.csv,1
+pm,pm,SmithBayenMartin2010_data.csv,2
+pm,pm,SmithBayenMartin2010_data.csv,3
+pm,pm,Smithetal2011_VersionArnoldetal2015_data.csv,1
+pm,pm,Smithetal2014_Exp1.csv,1
+pm,pm,Smithetal2014_Exp1.csv,2
+pm,pm,Smithetal2014_Exp1.csv,3
+pm,pm,Smithetal2014_Exp2.csv,1
+pm,pm,Smithetal2014_Exp2.csv,2
+pm,pm,Smithetal2014_Exp3.csv,1
+pm,pm,Smithetal2014_Exp3.csv,2
+hb,hb,Bayen2006Exp1.csv,Older
+hb,hb,Bayen2006Exp1.csv,Young
+hb,hb,Bayen2006Exp2.csv,Older
+hb,hb,Bayen2006Exp2.csv,Young
+hb,hb,Bernstein2011.csv,11
+hb,hb,Bernstein2011.csv,13-15
+hb,hb,Bernstein2011.csv,3-4
+hb,hb,Bernstein2011.csv,5-6
+hb,hb,Bernstein2011.csv,7-8
+hb,hb,Bernstein2011.csv,9-10
+hb,hb,Bernstein2011.csv,Older
+hb,hb,Bernstein2011.csv,Younger
+hb,hb,Coolin2015.csv,older
+hb,hb,Coolin2015.csv,young
+hb,hb,Coolin2016.csv,older
+hb,hb,ErdfelderBrandtBröder2007Exp1.csv,within
+hb,hb,GroßBayen2015.csv,Old_short
+hb,hb,GroßBayen2015.csv,Young_long
+hb,hb,GroßBayen2015.csv,Young_short
+hb,hb,GroßBayen2017.csv,Depressed
+hb,hb,GroßBayen2017.csv,Negative mood
+hb,hb,GroßBayen2017.csv,Neutral mood
+hb,hb,Pohl2010.csv,12yrs
+hb,hb,Pohl2010.csv,9yrs
+hb,hb,Pohl2010.csv,adults
+rm,rm,Castela Erdfelder 2017b_Exp1 within1.csv,celebrity knowledge parameter
+rm,rm,Castela Erdfelder 2017b_Exp1 within2.csv,city recognition parameter
+rm,rm,Castela Erdfelder 2017b_Exp1 within3.csv,river guessing parameter
+rm,rm,Castela Erdfelder 2017b_Exp2.csv,RH
+rm,rm,Data from Filevich Horn Kuehn 2017_within1.csv,Rekognition
+rm,rm,Data from Filevich Horn Kuehn 2017_within2.csv,Komparatives Urteil
+rm,rm,Hilbig et al 2015_exp1.csv,control
+rm,rm,Hilbig et al 2015_exp1.csv,knowledge
+rm,rm,Hilbig et al 2015_exp2.csv,certainity
+rm,rm,Hilbig et al 2015_exp2.csv,control
+rm,rm,Hilbig et al 2015_exp2.csv,knowledge
+rm,rm,Hilbig et al 2015_exp3.csv,control
+rm,rm,Hilbig et al 2015_exp3.csv,effort
+rm,rm,Hilbig et al 2015_exp3.csv,knowledge
+rm,rm,Hilbig Richter.csv,RH
+rm,rm,HilbigErdfelderPohl20106.csv,control
+rm,rm,HilbigErdfelderPohl20106.csv,experimental
+rm,rm,HilbigErdfelderPohl20107b.csv,experimental
+rm,rm,HilbigErdfelderPohl2011.csv,RH
+rm,rm,HilbigErdfelderPohl2012exp1.csv,baseline condition
+rm,rm,HilbigErdfelderPohl2012exp1.csv,no-time-pressure-condition
+rm,rm,HilbigErdfelderPohl2012exp1.csv,time-pressure-condition
+rm,rm,HilbigPohl09exp1.csv,RH
+rm,rm,HilbigPohl09exp2.csv,RH
+rm,rm,HilbigPohl09exp3.csv,RH
+rm,rm,HilbigPohl2008exp5.csv,RH
+rm,rm,HilbigPohlBroeder2009.csv,RH
+rm,rm,HilbigSchollPohl2010exp1.csv,deliberation
+rm,rm,HilbigSchollPohl2010exp1.csv,intuition
+rm,rm,HilbigSchollPohl2010exp2.csv,deliberation
+rm,rm,HilbigSchollPohl2010exp2.csv,intuition
+rm,rm,Horn Pachur Mata 2015.csv,old-cites
+rm,rm,Horn Pachur Mata 2015.csv,old-infections
+rm,rm,Horn Pachur Mata 2015.csv,young-cities
+rm,rm,Horn Pachur Mata 2015.csv,young-infections
+rm,rm,Horn Ruggeri Pachur 2016 .csv,City + Kids
+rm,rm,Horn Ruggeri Pachur 2016 .csv,City + Old Adolescent
+rm,rm,Horn Ruggeri Pachur 2016 .csv,City + Young Adolescent
+rm,rm,Horn Ruggeri Pachur 2016 .csv,Disease + Kids
+rm,rm,Horn Ruggeri Pachur 2016 .csv,Disease + Old Adolescent
+rm,rm,Horn Ruggeri Pachur 2016 .csv,Disease + Young Adolescent
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.1_day group_test1.csv,day group
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.1_day group_test2.csv,day group
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.1_week group_test1.csv,week group
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.1_week group_test2.csv,week group
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.2_day group_test1.csv,day group
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.2_day group_test2.csv,day group
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.2_week group_test1.csv,week group
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.2_week group_test2.csv,week group
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.3_different group_islands.csv,different islands
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.3_different group_musicians.csv,different musicians
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.3_related group_celebrities.csv,related celebrities
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.3_related group_movies.csv,related movies
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.4_names.csv,names
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.4_pictures.csv,pictures
+rm,rm,"Michalkiewicz, Arden, Erdfelder 2017.csv",knowledge
+rm,rm,"Michalkiewicz, Arden, Erdfelder 2017.csv",neutral
+rm,rm,Pohl et al 2017.csv,Adolescent
+rm,rm,Pohl et al 2017.csv,Children
+rm,rm,Pohl et al 2017.csv,Young adults
+rm,rm,"Pohl, Michalkiewicz, Erdfelder, Hilbig 2017_Exp1.csv",high
+rm,rm,"Pohl, Michalkiewicz, Erdfelder, Hilbig 2017_Exp1.csv",low
+rm,rm,"Pohl, Michalkiewicz, Erdfelder, Hilbig 2017_Exp2.csv",high
+rm,rm,"Pohl, Michalkiewicz, Erdfelder, Hilbig 2017_Exp2.csv",low
+rm,rm,PohlErdfelderHilbigLiebkeStahlberg2013.csv,with resource depletion
+rm,rm,PohlErdfelderHilbigLiebkeStahlberg2013.csv,without resource depletion
+real,real,data_KM2015.csv,Control
+real,real,data_KM2015.csv,RecipLiking
+real,real,data_MR2013_Exp123.csv,Exp1_Standard
+real,real,data_MR2013_Exp123.csv,Exp2_EasierTask
+real,real,data_MR2013_Exp123.csv,Exp3_RemovedBlockStructure
+real,real,data_MR2013_Exp4.csv,no_group
+real,real,data_MR2013_Exp5.csv,no_group
+real,real,data_MR2013_Exp6.csv,FEMALE
+real,real,data_MR2013_Exp6.csv,MALE_Re_m/g
+real,real,data_MR2013_Exp6.csv,MALE_Re_w/g
+real,real,data_MR2013_Exp7.csv,Re_choc/pos
+real,real,data_MR2013_Exp7.csv,Re_fruit/pos
+real,real,data_MR2015b_Exp1.csv,Match_TB
+real,real,data_MR2015b_Exp1.csv,Match_TW
+real,real,data_MR2015b_Exp1.csv,Mismatch_TB
+real,real,data_MR2015b_Exp1.csv,Mismatch_TW
+real,real,data_MR2015b_Exp2.csv,Match_TB
+real,real,data_MR2015b_Exp2.csv,Match_TW
+real,real,data_MR2015b_Exp2.csv,Mismatch_TB
+real,real,data_MR2015b_Exp2.csv,Mismatch_TW
+real,real,data_VMTD2017.csv,no group
+quad,quad,BeerEtAl2008,no_condition
+quad,quad,CalanchiniEtAl2013,1
+quad,quad,CalanchiniEtAl2013,2
+quad,quad,CalanchiniEtAl2013,3
+quad,quad,CalanchiniEtAl2013,affirm
+quad,quad,CalanchiniEtAl2013,control
+quad,quad,CalanchiniEtAl2013,negate
+quad,quad,CalanchiniEtAl2014_1a_AsianWhite,no_condition
+quad,quad,CalanchiniEtAl2014_1a_BlackWhite,no_condition
+quad,quad,CalanchiniEtAl2014_1b_BlackWhite,no_condition
+quad,quad,CalanchiniEtAl2014_1b_FlowerInsect,no_condition
+quad,quad,CalanchiniEtAl2014_1c_FlowerInsect,no_condition
+quad,quad,CalanchiniEtAl2014_1c_Stereotype,no_condition
+quad,quad,CalanchiniEtAl2014_PI_ableMCMC,no_condition
+quad,quad,CalanchiniEtAl2014_PI_ageMCMC,no_condition
+quad,quad,CalanchiniEtAl2014_PI_careerMCMC,no_condition
+quad,quad,CalanchiniEtAl2014_PI_raceMCMC,no_condition
+quad,quad,CalanchiniEtAl2014_PI_skinMCMC,no_condition
+quad,quad,CalanchiniEtAl2014_PI_straightMCMC,no_condition
+quad,quad,GonsalkoraleEtAl2011,1
+quad,quad,GonsalkoraleEtAl2011,2
+quad,quad,GonsalkoraleEtAl2011,3
+quad,quad,GonsalkoraleEtAl2011,good regluation
+quad,quad,GonsalkoraleEtAl2011,no regulation
+quad,quad,GonsalkoraleEtAl2011,poor regulation
+quad,quad,JinEtAl2016s1,1
+quad,quad,JinEtAl2016s1,2
+quad,quad,JinEtAl2016s1,rural
+quad,quad,JinEtAl2016s1,urban
+quad,quad,JinEtAl2016s2,1
+quad,quad,JinEtAl2016s2,2
+quad,quad,JinEtAl2016s2,rural
+quad,quad,JinEtAl2016s2,urban
+quad,quad,LuekeGibson2015age,1
+quad,quad,LuekeGibson2015age,2
+quad,quad,LuekeGibson2015age,Control
+quad,quad,LuekeGibson2015age,Mindful
+quad,quad,LuekeGibson2015race,1
+quad,quad,LuekeGibson2015race,2
+quad,quad,LuekeGibson2015race,Control
+quad,quad,LuekeGibson2015race,Mindful
+quad,quad,WrzusEtAl_HappyUnhappy,no_condition
+quad,quad,WrzusEtAl_NumberLetter,no_condition

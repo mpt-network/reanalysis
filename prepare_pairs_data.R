@@ -11,6 +11,15 @@ library("DescTools") # for CCC
 load("combined_results.RData")
 source("fun_analysis.R")
 
+
+#### condition names
+
+dm %>% 
+  unnest(est_group) %>% 
+  group_by(model, model2, dataset, orig_condition) %>% 
+  summarise() %>% 
+  write_csv("conditon_names.csv")
+
 #####
 
 dm$use <- NA
