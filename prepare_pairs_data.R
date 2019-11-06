@@ -104,6 +104,7 @@ ggsave("figures/failure.png", width = 16, height = 18, units = "cm",
 ##----------------------------------------------------------------
 
 all_pars <- unnest(results, est_group) %>% 
+  mutate(parameter_only = parameter) %>% 
   mutate(parameter = factor(paste0(model2, ":", parameter))) %>% 
   mutate(parameter_o = factor(paste0(model2, ":", orig_parameter))) %>% 
   droplevels()
@@ -179,10 +180,10 @@ fungibility <- results %>%
   filter(inter == "Trait PP") %>% 
   unnest(fungibility) %>% 
   gather("which_par", "parameter", parameter1, parameter2) %>% 
-  mutate(parameter_o = factor(paste0(model, ":", parameter))) %>%
+  mutate(parameter_o = factor(paste0(model2, ":", parameter))) %>%
   group_by(model, dataset, inter, model2, 
            npar, npar_c, condition, parameter_o) %>% 
-  summarise(fungi = max(abs(correlation))) %>% 
+  summarise(fungi = max(abs(correlation), na.rm = TRUE)) %>% 
   ungroup() %>% 
   rename(orig_condition = condition)
 
@@ -195,7 +196,7 @@ correlation <- results %>%
   summarise(rho = mean(abs(est))) %>% 
   ungroup() %>% 
   rename(orig_condition = condition) %>% 
-  mutate(parameter_o = factor(paste0(model, ":", parameter))) %>% 
+  mutate(parameter_o = factor(paste0(model2, ":", parameter))) %>% 
   select(-parameter)
 
 ## covariates on parameters basis
@@ -244,6 +245,14 @@ all_par_covariates %>%
 
 all_par_covariates %>% 
   filter(is.na(model2))
+
+all_par_covariates %>% 
+  group_by(model2) %>% 
+  summarise(mean(is.na(fungi)))
+
+all_par_covariates %>% 
+  filter(model2 == "pd_e") %>% 
+  print(n = Inf) ## still contains non core parameters
 
 
 xx1 <- all_par_covariates %>% 
@@ -607,11 +616,18 @@ all_pars_a4 <- covariates %>%
          se_y = se)
 
 # all_pars_a4 %>% 
+#   group_by(model2) %>% 
+#   summarise(mean(is.na(fungi)))
+# 
+# all_pars_a4 %>% 
+#   summarise(mean(is.na(fungi)))
+
+# all_pars_a4 %>% 
 #   select(model, model2, dataset, adev, cond_x, x, cond_y, y, 
 #          parameter, se_x, se_y, rho)
 
 par_pairs <- all_pars_a4
 
-save(all_pars_a4, file = "all_pairs_core.RData")
-save(all_pars_a4, file = "all_pairs_core_OLD.RData", version = 2)
+save(par_pairs, file = "all_pairs_core.RData")
+save(par_pairs, file = "all_pairs_core_OLD.RData", version = 2)
 
