@@ -317,11 +317,37 @@ for (i in seq_len(nrow(hb))) {
 ##                       Pair Clustering                       ##
 #################################################################
 
-f_pc <- list.files("data/pair-clustering/", full.names = TRUE)
+f_pc <- list.files("data/pair-clustering/", pattern = "RData$",
+                   full.names = TRUE)
 fi_pc <- f_pc[str_detect(f_pc, "_info.RData$")]
 f_pc <- f_pc[!str_detect(f_pc, "_info.RData$")]
 pc <- load_combine(f_pc)
 pc$dataset <- str_remove(pc$dataset, pattern = ".+\\/")
+pc <- pc %>% 
+  mutate(dataset = case_when(
+    dataset == "Broeder.csv" ~ "Broeder_sixTrials.csv",
+    dataset == "Francis et al 2018_Englisch Ausschließlich.csv" ~ 
+      "Francis_fourTrials_english.csv",
+    dataset == "Francis et al 2018_Englisch Dominant.csv" ~ 
+      "Francis_fourTrials_englishDominant.csv",
+    dataset == "Francis et al 2018_Spanisch Dominant.csv" ~
+      "Francis_fourTrials_spanishDominant.csv",
+    dataset == "matzke.csv" ~ "Matzke_fourTrials.csv",
+    dataset == "Nachmittag six Trials.csv" ~ 
+      "GolzErdfelder_sixTrials_afternoon.csv",
+    dataset == "Riefer.csv" ~ "Riefer_sixTrials_alcoholics.csv",
+    dataset == "Riefer_Schizo.csv" ~ "Riefer_sixTrials_schizos.csv",
+    dataset == "Vormittag six Trials.csv" ~ 
+      "GolzErdfelder_sixTrials_forenoon.csv",
+    TRUE ~ "ERROR"
+  )) %>% 
+  mutate(orig_model = case_when(
+    orig_model %in% c("Broeder.eqn", "GolzErdfelder.eqn", "Riefer.eqn") ~
+      "pc_model_sixTrials.eqn", 
+    orig_model %in% c("Francis.eqn", "matzke.eqn") ~
+      "pc_model_fourTrials.eqn",
+    TRUE ~ "ERROR"
+  ))
 get_info_df(pc)
 
 check_beta(pc)

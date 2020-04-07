@@ -1,0 +1,16 @@
+model;model2;dataset;orig_condition;population;parameter estimation?
+pc;pc;Broeder_sixTrials.csv;mild cognitive impairments;patients;yes
+pc;pc;Broeder_sixTrials.csv;old controls;older adults;yes
+pc;pc;Broeder_sixTrials.csv;young controls;other;yes
+pc;pc;Matzke_fourTrials.csv;PC;college students;yes
+pc;pc;Francis_fourTrials_english.csv;english;college students;yes
+pc;pc;Francis_fourTrials_englishDominant.csv;english dominant;college students;yes
+pc;pc;Francis_fourTrials_spanishDominant.csv;spanish dominant;college students;yes
+pc;pc;GolzErdfelder_sixTrials_afternoon.csv;Nacom;patients;yes
+pc;pc;GolzErdfelder_sixTrials_afternoon.csv;Placebo;patients;yes
+pc;pc;GolzErdfelder_sixTrials_forenoon.csv;Nacom;patients;yes
+pc;pc;GolzErdfelder_sixTrials_forenoon.csv;Placebo;patients;yes
+pc;pc;Riefer_sixTrials_alcoholics.csv;alcohol controls;patients;yes
+pc;pc;Riefer_sixTrials_alcoholics.csv;organic alcohols;patients;yes
+pc;pc;Riefer_sixTrials_schizos.csv;schizophrenic controls;patients;yes
+pc;pc;Riefer_sixTrials_schizos.csv;schizophrenics;patients;yes
