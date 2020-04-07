@@ -321,6 +321,7 @@ f_pc <- list.files("data/pair-clustering/", full.names = TRUE)
 fi_pc <- f_pc[str_detect(f_pc, "_info.RData$")]
 f_pc <- f_pc[!str_detect(f_pc, "_info.RData$")]
 pc <- load_combine(f_pc)
+pc$dataset <- str_remove(pc$dataset, pattern = ".+\\/")
 get_info_df(pc)
 
 check_beta(pc)
