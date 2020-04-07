@@ -448,45 +448,73 @@ c2ht %>%
 
 f_qm1 <- list.files("data/quad-model/", pattern = "RData$",full.names = TRUE)
 qm1 <- load_combine(f_qm1)
-get_info_df(qm1)
-
-
-
-f_qm2 <- list.files("data/quad-model/beta_reanalyses", 
-                    pattern = "RData$",full.names = TRUE, recursive = TRUE)
-qm2 <- load_combine(f_qm2) %>% 
-  mutate(dataset = str_remove(dataset, pattern = "_betaMCMC")) %>% 
-  mutate(dataset = str_remove(dataset, pattern = ".csv")) %>% 
+qm1 <- qm1 %>% 
   mutate(dataset = case_when(
-    dataset == "UCD_High_AW" ~ "CalanchiniEtAl2014_1a_AsianWhite",
-    dataset == "UCD_High_BW" ~ "CalanchiniEtAl2014_1a_BlackWhite",
-    dataset == "UCD_Mod_BW" ~ "CalanchiniEtAl2014_1b_BlackWhite",
-    dataset == "UCD_Mod_FI" ~ "CalanchiniEtAl2014_1b_FlowerInsect",
-    dataset == "UCD_Low_FI" ~ "CalanchiniEtAl2014_1c_FlowerInsect",
-    dataset == "UCD_Low_ST" ~ "CalanchiniEtAl2014_1c_Stereotype",
-    dataset == "PI_able_random" ~ "CalanchiniEtAl2014_PI_ableMCMC",
-    dataset == "PI_age_random" ~ "CalanchiniEtAl2014_PI_ageMCMC",
-    dataset == "PI_career_random" ~ "CalanchiniEtAl2014_PI_careerMCMC",
-    dataset == "PI_race_random" ~ "CalanchiniEtAl2014_PI_raceMCMC",
-    dataset == "PI_skin_random" ~ "CalanchiniEtAl2014_PI_skinMCMC",
-    dataset == "PI_straight_random" ~ "CalanchiniEtAl2014_PI_straightMCMC",
+    dataset == "CalanchiniEtAl2014_PI_able" ~ "CalanchiniEtAl2014_PI_ableMCMC",
+    dataset == "CalanchiniEtAl2014_PI_age" ~ "CalanchiniEtAl2014_PI_ageMCMC",
+    dataset == "CalanchiniEtAl2014_PI_career" ~ 
+      "CalanchiniEtAl2014_PI_careerMCMC",
+    dataset == "CalanchiniEtAl2014_PI_race" ~ "CalanchiniEtAl2014_PI_raceMCMC",
+    dataset == "CalanchiniEtAl2014_PI_skin" ~ "CalanchiniEtAl2014_PI_skinMCMC",
+    dataset == "CalanchiniEtAl2014_PI_straight" ~ 
+      "CalanchiniEtAl2014_PI_straightMCMC",
+    dataset == "CalanchiniEtAl2014_UCD_High_AW" ~ 
+      "CalanchiniEtAl2014_1a_AsianWhite",
+    dataset == "CalanchiniEtAl2014_UCD_High_BW" ~
+      "CalanchiniEtAl2014_1a_BlackWhite",
+    dataset == "CalanchiniEtAl2014_UCD_Low_FI" ~ 
+      "CalanchiniEtAl2014_1c_FlowerInsect",
+    dataset == "CalanchiniEtAl2014_UCD_Low_ST" ~ 
+      "CalanchiniEtAl2014_1c_Stereotype",
+    dataset == "CalanchiniEtAl2014_UCD_Mod_BW" ~ 
+      "CalanchiniEtAl2014_1b_BlackWhite",
+    dataset == "CalanchiniEtAl2014_UCD_Mod_FI" ~
+      "CalanchiniEtAl2014_1b_FlowerInsect",
     dataset == "WrzusEtAl2017HU" ~ "WrzusEtAl_HappyUnhappy",
     dataset == "WrzusEtAl2017NL" ~ "WrzusEtAl_NumberLetter",
     TRUE ~ dataset
   ))
-get_info_df(qm2)
+get_info_df(qm1)
 
-check_beta(qm2)
+
+
+# f_qm2 <- list.files("data/quad-model/beta_reanalyses", 
+#                     pattern = "RData$",full.names = TRUE, recursive = TRUE)
+# qm2 <- load_combine(f_qm2) %>% 
+#   mutate(dataset = str_remove(dataset, pattern = "_betaMCMC")) %>% 
+#   mutate(dataset = str_remove(dataset, pattern = ".csv")) %>% 
+#   mutate(dataset = case_when(
+#     dataset == "UCD_High_AW" ~ "CalanchiniEtAl2014_1a_AsianWhite",
+#     dataset == "UCD_High_BW" ~ "CalanchiniEtAl2014_1a_BlackWhite",
+#     dataset == "UCD_Mod_BW" ~ "CalanchiniEtAl2014_1b_BlackWhite",
+#     dataset == "UCD_Mod_FI" ~ "CalanchiniEtAl2014_1b_FlowerInsect",
+#     dataset == "UCD_Low_FI" ~ "CalanchiniEtAl2014_1c_FlowerInsect",
+#     dataset == "UCD_Low_ST" ~ "CalanchiniEtAl2014_1c_Stereotype",
+#     dataset == "PI_able_random" ~ "CalanchiniEtAl2014_PI_ableMCMC",
+#     dataset == "PI_age_random" ~ "CalanchiniEtAl2014_PI_ageMCMC",
+#     dataset == "PI_career_random" ~ "CalanchiniEtAl2014_PI_careerMCMC",
+#     dataset == "PI_race_random" ~ "CalanchiniEtAl2014_PI_raceMCMC",
+#     dataset == "PI_skin_random" ~ "CalanchiniEtAl2014_PI_skinMCMC",
+#     dataset == "PI_straight_random" ~ "CalanchiniEtAl2014_PI_straightMCMC",
+#     dataset == "WrzusEtAl2017HU" ~ "WrzusEtAl_HappyUnhappy",
+#     dataset == "WrzusEtAl2017NL" ~ "WrzusEtAl_NumberLetter",
+#     TRUE ~ dataset
+#   ))
+# get_info_df(qm2)
+# 
+# check_beta(qm2)
 
 # unique(qm2$dataset)[!(unique(qm2$dataset) %in% unique(qm1$dataset))]
 # unique(qm1$dataset)[!(unique(qm1$dataset) %in% unique(qm2$dataset))]
 
-all(unique(qm2$dataset) %in% unique(qm1$dataset))
+# all(unique(qm2$dataset) %in% unique(qm1$dataset))
 
-## combine results
-qm <- qm1 %>% 
-  filter(!(method %in% c("beta++", "beta" ))) %>% 
-  bind_rows(qm2)
+# ## combine results
+# qm <- qm1 %>% 
+#   filter(!(method %in% c("beta++", "beta" ))) %>% 
+#   bind_rows(qm2)
+
+qm <- qm1
 
 get_info_df(qm)
 
