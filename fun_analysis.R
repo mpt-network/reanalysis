@@ -61,7 +61,8 @@ get_convergence <- function(results, ..., split = TRUE) {
 check_fit <- function(df) {
   if (df$package == "TB") {
     params <- df %>%
-      tidyr::unnest(.data$est_group) %>%
+      dplyr::select(-.data$orig_condition) %>% 
+      tidyr::unnest(.data$est_group, names_repair = "minimal") %>%
       dplyr::select(.data$parameter, .data$core)
 
     tmp_convergence <- df$convergence[[1]] %>%

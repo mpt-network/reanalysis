@@ -1,0 +1,324 @@
+model,model2,dataset,orig_condition,population,parameter estimation?
+2htsm,2htsm_4,A2013,encoding,college students,yes
+2htsm,2htsm_4,A2013,retrieval,college students,yes
+2htsm,2htsm_4,BG2008,OA_hi_after,older adults,yes
+2htsm,2htsm_4,BG2008,OA_hi_before,older adults,yes
+2htsm,2htsm_4,BG2008,OA_lo_after,older adults,yes
+2htsm,2htsm_4,BG2008,OA_lo_before,older adults,yes
+2htsm,2htsm_4,BG2008,YA_hi_after,college students,yes
+2htsm,2htsm_4,BG2008,YA_hi_before,college students,yes
+2htsm,2htsm_4,BG2008,YA_lo_after,college students,yes
+2htsm,2htsm_4,BG2008,YA_lo_before,college students,yes
+2htsm,2htsm_4,BK2011_E1,div_att,college students,yes
+2htsm,2htsm_4,BK2011_E1,full_att,college students,yes
+2htsm,2htsm_4,BK2011_E2,cons,college students,yes
+2htsm,2htsm_4,BK2011_E2,incons,college students,yes
+2htsm,2htsm_4,BK2011_E2,zero,college students,yes
+2htsm,2htsm_4,Giang et al. (2012),all,college students,yes
+2htsm,2htsm_4,K2012_E1,enc_incid,college students,yes
+2htsm,2htsm_4,K2012_E1,enc_intent,college students,yes
+2htsm,2htsm_4,K2012_E1,ret_incid,college students,yes
+2htsm,2htsm_4,K2016_E1,OA_f,older adults,yes
+2htsm,2htsm_4,K2016_E1,OA_m,older adults,yes
+2htsm,2htsm_4,K2016_E1,YA_s_f,college students,yes
+2htsm,2htsm_4,K2016_E1,YA_s_m,college students,yes
+2htsm,2htsm_4,K2016_E1,YA_w_f,college students,yes
+2htsm,2htsm_4,K2016_E1,YA_w_m,college students,yes
+2htsm,2htsm_4,K2016_E2,long,college students,yes
+2htsm,2htsm_4,K2016_E2,retention,college students,yes
+2htsm,2htsm_4,K2016_E2,short,college students,yes
+2htsm,2htsm_4,KT2017,OA_pers_instr,older adults,yes
+2htsm,2htsm_4,KT2017,OA_pers_spt,older adults,yes
+2htsm,2htsm_4,KT2017,OA_text_instr,older adults,yes
+2htsm,2htsm_4,KT2017,OA_text_spt,older adults,yes
+2htsm,2htsm_4,KT2017,YA_pers_instr,college students,yes
+2htsm,2htsm_4,KT2017,YA_pers_spt,college students,yes
+2htsm,2htsm_4,KT2017,YA_text_instr,college students,yes
+2htsm,2htsm_4,KT2017,YA_text_spt,college students,yes
+2htsm,2htsm_4,M2003,impression,college students,yes
+2htsm,2htsm_4,M2003,memory,college students,yes
+2htsm,2htsm_4,MH2001,group_sources,college students,yes
+2htsm,2htsm_4,MH2001,town_sources,college students,yes
+2htsm,2htsm_4,S2002_E1,Control,older adults,yes
+2htsm,2htsm_4,S2002_E1,SemDementia,patients,yes
+2htsm,2htsm_4,S2002_E2,Control,older adults,yes
+2htsm,2htsm_4,S2002_E2,SemDementia,patients,yes
+2htsm,2htsm_4,S2002_E3,FrontDementia,patients,yes
+2htsm,2htsm_4,Schuetz & Broeder,1,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder,2,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder,3,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder,4,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder,5,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex1,1,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex1,2,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex1,3,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex1,4,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex1,5,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex3,1,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex3,2,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex3,3,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex3,4,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex3,5,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex4,1,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex4,2,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex4,3,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex4,4,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex4,5,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex5,1,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex5,2,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex5,3,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex5,4,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex5,5,college students,yes
+2htsm,2htsm_5d,Bell et al. (2015) Ex3,all,college students,yes
+2htsm,2htsm_5d,Bell et al. (2015) Ex4,all,college students,yes
+2htsm,2htsm_5d,DS2000_E1,all,college students,yes
+2htsm,2htsm_5d,DS2000_E3,all,college students,yes
+2htsm,2htsm_5d,DS2000_E4,all,college students,yes
+2htsm,2htsm_5d,KM2000_E3,fewdis,college students,yes
+2htsm,2htsm_5d,KM2000_E3,manydis,college students,yes
+2htsm,2htsm_5d,KM2000_E4,behaviors,college students,yes
+2htsm,2htsm_5d,KM2000_E4,names,college students,yes
+2htsm,2htsm_5d,Kueppers & Bayen 2014,all,college students,yes
+2htsm,2htsm_5d,Mieth et al. (2016) Ex1,all,college students,yes
+2htsm,2htsm_5d,Mieth et al. (2016) Ex2,all,college students,yes
+2htsm,2htsm_5d,Mieth et al. (2016) Ex3,all,college students,yes
+2htsm,2htsm_5d,Suessenbach et al. (2016),all,college students,yes
+2htsm,2htsm_6e,Bell et al. (2015) Ex1,all,college students,yes
+2htsm,2htsm_6e,Bell et al. (2015) Ex2,all,college students,yes
+2htsm,2htsm_6e,KB2018,all,college students,yes
+2htsm,2htsm_6e,Mieth et al. (2016),all,college students,yes
+c2ht,c2ht6,Dube_2012-P,Dube_2012-P,college students,no
+c2ht,c2ht6,Dube_2012-W,Dube_2012-W,college students,no
+c2ht,c2ht6,Heathcote_2006_e1,Heathcote_2006_e1,college students,no
+c2ht,c2ht6,Heathcote_2006_e2,Heathcote_2006_e2,college students,no
+c2ht,c2ht6,Jaeger_2012,Jaeger_2012,college students,no
+c2ht,c2ht6,Jang_2009,Jang_2009,college students,no
+c2ht,c2ht6,Koen-2013_full,Koen-2013_full,college students,no
+c2ht,c2ht6,Koen-2013_immediate,Koen-2013_immediate,college students,no
+c2ht,c2ht6,Koen_2010_pure,Koen_2010_pure,college students,no
+c2ht,c2ht6,Koen_2011,Koen_2011,college students,no
+c2ht,c2ht6,Pratte_2010,Pratte_2010,college students,no
+c2ht,c2ht6,Slotnick16,slotnick16,college students,no
+c2ht,c2ht6,Smith_2004,Smith_2004,college students,no
+c2ht,c2ht8,Benjamin_2013,Benjamin_2013,college students,no
+c2ht,c2ht8,Onyper_2010-Pics,Onyper_2010-Pics,college students,no
+c2ht,c2ht8,Onyper_2010-Words,Onyper_2010-Words,college students,no
+hb,hb,Bayen2006Exp1.csv,Young,college students,yes
+hb,hb,Bayen2006Exp1.csv,Older,older adults,yes
+hb,hb,Bayen2006Exp2.csv,Young,college students,yes
+hb,hb,Bayen2006Exp2.csv,Older,older adults,yes
+hb,hb,Bernstein2011.csv,3 to 4,children,yes
+hb,hb,Bernstein2011.csv,5 to 6,children,yes
+hb,hb,Bernstein2011.csv,7 to 8,children,yes
+hb,hb,Bernstein2011.csv,9 to 10,children,yes
+hb,hb,Bernstein2011.csv,11,children,yes
+hb,hb,Bernstein2011.csv,13 to 15,children,yes
+hb,hb,Bernstein2011.csv,Younger,college students,yes
+hb,hb,Bernstein2011.csv,Older,older adults,yes
+hb,hb,Coolin2015.csv,young,college students,yes
+hb,hb,Coolin2015.csv,older,older adults,yes
+hb,hb,Coolin2016.csv,older,older adults,yes
+hb,hb,ErdfelderBrandtBröder2007Exp1.csv,within,college students,yes
+hb,hb,GroßBayen2015.csv,Old_short,older adults,yes
+hb,hb,GroßBayen2015.csv,Young_long,college students,yes
+hb,hb,GroßBayen2015.csv,Young_short,college students,yes
+hb,hb,GroßBayen2017.csv,Depressed,college students,yes
+hb,hb,GroßBayen2017.csv,Negative mood,college students,yes
+hb,hb,GroßBayen2017.csv,Neutral mood,college students,yes
+hb,hb,Pohl2010.csv,12yrs,children,yes
+hb,hb,Pohl2010.csv,9yrs,children,yes
+hb,hb,Pohl2010.csv,adults,college students,yes
+pc,pc,Broeder_sixTrials.csv,mild cognitive impairments,patients,yes
+pc,pc,Broeder_sixTrials.csv,old controls,older adults,yes
+pc,pc,Broeder_sixTrials.csv,young controls,other,yes
+pc,pc,Matzke_fourTrials.csv,PC,college students,yes
+pc,pc,Francis_fourTrials_english.csv,english,college students,yes
+pc,pc,Francis_fourTrials_englishDominant.csv,english dominant,college students,yes
+pc,pc,Francis_fourTrials_spanishDominant.csv,spanish dominant,college students,yes
+pc,pc,GolzErdfelder_sixTrials_afternoon.csv,Nacom,patients,yes
+pc,pc,GolzErdfelder_sixTrials_afternoon.csv,Placebo,patients,yes
+pc,pc,GolzErdfelder_sixTrials_forenoon.csv,Nacom,patients,yes
+pc,pc,GolzErdfelder_sixTrials_forenoon.csv,Placebo,patients,yes
+pc,pc,Riefer_sixTrials_alcoholics.csv,alcohol controls,patients,yes
+pc,pc,Riefer_sixTrials_alcoholics.csv,organic alcohols,patients,yes
+pc,pc,Riefer_sixTrials_schizos.csv,schizophrenic controls,patients,yes
+pc,pc,Riefer_sixTrials_schizos.csv,schizophrenics,patients,yes
+pd,pd_s,bodner_2000_exp2.txt,no_condition,college students,yes
+pd,pd_s,bodner_2000_exp4.txt,no_condition,college students,yes
+pd,pd_s,caldwell_masson_2001_exp1.txt,older,older adults,yes
+pd,pd_s,caldwell_masson_2001_exp1.txt,younger,college students,yes
+pd,pd_s,caldwell_masson_2001_exp2.txt,no_condition,college students,yes
+pd,pd_s,rouder_2008_exp1.dat,no_condition,college students,yes
+pd,pd_s,rouder_2008_exp2.dat,no_condition,college students,yes
+pd,pd_s,stahl_2015_exp1.csv,no_cued,college students,yes
+pd,pd_s,stahl_2015_exp1.csv,no_free,college students,yes
+pd,pd_s,stahl_2015_exp1.csv,permuted_cued,college students,yes
+pd,pd_s,stahl_2015_exp1.csv,permuted_free,college students,yes
+pd,pd_s,stahl_2015_exp1.csv,random_cued,college students,yes
+pd,pd_s,stahl_2015_exp1.csv,random_free,college students,yes
+pd,pd_e,klauer_2015_exp1.csv,no_condition,college students,yes
+pd,pd_e,klauer_2015_exp3.csv,no_condition,college students,yes
+pd,pd_e,klauer_2015_exp5.csv,no_condition,college students,yes
+pm,pm,ArnoldBayenBoehm2015_data.csv,1,college students,yes
+pm,pm,Data Schnitzspahn et al 2012.csv,older,older adults,yes
+pm,pm,Data Schnitzspahn et al 2012.csv,younger,college students,yes
+pm,pm,Horn_et_al_2011_Exp2A.csv,Exp2A,college students,yes
+pm,pm,Horn_et_al_2011_Exp2B.csv,Exp2B,college students,yes
+pm,pm,Pavawalla_etal2012_data.csv,1,patients,yes
+pm,pm,Pavawalla_etal2012_data.csv,2,other,yes
+pm,pm,Rummeletal2011_data.csv,1,college students,yes
+pm,pm,Rummeletal2011_data.csv,2,college students,yes
+pm,pm,Smith & Hunt 2013.csv,CMI_old,older adults,yes
+pm,pm,Smith & Hunt 2013.csv,CMI_youngdiff,college students,yes
+pm,pm,Smith & Hunt 2013.csv,CMI_youngeasy,college students,yes
+pm,pm,Smith & Hunt 2013.csv,PMI_old,older adults,yes
+pm,pm,Smith & Hunt 2013.csv,PMI_youngdiff,college students,yes
+pm,pm,Smith & Hunt 2013.csv,PMI_youngeasy,college students,yes
+pm,pm,Smith et al 2014 Exp1.csv,ImplInt,college students,yes
+pm,pm,Smith et al 2014 Exp1.csv,PMI,college students,yes
+pm,pm,Smith et al 2014 Exp1.csv,Standard,college students,yes
+pm,pm,SmithBayen2005_Experiment1.csv,1,college students,yes
+pm,pm,SmithBayen2005_Experiment1.csv,2,college students,yes
+pm,pm,SmithBayen2005_Experiment2.csv,1,college students,yes
+pm,pm,SmithBayen2005_Experiment2.csv,2,college students,yes
+pm,pm,SmithBayenMartin2010_data.csv,1,children,yes
+pm,pm,SmithBayenMartin2010_data.csv,2,children,yes
+pm,pm,SmithBayenMartin2010_data.csv,3,college students,yes
+pm,pm,Smithetal2011_VersionArnoldetal2015_data.csv,1,college students,yes
+pm,pm,Smithetal2014_Exp1.csv,1,college students,yes
+pm,pm,Smithetal2014_Exp1.csv,2,college students,yes
+pm,pm,Smithetal2014_Exp1.csv,3,college students,yes
+pm,pm,Smithetal2014_Exp2.csv,1,college students,yes
+pm,pm,Smithetal2014_Exp2.csv,2,college students,yes
+pm,pm,Smithetal2014_Exp3.csv,1,college students,yes
+pm,pm,Smithetal2014_Exp3.csv,2,college students,yes
+quad,quad,BeerEtAl2008,no_condition,college students,yes
+quad,quad,CalanchiniEtAl2013,1,college students,yes
+quad,quad,CalanchiniEtAl2013,2,college students,yes
+quad,quad,CalanchiniEtAl2013,3,college students,yes
+quad,quad,CalanchiniEtAl2013,affirm,college students,yes
+quad,quad,CalanchiniEtAl2013,control,college students,yes
+quad,quad,CalanchiniEtAl2013,negate,college students,yes
+quad,quad,CalanchiniEtAl2014_1a_AsianWhite,no_condition,college students,yes
+quad,quad,CalanchiniEtAl2014_1a_BlackWhite,no_condition,college students,yes
+quad,quad,CalanchiniEtAl2014_1b_BlackWhite,no_condition,college students,yes
+quad,quad,CalanchiniEtAl2014_1b_FlowerInsect,no_condition,college students,yes
+quad,quad,CalanchiniEtAl2014_1c_FlowerInsect,no_condition,college students,yes
+quad,quad,CalanchiniEtAl2014_1c_Stereotype,no_condition,college students,yes
+quad,quad,CalanchiniEtAl2014_PI_ableMCMC,no_condition,other,yes
+quad,quad,CalanchiniEtAl2014_PI_ageMCMC,no_condition,other,yes
+quad,quad,CalanchiniEtAl2014_PI_careerMCMC,no_condition,other,yes
+quad,quad,CalanchiniEtAl2014_PI_raceMCMC,no_condition,other,yes
+quad,quad,CalanchiniEtAl2014_PI_skinMCMC,no_condition,other,yes
+quad,quad,CalanchiniEtAl2014_PI_straightMCMC,no_condition,other,yes
+quad,quad,GonsalkoraleEtAl2011,1,other,yes
+quad,quad,GonsalkoraleEtAl2011,2,other,yes
+quad,quad,GonsalkoraleEtAl2011,3,other,yes
+quad,quad,GonsalkoraleEtAl2011,good regluation,other,yes
+quad,quad,GonsalkoraleEtAl2011,no regulation,other,yes
+quad,quad,GonsalkoraleEtAl2011,poor regulation,other,yes
+quad,quad,JinEtAl2016s1,1,college students,yes
+quad,quad,JinEtAl2016s1,2,college students,yes
+quad,quad,JinEtAl2016s1,rural,college students,yes
+quad,quad,JinEtAl2016s1,urban,college students,yes
+quad,quad,JinEtAl2016s2,1,college students,yes
+quad,quad,JinEtAl2016s2,2,college students,yes
+quad,quad,JinEtAl2016s2,rural,college students,yes
+quad,quad,JinEtAl2016s2,urban,college students,yes
+quad,quad,LuekeGibson2015age,1,college students,yes
+quad,quad,LuekeGibson2015age,2,college students,yes
+quad,quad,LuekeGibson2015age,Control,college students,yes
+quad,quad,LuekeGibson2015age,Mindful,college students,yes
+quad,quad,LuekeGibson2015race,1,college students,yes
+quad,quad,LuekeGibson2015race,2,college students,yes
+quad,quad,LuekeGibson2015race,Control,college students,yes
+quad,quad,LuekeGibson2015race,Mindful,college students,yes
+quad,quad,WrzusEtAl_HappyUnhappy,no_condition,college students,yes
+quad,quad,WrzusEtAl_NumberLetter,no_condition,college students,yes
+real,real,data_KM2015.csv,Control,college students,yes
+real,real,data_KM2015.csv,RecipLiking,college students,yes
+real,real,data_MR2013_Exp123.csv,Exp1_Standard,college students,yes
+real,real,data_MR2013_Exp123.csv,Exp2_EasierTask,college students,yes
+real,real,data_MR2013_Exp123.csv,Exp3_RemovedBlockStructure,college students,yes
+real,real,data_MR2013_Exp4.csv,no_group,college students,yes
+real,real,data_MR2013_Exp5.csv,no_group,college students,yes
+real,real,data_MR2013_Exp6.csv,FEMALE,college students,yes
+real,real,data_MR2013_Exp6.csv,MALE_Re_m/g,college students,yes
+real,real,data_MR2013_Exp6.csv,MALE_Re_w/g,college students,yes
+real,real,data_MR2013_Exp7.csv,Re_choc/pos,college students,yes
+real,real,data_MR2013_Exp7.csv,Re_fruit/pos,college students,yes
+real,real,data_MR2015b_Exp1.csv,Match_TB,college students,yes
+real,real,data_MR2015b_Exp1.csv,Match_TW,college students,yes
+real,real,data_MR2015b_Exp1.csv,Mismatch_TB,college students,yes
+real,real,data_MR2015b_Exp1.csv,Mismatch_TW,college students,yes
+real,real,data_MR2015b_Exp2.csv,Match_TB,college students,yes
+real,real,data_MR2015b_Exp2.csv,Match_TW,college students,yes
+real,real,data_MR2015b_Exp2.csv,Mismatch_TB,college students,yes
+real,real,data_MR2015b_Exp2.csv,Mismatch_TW,college students,yes
+real,real,data_VMTD2017.csv,no group,college students,yes
+rm,rm,Castela Erdfelder 2017b_Exp1 within1.csv,celebrity knowledge parameter,college students,no
+rm,rm,Castela Erdfelder 2017b_Exp1 within2.csv,city recognition parameter,college students,no
+rm,rm,Castela Erdfelder 2017b_Exp1 within3.csv,river guessing parameter,college students,no
+rm,rm,Castela Erdfelder 2017b_Exp2.csv,RH,college students,yes
+rm,rm,Data from Filevich Horn Kuehn 2017_within1.csv,Rekognition,other,yes
+rm,rm,Data from Filevich Horn Kuehn 2017_within2.csv,Komparatives Urteil,other,yes
+rm,rm,Hilbig et al 2015_exp1.csv,control,college students,yes
+rm,rm,Hilbig et al 2015_exp1.csv,knowledge,college students,yes
+rm,rm,Hilbig et al 2015_exp2.csv,certainity,college students,yes
+rm,rm,Hilbig et al 2015_exp2.csv,control,college students,yes
+rm,rm,Hilbig et al 2015_exp2.csv,knowledge,college students,yes
+rm,rm,Hilbig et al 2015_exp3.csv,control,college students,yes
+rm,rm,Hilbig et al 2015_exp3.csv,effort,college students,yes
+rm,rm,Hilbig et al 2015_exp3.csv,knowledge,college students,yes
+rm,rm,Hilbig Richter.csv,RH,college students,yes
+rm,rm,HilbigErdfelderPohl20106.csv,control,college students,yes
+rm,rm,HilbigErdfelderPohl20106.csv,experimental,college students,yes
+rm,rm,HilbigErdfelderPohl20107b.csv,experimental,college students,yes
+rm,rm,HilbigErdfelderPohl2011.csv,RH,college students,yes
+rm,rm,HilbigErdfelderPohl2012exp1.csv,baseline condition,college students,yes
+rm,rm,HilbigErdfelderPohl2012exp1.csv,no-time-pressure-condition,college students,yes
+rm,rm,HilbigErdfelderPohl2012exp1.csv,time-pressure-condition,college students,yes
+rm,rm,HilbigPohl09exp1.csv,RH,college students,yes
+rm,rm,HilbigPohl09exp2.csv,RH,college students,yes
+rm,rm,HilbigPohl09exp3.csv,RH,college students,yes
+rm,rm,HilbigPohl2008exp5.csv,RH,college students,yes
+rm,rm,HilbigPohlBroeder2009.csv,RH,college students,yes
+rm,rm,HilbigSchollPohl2010exp1.csv,deliberation,college students,yes
+rm,rm,HilbigSchollPohl2010exp1.csv,intuition,college students,yes
+rm,rm,HilbigSchollPohl2010exp2.csv,deliberation,college students,yes
+rm,rm,HilbigSchollPohl2010exp2.csv,intuition,college students,yes
+rm,rm,Horn Pachur Mata 2015.csv,old-cites,older adults,yes
+rm,rm,Horn Pachur Mata 2015.csv,old-infections,older adults,yes
+rm,rm,Horn Pachur Mata 2015.csv,young-cities,college students,yes
+rm,rm,Horn Pachur Mata 2015.csv,young-infections,college students,yes
+rm,rm,Horn Ruggeri Pachur 2016 .csv,City + Kids,children,yes
+rm,rm,Horn Ruggeri Pachur 2016 .csv,City + Old Adolescent,children,yes
+rm,rm,Horn Ruggeri Pachur 2016 .csv,City + Young Adolescent,children,yes
+rm,rm,Horn Ruggeri Pachur 2016 .csv,Disease + Kids,children,yes
+rm,rm,Horn Ruggeri Pachur 2016 .csv,Disease + Old Adolescent,children,yes
+rm,rm,Horn Ruggeri Pachur 2016 .csv,Disease + Young Adolescent,children,yes
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.1_day group_test1.csv,day group,college students,yes
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.1_day group_test2.csv,day group,college students,yes
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.1_week group_test1.csv,week group,college students,yes
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.1_week group_test2.csv,week group,college students,yes
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.2_day group_test1.csv,day group,college students,yes
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.2_day group_test2.csv,day group,college students,yes
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.2_week group_test1.csv,week group,college students,yes
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.2_week group_test2.csv,week group,college students,yes
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.3_different group_islands.csv,different islands,college students,yes
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.3_different group_musicians.csv,different musicians,college students,yes
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.3_related group_celebrities.csv,related celebrities,college students,yes
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.3_related group_movies.csv,related movies,college students,yes
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.4_names.csv,names,college students,yes
+rm,rm,Michalkiewicz Erdfelder 2016_Exp.4_pictures.csv,pictures,college students,yes
+rm,rm,"Michalkiewicz, Arden, Erdfelder 2017.csv",knowledge,college students,yes
+rm,rm,"Michalkiewicz, Arden, Erdfelder 2017.csv",neutral,college students,yes
+rm,rm,Pohl et al 2017.csv,Adolescent,college students,yes
+rm,rm,Pohl et al 2017.csv,Children,college students,yes
+rm,rm,Pohl et al 2017.csv,Young adults,college students,yes
+rm,rm,"Pohl, Michalkiewicz, Erdfelder, Hilbig 2017_Exp1.csv",high,college students,yes
+rm,rm,"Pohl, Michalkiewicz, Erdfelder, Hilbig 2017_Exp1.csv",low,college students,yes
+rm,rm,"Pohl, Michalkiewicz, Erdfelder, Hilbig 2017_Exp2.csv",high,college students,yes
+rm,rm,"Pohl, Michalkiewicz, Erdfelder, Hilbig 2017_Exp2.csv",low,college students,yes
+rm,rm,PohlErdfelderHilbigLiebkeStahlberg2013.csv,with resource depletion,college students,yes
+rm,rm,PohlErdfelderHilbigLiebkeStahlberg2013.csv,without resource depletion,college students,yes

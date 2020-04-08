@@ -1,6 +1,7 @@
 
 library("MPTmultiverse")
 library("tidyverse")
+library("tidylog")
 theme_set(theme_bw(base_size = 15) + 
             theme(legend.position="bottom"))
 tmpe <- new.env()
@@ -10,7 +11,14 @@ library("DescTools") # for CCC
 
 load("combined_results.RData")
 source("fun_analysis.R")
+covariates <- read_csv("covariates.csv")
 
+lev_mod <- levels(dm$model)
+lev_mod2 <- levels(dm$model2)
+
+dm <- left_join(dm, covariates) %>% 
+  mutate(model = factor(model, levels = lev_mod),
+         model2 = factor(model2, levels = lev_mod2))
 
 #### condition names
 
@@ -32,7 +40,7 @@ levels(dm$inter)
 levels(dm$model)
 
 exclude_methods <- c("LC PP") ## could be a value of inter
-exclude_models <- c("quad")  ## results are clearly worse than for all other models, need to be refitted
+exclude_models <- c("")  
 
 results <- dm %>% 
   filter(use) %>% 
@@ -79,11 +87,25 @@ convergence_data$sum <- rowSums(convergence_data[,-(1:2)])
 table(convergence_data$sum) %>% 
   prop.table
 #          7          8          9 
-# 0.02673797 0.08556150 0.88770053 
+# 0.03012048 0.10843373 0.86144578 
 
 results %>% 
   #filter(model != "htsm") %>% 
   get_convergence(model, split = FALSE)
+# # A tibble: 11 x 2
+#    key           value
+#    <chr>         <dbl>
+#  1 Comp_MR_MLE   1    
+#  2 Comp_TB_ss    1    
+#  3 No_MR_MLE     1    
+#  4 No_MR_NPB     0.982
+#  5 No_MR_PB      1    
+#  6 No_TB_ss      0.964
+#  7 PP_LC_lc      0    
+#  8 PP_TB_beta    0.988
+#  9 PP_TB_beta++  0    
+# 10 PP_TB_trait   0.946
+# 11 PP_TB_trait_u 0.952
 
 convergence %>% 
   filter(value != 0) %>% 
@@ -97,9 +119,10 @@ convergence %>%
   ggplot(aes(x = failure, y = method)) +
   geom_point(size = 5) +
   labs(y = "Method", x = "Failure Rate") +
-  coord_cartesian(xlim = c(0, 0.045)) +
+  coord_cartesian(xlim = c(0, 0.055)) +
   theme_bw(base_size = 25) + 
-  scale_x_continuous(labels = scales::percent, breaks = c(0, 0.02, 0.04))
+  scale_x_continuous(breaks = seq(0, 0.05, by = 0.01), 
+                     labels = scales::label_percent(accuracy = 1))
 ggsave("figures/failure.png", width = 16, height = 18, units = "cm",
        dpi = 500)
 
@@ -112,7 +135,9 @@ ggsave("figures/failure.png", width = 16, height = 18, units = "cm",
 ##            Combine individual parameter estimates             -
 ##----------------------------------------------------------------
 
-all_pars <- unnest(results, est_group) %>% 
+all_pars <- results %>% 
+  select(-orig_condition) %>% 
+  unnest(est_group) %>% 
   mutate(parameter_only = parameter) %>% 
   mutate(parameter = factor(paste0(model2, ":", parameter))) %>% 
   mutate(parameter_o = factor(paste0(model2, ":", orig_parameter))) %>% 
@@ -133,6 +158,7 @@ any(is.na(all_pars$core))
 
 length(unique(all_pars$parameter))
 
+options("tidylog.display" = list())
 all_pars <- all_pars %>% 
   group_by(model, dataset, inter, orig_model, orig_condition) %>% 
   mutate(rel_par_weight = 
@@ -147,6 +173,7 @@ all_pars <- all_pars %>%
              model_exp = model_exp, data_tree = data_tree, 
              orig_condition = orig_condition)) %>% 
   ungroup
+options("tidylog.display" = NULL)
 
 # all_pars %>% 
 #   filter(is.na(rel_par_weight)) %>% 
