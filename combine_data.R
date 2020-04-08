@@ -475,46 +475,18 @@ qm1 <- qm1 %>%
     TRUE ~ dataset
   ))
 get_info_df(qm1)
-
-
-
-# f_qm2 <- list.files("data/quad-model/beta_reanalyses", 
-#                     pattern = "RData$",full.names = TRUE, recursive = TRUE)
-# qm2 <- load_combine(f_qm2) %>% 
-#   mutate(dataset = str_remove(dataset, pattern = "_betaMCMC")) %>% 
-#   mutate(dataset = str_remove(dataset, pattern = ".csv")) %>% 
-#   mutate(dataset = case_when(
-#     dataset == "UCD_High_AW" ~ "CalanchiniEtAl2014_1a_AsianWhite",
-#     dataset == "UCD_High_BW" ~ "CalanchiniEtAl2014_1a_BlackWhite",
-#     dataset == "UCD_Mod_BW" ~ "CalanchiniEtAl2014_1b_BlackWhite",
-#     dataset == "UCD_Mod_FI" ~ "CalanchiniEtAl2014_1b_FlowerInsect",
-#     dataset == "UCD_Low_FI" ~ "CalanchiniEtAl2014_1c_FlowerInsect",
-#     dataset == "UCD_Low_ST" ~ "CalanchiniEtAl2014_1c_Stereotype",
-#     dataset == "PI_able_random" ~ "CalanchiniEtAl2014_PI_ableMCMC",
-#     dataset == "PI_age_random" ~ "CalanchiniEtAl2014_PI_ageMCMC",
-#     dataset == "PI_career_random" ~ "CalanchiniEtAl2014_PI_careerMCMC",
-#     dataset == "PI_race_random" ~ "CalanchiniEtAl2014_PI_raceMCMC",
-#     dataset == "PI_skin_random" ~ "CalanchiniEtAl2014_PI_skinMCMC",
-#     dataset == "PI_straight_random" ~ "CalanchiniEtAl2014_PI_straightMCMC",
-#     dataset == "WrzusEtAl2017HU" ~ "WrzusEtAl_HappyUnhappy",
-#     dataset == "WrzusEtAl2017NL" ~ "WrzusEtAl_NumberLetter",
-#     TRUE ~ dataset
-#   ))
-# get_info_df(qm2)
-# 
-# check_beta(qm2)
-
-# unique(qm2$dataset)[!(unique(qm2$dataset) %in% unique(qm1$dataset))]
-# unique(qm1$dataset)[!(unique(qm1$dataset) %in% unique(qm2$dataset))]
-
-# all(unique(qm2$dataset) %in% unique(qm1$dataset))
-
-# ## combine results
-# qm <- qm1 %>% 
-#   filter(!(method %in% c("beta++", "beta" ))) %>% 
-#   bind_rows(qm2)
-
 qm <- qm1
+
+qm %>% 
+  filter(dataset == "JinEtAl2016s1") %>% 
+  #filter(inter == "Comp MLE") %>% 
+  unnest(test_homogeneity) %>% 
+  select(model, inter, dataset, condition:p)
+qm %>% 
+  filter(dataset == "LuekeGibson2015age") %>% 
+  #filter(inter == "Comp MLE") %>% 
+  unnest(test_homogeneity) %>% 
+  select(model, inter, dataset, condition:p)
 
 get_info_df(qm)
 
