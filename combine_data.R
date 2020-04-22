@@ -477,16 +477,20 @@ qm1 <- qm1 %>%
 get_info_df(qm1)
 qm <- qm1
 
-qm %>% 
-  filter(dataset == "JinEtAl2016s1") %>% 
-  #filter(inter == "Comp MLE") %>% 
-  unnest(test_homogeneity) %>% 
-  select(model, inter, dataset, condition:p)
-qm %>% 
-  filter(dataset == "LuekeGibson2015age") %>% 
-  #filter(inter == "Comp MLE") %>% 
-  unnest(test_homogeneity) %>% 
-  select(model, inter, dataset, condition:p)
+# qm %>%
+#   filter(dataset == "LuekeGibson2015age") %>%
+#   filter(inter == "Trait_u PP") %>%
+#   select(convergence) %>%
+#   unnest(convergence) %>%
+#   filter(Rhat > 1.01)
+
+# qm %>%
+#   filter(dataset == "LuekeGibson2015age") %>%
+#   filter(inter == "Trait_u PP") %>%
+#   select(convergence) %>%
+#   unnest(convergence) %>%
+#   filter(n.eff != 0 & n.eff < 5000)
+
 
 get_info_df(qm)
 

@@ -259,7 +259,8 @@ covariates_nopar <- left_join(p_vals, hetero_np)
 
 ## should be of length 0
 covariates_nopar %>% 
-  filter(is.na(p_fit) | is.na(p_hetero))
+  filter(is.na(p_fit) | is.na(p_hetero)) %>% 
+  print(n = Inf)
 
 ### all data in covariates nopar:
 unique(select(all_pars, model, dataset, inter, orig_condition)) %>% 
