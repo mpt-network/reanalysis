@@ -224,9 +224,9 @@ rm %>%
 
 check_core_pars(rm)
 
-rm %>% 
-  group_by(dataset) %>% 
-  summarise(trials = first(trials))
+# rm %>% 
+#   group_by(dataset) %>% 
+#   summarise(trials = first(trials))
 
 ##################################################################
 ##                        Hindsight Bias                        ##
@@ -452,7 +452,7 @@ c2ht %>%
 ##                          Quad Model                          ##
 ##################################################################
 
-f_qm1 <- list.files("data/quad-model/", pattern = "RData$",full.names = TRUE)
+f_qm1 <- list.files("data/quad-model/", pattern = "RData$",full.names = TRUE) 
 qm1 <- load_combine(f_qm1)
 qm1 <- qm1 %>% 
   mutate(dataset = case_when(
@@ -692,6 +692,7 @@ htsm <- bind_rows(
 htsm <- check_double_fit(htsm)
 
 ## set all parameters to core parameters and move within-subject 
+## note: last number always corresponds to condition!
 ### number to condition
 for (i in seq_len(nrow(htsm))) {
   htsm[i,"est_group"][[1]][[1]]$core <- TRUE
@@ -809,8 +810,8 @@ for (i in which(htsm$dataset == "DS2000_E1")) {
   )
   # also set orig_parameter for consistency to d3_3
   htsm[i,"est_group"][[1]][[1]]$orig_parameter <- if_else(
-    htsm[i,"est_group"][[1]][[1]]$orig_parameter == "d3_2", 
-    "d3_3", 
+    htsm[i,"est_group"][[1]][[1]]$orig_parameter == "d3_3",
+    "d3_2",
     htsm[i,"est_group"][[1]][[1]]$orig_parameter
   )
   ## est indiv:
@@ -822,8 +823,8 @@ for (i in which(htsm$dataset == "DS2000_E1")) {
     )
     # also set orig_parameter for consistency to d3_3
     htsm[i,"est_indiv"][[1]][[1]]$orig_parameter <- if_else(
-      htsm[i,"est_indiv"][[1]][[1]]$orig_parameter == "d3_2", 
-      "d3_3", 
+      htsm[i,"est_indiv"][[1]][[1]]$orig_parameter == "d3_3",
+      "d3_2",
       htsm[i,"est_indiv"][[1]][[1]]$orig_parameter
     )
   }
@@ -831,11 +832,16 @@ for (i in which(htsm$dataset == "DS2000_E1")) {
 
 check_core_pars(htsm)
 
-htsm %>% 
-  unnest(est_group) %>% 
-  select(parameter, orig_parameter) %>% 
-  unique %>% 
-  print(n = Inf)
+# htsm %>%
+#   unnest(est_group) %>%
+#   select(parameter, orig_parameter) %>%
+#   unique %>%
+#   print(n = Inf)
+# 
+# htsm %>%
+#   unnest(est_group) %>% 
+#   filter(orig_parameter == "d3_3") %>% 
+#   select(model, dataset, condition, parameter, orig_parameter)
 
 ## add info:
 htsm_e <- new.env()
