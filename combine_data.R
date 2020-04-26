@@ -366,6 +366,45 @@ c_pc
 pc$model <- "pc"
 pc$model2 <- "pc"
 
+### rename parameters
+for (i in seq_len(nrow(pc))) {
+  if (any(str_detect(pc[i,]$est_group[[1]]$parameter, "\\d"))) {
+    
+    cn <- str_extract(
+      pc[i,]$est_group[[1]]$parameter, "\\d$"
+    )
+    cn <- if_else(is.na(cn), "1", cn)
+    pc[i,]$est_group[[1]]$condition <- paste(
+      pc[i,]$est_group[[1]]$condition, 
+      cn, 
+      sep = "_"
+    )
+    pc[i,]$est_group[[1]]$parameter <- str_extract(
+      pc[i,]$est_group[[1]]$parameter, "[[:alpha:]]"
+    )
+    
+  }
+  ## individual-level parameters
+  if ( (nrow(pc[i,]$est_indiv[[1]]) > 0) && 
+       any(str_detect(pc[i,]$est_indiv[[1]]$parameter, "\\d"))) {
+    
+    cn <- str_extract(
+      pc[i,]$est_indiv[[1]]$parameter, "\\d$"
+    )
+    cn <- if_else(is.na(cn), "1", cn)
+    pc[i,]$est_indiv[[1]]$condition <- paste(
+      pc[i,]$est_indiv[[1]]$condition, 
+      cn, 
+      sep = "_"
+    )
+    pc[i,]$est_indiv[[1]]$parameter <- str_extract(
+      pc[i,]$est_indiv[[1]]$parameter, "[[:alpha:]]"
+    )
+  }
+}
+
+
+
 ## add info:
 pc_i <- load_combine_info(fi_pc)
 
