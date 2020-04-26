@@ -1,5 +1,10 @@
 
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+CURDIR <- ""
+CURDIR <- try(dirname(rstudioapi::getActiveDocumentContext()$path))
+if (!file.exists(CURDIR)) CURDIR <- try(dirname(parent.frame(2)$ofile))
+print(CURDIR)
+setwd(CURDIR)
+
 ## https://ukgovdatascience.github.io/rap-website/article-dependency-and-reproducibility.html
 library(checkpoint)
 checkpoint("2020-04-25", R.version = "4.0.0")
