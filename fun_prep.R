@@ -421,4 +421,7 @@ sanitize_vars <- function(results) {
   results
 }
 
+replace_d3_3 <- function(vec) {
+  if_else(vec == "d3_3", "d3_2", vec)
+}
 

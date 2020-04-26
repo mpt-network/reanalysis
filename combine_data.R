@@ -852,7 +852,7 @@ for (i in which(htsm$dataset == "DS2000_E1")) {
     "d_2", 
     htsm[i,"est_group"][[1]][[1]]$parameter
   )
-  # also set orig_parameter for consistency to d3_3
+  # also set orig_parameter for consistency to d3_2
   htsm[i,"est_group"][[1]][[1]]$orig_parameter <- if_else(
     htsm[i,"est_group"][[1]][[1]]$orig_parameter == "d3_3",
     "d3_2",
@@ -865,7 +865,7 @@ for (i in which(htsm$dataset == "DS2000_E1")) {
       "d_2", 
       htsm[i,"est_indiv"][[1]][[1]]$parameter
     )
-    # also set orig_parameter for consistency to d3_3
+    # also set orig_parameter for consistency to d3_2
     htsm[i,"est_indiv"][[1]][[1]]$orig_parameter <- if_else(
       htsm[i,"est_indiv"][[1]][[1]]$orig_parameter == "d3_3",
       "d3_2",
@@ -907,6 +907,35 @@ all( sort(unique(htsm$dataset)) %in% sort(unique(htsm_i$dataset)) )
 all( sort(unique(htsm$orig_model)) %in% sort(unique(htsm_i$orig_model)) )
 
 htsm <- left_join(htsm, htsm_i)
+
+
+## change d3_3 into d3_2 in DS2000_E1:
+for (i in which(htsm$dataset == "DS2000_E1")) {
+  ## change d3_3 to d3_2 in model expressions:
+  for (j in seq_along(htsm[i,]$model_exp[[1]])) {
+    for (j2 in seq_along(htsm[i,]$model_exp[[1]][[j]])) {
+      htsm[i,]$model_exp[[1]][[j]][[j2]] <- 
+        do.call("substitute", list(
+          htsm[i,]$model_exp[[1]][[j]][[j2]], 
+          list(d3_3 = quote(d3_2)))
+        )
+    }
+  }
+  if ( (nrow(htsm[i,]$est_rho[[1]]) > 0)) {
+    htsm[i,]$est_rho[[1]]$parameter1 <- 
+      replace_d3_3(htsm[i,]$est_rho[[1]]$parameter1)
+    htsm[i,]$est_rho[[1]]$parameter2 <- 
+      replace_d3_3(htsm[i,]$est_rho[[1]]$parameter2)
+  }
+  if ( (nrow(htsm[i,]$fungibility[[1]]) > 0)) {
+    htsm[i,]$fungibility[[1]]$parameter1 <- 
+      replace_d3_3(htsm[i,]$fungibility[[1]]$parameter1)
+    htsm[i,]$fungibility[[1]]$parameter2 <- 
+      replace_d3_3(htsm[i,]$fungibility[[1]]$parameter2)
+  }
+}
+
+
 htsm %>% 
   select(n_tree, rel_tree, model_df, model_exp, data_tree) %>% 
   summarise_all(list(null = ~any(map_lgl(., is.null)), 
