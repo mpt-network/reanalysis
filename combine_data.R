@@ -1,4 +1,10 @@
 
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+## https://ukgovdatascience.github.io/rap-website/article-dependency-and-reproducibility.html
+library(checkpoint)
+checkpoint("2020-04-25", R.version = "4.0.0")
+## do not compile from source on windows!
+
 library("MPTmultiverse")
 library("tidyverse")
 # library("tidylog")
@@ -824,6 +830,12 @@ for (i in which(htsm$dataset == "DS2000_E1")) {
 }
 
 check_core_pars(htsm)
+
+htsm %>% 
+  unnest(est_group) %>% 
+  select(parameter, orig_parameter) %>% 
+  unique %>% 
+  print(n = Inf)
 
 ## add info:
 htsm_e <- new.env()
