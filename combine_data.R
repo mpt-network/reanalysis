@@ -1,7 +1,7 @@
 
 CURDIR <- ""
-CURDIR <- try(dirname(rstudioapi::getActiveDocumentContext()$path))
-if (!file.exists(CURDIR)) CURDIR <- try(dirname(parent.frame(2)$ofile))
+try(CURDIR <- dirname(rstudioapi::getActiveDocumentContext()$path))
+if (!file.exists(CURDIR)) try(CURDIR <- dirname(parent.frame(2)$ofile))
 print(CURDIR)
 setwd(CURDIR)
 
