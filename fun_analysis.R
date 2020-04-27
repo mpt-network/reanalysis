@@ -61,7 +61,7 @@ get_convergence <- function(results, ..., split = TRUE) {
 check_fit <- function(df) {
   if (df$package == "TB") {
     params <- df %>%
-      dplyr::select(-.data$orig_condition) %>% 
+      #dplyr::select(-.data$orig_condition) %>% 
       tidyr::unnest(.data$est_group, names_repair = "minimal") %>%
       dplyr::select(.data$parameter, .data$core)
 
@@ -88,14 +88,14 @@ check_fit <- function(df) {
   return(TRUE)
 }
 
-repair_pars <- function(df) {
-  df <- df %>% 
-    mutate(parameter = if_else(model == "2htsm" & 
-                                 parameter == "d_3", "d_2", 
-                               parameter)) %>% 
-    mutate(parameter = factor(paste0(model, ":", parameter)))
-  df
-}
+# repair_pars <- function(df) {
+#   df <- df %>% 
+#     mutate(parameter = if_else(model == "2htsm" & 
+#                                  parameter == "d_3", "d_2", 
+#                                parameter)) %>% 
+#     mutate(parameter = factor(paste0(model, ":", parameter)))
+#   df
+# }
 
 get_rel_par_weight <- function(parameter, est, model_exp, rel_tree, 
                                orig_condition) {

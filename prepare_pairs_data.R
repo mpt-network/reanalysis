@@ -1,4 +1,14 @@
 
+CURDIR <- ""
+try(CURDIR <- dirname(rstudioapi::getActiveDocumentContext()$path))
+if (!file.exists(CURDIR)) try(CURDIR <- dirname(parent.frame(2)$ofile))
+print(CURDIR)
+setwd(CURDIR)
+
+library(checkpoint)
+checkpoint("2020-04-25", R.version = "4.0.0")
+## do not compile from source on windows!
+
 library("MPTmultiverse")
 library("tidyverse")
 library("tidylog")
@@ -11,22 +21,18 @@ library("DescTools") # for CCC
 
 load("combined_results.RData")
 source("fun_analysis.R")
-covariates <- read_csv("covariates.csv")
 
+## combine with other data
 lev_mod <- levels(dm$model)
 lev_mod2 <- levels(dm$model2)
 
-dm <- left_join(dm, covariates) %>% 
-  mutate(model = factor(model, levels = lev_mod),
-         model2 = factor(model2, levels = lev_mod2))
-
 #### condition names
 
-dm %>% 
-  unnest(est_group) %>% 
-  group_by(model, model2, dataset, orig_condition) %>% 
-  summarise() %>% 
-  write_csv("conditon_names.csv")
+# dm %>% 
+#   unnest(est_group) %>% 
+#   group_by(model, model2, dataset, orig_condition) %>% 
+#   summarise() %>% 
+#   write_csv("conditon_names.csv")
 
 #####
 
@@ -51,7 +57,7 @@ results <- dm %>%
 ##----------------------------------------------------------------
 ##                          Covariates                           -
 ##----------------------------------------------------------------
-
+options("tidylog.display" = list())
 results$npar <- NA_integer_
 
 for (i in seq_len(nrow(results))) {
@@ -59,6 +65,7 @@ for (i in seq_len(nrow(results))) {
     filter(condition == condition[1]) %>% 
     nrow()
 }
+options("tidylog.display" = NULL)
 
 results$npar_c <- results$npar - 6
 
@@ -90,7 +97,6 @@ table(convergence_data$sum) %>%
 # 0.03012048 0.10843373 0.86144578 
 
 results %>% 
-  #filter(model != "htsm") %>% 
   get_convergence(model, split = FALSE)
 # # A tibble: 11 x 2
 #    key           value
@@ -127,21 +133,42 @@ ggsave("figures/failure.png", width = 16, height = 18, units = "cm",
        dpi = 500)
 
 
-##################################################################
-##                         CCC Analysis                         ##
-##################################################################
-
 ##----------------------------------------------------------------
 ##            Combine individual parameter estimates             -
 ##----------------------------------------------------------------
 
 all_pars <- results %>% 
-  select(-orig_condition) %>% 
   unnest(est_group) %>% 
   mutate(parameter_only = parameter) %>% 
   mutate(parameter = factor(paste0(model2, ":", parameter))) %>% 
   mutate(parameter_o = factor(paste0(model2, ":", orig_parameter))) %>% 
   droplevels()
+
+
+## external covariate files
+covariates <- read_csv("covariates.csv", 
+                       locale = readr::locale(encoding = "UTF-8"))
+
+## check if all variables are filled 
+### should be FALSE
+any(is.na(covariates$population))
+any(is.na(covariates$`parameter estimation?`))
+
+### check if covariates exists for all variables (and not more)
+### should be TRUE
+stopifnot(all(unique(covariates$dataset) %in% unique(all_pars$dataset)))
+stopifnot(all(unique(all_pars$dataset) %in% unique(covariates$dataset)))
+
+all_pars <- left_join(all_pars, covariates) %>%
+  mutate(model = factor(model, levels = lev_mod),
+         model2 = factor(model2, levels = lev_mod2))
+
+
+## should be length 0
+all_pars %>% 
+  filter(is.na(population)) %>% 
+  select(model, dataset, orig_condition) %>% 
+  unique()
 
 ##---------------------------------------------------------------
 ##                        More Covariates                       -
@@ -175,9 +202,9 @@ all_pars <- all_pars %>%
   ungroup
 options("tidylog.display" = NULL)
 
-# all_pars %>% 
-#   filter(is.na(rel_par_weight)) %>% 
-#   select(model, model2, dataset, rel_par_weight) %>% 
+# all_pars %>%
+#   filter(is.na(rel_par_weight)) %>%
+#   select(model, model2, dataset, rel_par_weight) %>%
 #   print(n = Inf)
 
 ### missing relative weights
@@ -189,8 +216,13 @@ all_pars %>%
 
 all_pars %>% 
   filter(is.na(rel_n)) %>% 
-  group_by(model, dataset, orig_parameter) %>% 
+  group_by(model, dataset, inter) %>% 
   tally 
+
+all_pars %>% 
+  filter(is.na(est)) %>% 
+  group_by(model, dataset, inter) %>% 
+  tally()
 
 
 ### N-participants (not used, we focus on SE instead)
@@ -237,8 +269,9 @@ correlation <- results %>%
 
 ## covariates on parameters basis
 covariates_par <- left_join(fungibility, correlation) 
-## Note: models where Trait PP failed, do not have values here
 
+
+## Note: models where Trait PP failed, do not have values here
 
 p_vals <- results %>% 
   unnest(gof_group) %>% 
@@ -254,6 +287,9 @@ hetero_np <- results %>%
   rename(orig_condition = condition) %>% 
   rename(p_hetero = p)
 
+stopifnot(all(p_vals$orig_condition %in% hetero_np$orig_condition))
+stopifnot(all(hetero_np$orig_condition %in% p_vals$orig_condition))
+
 ## covariates not relative to parameter
 covariates_nopar <- left_join(p_vals, hetero_np)
 
@@ -265,7 +301,6 @@ covariates_nopar %>%
 ### all data in covariates nopar:
 unique(select(all_pars, model, dataset, inter, orig_condition)) %>% 
   anti_join(unique(select(covariates_nopar, model, dataset, inter, orig_condition)))
-
 ### should be of length 0!
 
 ### add parameters in which PP is missing
@@ -274,8 +309,15 @@ missing_par_covariates <- all_pars %>%
   select(model, model2, dataset, parameter_o, npar, npar_c, orig_condition) %>% 
   anti_join(select(covariates_par, -inter))
 
+missing_par_covariates %>% 
+  group_by(model, dataset) %>% 
+  tally()
+
 all_par_covariates <- full_join(select(covariates_par, -inter), 
                                 missing_par_covariates)
+
+all_par_covariates %>% 
+  filter(is.na(orig_condition))
 
 all_par_covariates %>% 
   filter(is.na(orig_condition))
@@ -299,13 +341,33 @@ xx2 <- unique(select(all_pars, model, dataset, orig_condition, parameter_o))
 anti_join(xx2, xx1)
 ### should be of length 0!
 
+# tt1 <- select(all_par_covariates, -npar) %>% 
+#   filter(dataset == "A2013")
+# tt2 <- covariates_nopar %>% 
+#   filter(dataset == "A2013")
+# 
+# covariates <- full_join(tt1, tt2)
+
 covariates <- full_join(select(all_par_covariates, -npar), 
                         covariates_nopar)
+
+# nrow(covariates_nopar)
+# nrow(all_par_covariates)
 
 ### add real parameter names
 covariates <- covariates %>% 
   left_join(select(all_pars, model, dataset, orig_condition, inter, parameter_o, 
                    parameter, condition, rel_par_weight, rel_n, se))
+
+stopifnot(nrow(covariates) == nrow(all_pars))
+
+xxx <- covariates %>% 
+  anti_join(select(all_pars, model, dataset, orig_condition, inter, parameter_o, 
+                   parameter, condition, rel_par_weight, rel_n, se)) 
+## should be zero...
+xxx %>% 
+  select(dataset, parameter_o)
+
 
 ##----------------------------------------------------------------
 ##          Calculate CCC of all pairwise combinations           -
