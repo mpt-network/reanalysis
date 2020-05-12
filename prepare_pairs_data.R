@@ -267,9 +267,20 @@ correlation <- results %>%
   mutate(parameter_o = factor(paste0(model2, ":", parameter))) %>% 
   select(-parameter)
 
+hetero_empirical <- results %>% 
+  filter(inter == "Trait PP") %>% 
+  unnest(est_indiv) %>% 
+  group_by(model, dataset, model2, orig_condition, 
+           orig_parameter, parameter) %>% 
+  summarise(sd_emp = sd(est)) %>%
+  ungroup %>% 
+  mutate(parameter_o = factor(paste0(model2, ":", orig_parameter))) %>% 
+  select(-parameter, -orig_parameter)
+mean(is.na(hetero_empirical$sd_emp))
+
 ## covariates on parameters basis
 covariates_par <- left_join(fungibility, correlation) 
-
+covariates_par <- left_join(covariates_par, hetero_empirical)
 
 ## Note: models where Trait PP failed, do not have values here
 
@@ -300,7 +311,8 @@ covariates_nopar %>%
 
 ### all data in covariates nopar:
 unique(select(all_pars, model, dataset, inter, orig_condition)) %>% 
-  anti_join(unique(select(covariates_nopar, model, dataset, inter, orig_condition)))
+  anti_join(unique(select(covariates_nopar, model, dataset, inter, 
+                          orig_condition)))
 ### should be of length 0!
 
 ### add parameters in which PP is missing
@@ -416,14 +428,20 @@ all_pairs <- all_pars_a2 %>%
   mutate(abs_dev = abs(x - y)) %>% 
   filter(!(cond_x == cond_y)) %>% 
   filter(!is.na(x), !is.na(y)) %>% 
-  mutate(x_centered = x - mean(x)) %>% 
-  mutate(x_centered_pow2 = x_centered^2) %>% 
+  #mutate(x_centered = x - mean(x)) %>% 
+  #mutate(x_centered_pow2 = x_centered^2) %>% 
   droplevels()
 
 any(is.na(all_pairs$abs_dev))
 
 # unique(all_pars_a4$parameter)
 # unique(covariates$parameter)
+
+# covariates %>% 
+#   filter(parameter %in% levels(all_pairs$parameter)) %>% 
+#   droplevels %>% 
+#   rename(cond_x = inter) %>% 
+#   anti_join(all_pairs)
 
 all_pairs <- covariates %>% 
   filter(parameter %in% levels(all_pairs$parameter)) %>% 
@@ -438,6 +456,7 @@ all_pairs <- covariates %>%
          rel_n_x = rel_n, 
          p_fit_x = p_fit, 
          se_x = se) 
+any(is.na(all_pairs$abs_dev))
 
 all_pairs <- covariates %>% 
   filter(parameter %in% levels(all_pairs$parameter)) %>% 
@@ -462,6 +481,9 @@ all_pairs <- all_pairs_full %>%
   select(model, model2, dataset, parameter, 
          abs_dev, x, se_x, cond_x, y, se_y, cond_y, 
          logp_hetero, log1p_hetero, ## Heterogeneity (non-parameteric)
+         sd_emp, ## Hetereogeneity across parameter based on average of 
+                  ## partial-pooling (i.e., empirical SD of individual latent 
+                  ## trait parameters.
          rho, ## Rho (average correlation for each parameter)
          fungi, ##  Fungibility/across-chain correlations 
          log1p_fit_x, logp_fit_x, log1p_fit_y, logp_fit_y, ## model fit
