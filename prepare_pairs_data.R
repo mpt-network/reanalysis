@@ -437,11 +437,13 @@ any(is.na(all_pairs$abs_dev))
 # unique(all_pars_a4$parameter)
 # unique(covariates$parameter)
 
-# covariates %>% 
-#   filter(parameter %in% levels(all_pairs$parameter)) %>% 
-#   droplevels %>% 
-#   rename(cond_x = inter) %>% 
-#   anti_join(all_pairs)
+# covariates %>%
+#   filter(parameter %in% levels(all_pairs$parameter)) %>%
+#   droplevels %>%
+#   rename(cond_x = inter) %>%
+#   anti_join(all_pairs) %>% 
+#   select(model:parameter_o, cond_x)
+## parameter is NA for "No PB"
 
 all_pairs <- covariates %>% 
   filter(parameter %in% levels(all_pairs$parameter)) %>% 
