@@ -1,6 +1,6 @@
 ---
-title: "Data Set"
-author: "MPT Reanalysis Project"
+title: "Overview of Data Sets Included in the Meta-Analysis"
+author: "MPT Reanalysis Project (code and text current document: Henrik Singmann)"
 date: "Results from: `r Sys.Date()`"
 output: html_document
 ---
@@ -18,6 +18,8 @@ options(width = 150)
 ```
 
 ```{r, include=FALSE}
+library(checkpoint)
+checkpoint("2020-04-25", R.version = "4.0.0")
 library("MPTmultiverse")
 library("tidyverse")
 tmpe <- new.env()
