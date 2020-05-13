@@ -1,0 +1,80 @@
+---
+title: "Univariate Relationships with Absolute Deviation"
+author: "MPT Reanalysis Project (code and text current document: Henrik Singmann)"
+date: "Results from: `r Sys.Date()`"
+output: 
+  html_document:
+    toc: TRUE
+---
+
+<style>
+  .main-container {
+    max-width: 1200px !important;
+  }
+</style>
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library("afex")
+library("tidyverse")
+theme_set(theme_bw(base_size = 15) + 
+            theme(legend.position="bottom", 
+                  panel.grid.major.x = element_blank()))
+source("fun_univariate.R")
+```
+
+```{r load, include=FALSE}
+load("../all_pairs_core.RData")
+str(all_pairs)
+```
+
+
+# Overview
+
+This document provides an overview of the univariate relationships of all covariates with the absolute parameter deviation.  We separate the relationships by focussing on one method as the target method and then investigating the relationships for each of the remaining methods with this method.
+
+
+
+# DV: Absolute Deviation from Complete Pooling MLE Estimate
+
+
+
+```{r}
+targ_cmle <- all_pairs %>% 
+  filter(cond_y == "Comp MLE") %>% 
+  filter(cond_x != "Comp MLE")
+```
+
+```{r}
+cur_data <- targ_cmle
+ylab <- "Abs. deviation (Comp MLE)"
+```
+
+
+We begin by investigating the abolsute relationship from the simplest method, the complete pooling MLE method. This leaves us with `r nrow(targ_cmle)` observations for the analysis.
+
+## Effect of Method
+
+```{r, fig.width=6, fig.height=3, message=FALSE}
+m_method <- lm(abs_dev ~ cond_x, cur_data)
+afex_plot(m_method, "cond_x", 
+          data_geom = ggplot2::geom_violin, 
+          data_arg = list(width = 0.5)) +
+  annotate("text", x = 8, y = 0.9, label = 
+             paste0("paste(italic(R) ^ 2, ' = ", 
+                    substr(round(summary(m_method)$r.squared, 2), 2, 4), "')"), 
+                    parse = TRUE) +
+  labs(y = ylab, x = "Second Estimation Method")
+```
+
+## Effect of Parameter Estimate
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, x)
+compare_continuous_covariate(cur_data, poly(x, 2))
+
+compare_continuous_covariate(cur_data, y)
+compare_continuous_covariate(cur_data, poly(y, 2))
+```
+
