@@ -43,5 +43,6 @@ compare_continuous_covariate <- function(data,
                       2, 4), "')")), 
               x = rx[2] - 0.2*diff(rx), 
               y = 0.9, parse = TRUE) +
-    labs(x = paste0(varname, " (", as_label(enquo(covariate)), ")"))
+    labs(x = paste0(varname, " (", as_label(enquo(covariate)), ")"), 
+         y = ylab)
 }
