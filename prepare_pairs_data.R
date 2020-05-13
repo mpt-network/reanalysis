@@ -144,16 +144,6 @@ all_pars <- results %>%
   mutate(parameter_o = factor(paste0(model2, ":", orig_parameter))) %>% 
   droplevels()
 
-
-## external covariate files
-covariates <- read_csv("covariates.csv", 
-                       locale = readr::locale(encoding = "UTF-8"))
-
-## check if all variables are filled 
-### should be FALSE
-any(is.na(covariates$population))
-any(is.na(covariates$`parameter estimation?`))
-
 ### check if covariates exists for all variables (and not more)
 ### should be TRUE
 stopifnot(all(unique(covariates$dataset) %in% unique(all_pars$dataset)))
@@ -381,6 +371,29 @@ xxx %>%
   select(dataset, parameter_o)
 
 
+### add external covariates
+
+## external covariate files
+ext_covariates <- read_csv("covariates.csv", 
+                       locale = readr::locale(encoding = "UTF-8")) %>% 
+  mutate(population = factor(population), 
+         sci_goal = factor(
+           `parameter estimation?`, 
+           levels = c("yes", "no"), 
+           labels = c("estimation", "model_comparison")
+         ),
+         model = factor(model, levels = levels(covariates$model)),
+         model2 = factor(model2, levels = levels(covariates$model2))
+  ) %>% 
+  select(-`parameter estimation?`)
+# str(ext_covariates)
+
+## check if all variables are filled 
+### should be FALSE
+any(is.na(ext_covariates$population))
+any(is.na(ext_covariates$sci_goal))
+
+covariates <- left_join(covariates, ext_covariates)
 
 #################################################################
 ##                  All Pairwise Combinations                  ##
@@ -479,6 +492,8 @@ all_pairs_full <- all_pairs %>%
          condition = factor(condition):model2) %>% 
   droplevels
 
+str(all_pairs_full)
+
 all_pairs <- all_pairs_full %>% 
   select(model, model2, dataset, parameter, 
          abs_dev, x, se_x, cond_x, y, se_y, cond_y, 
@@ -492,7 +507,7 @@ all_pairs <- all_pairs_full %>%
          rel_par_weight_x, rel_par_weight_y, ## Absolute parameter values 
          ## product of previous branches. Relative information available 
          npar, ## number of parameters
-         
+         population, sci_goal, ### external covariates
          condition, orig_condition, parameter_o
          )
 
