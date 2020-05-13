@@ -1,0 +1,120 @@
+---
+title: "Data Set and Covariates for Meta-Analysis (i.e., Parameter Pairs across Methods)"
+author: "MPT Reanalysis Project (code and text current document: Henrik Singmann)"
+date: "Results from: `r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library("checkpoint")
+checkpoint("2020-04-25", R.version = "4.0.0")
+knit_by_pkgdown <- !is.null(knitr::opts_chunk$get("fig.retina"))
+knitr::opts_chunk$set(
+  warning = TRUE, # show warnings during codebook generation
+  message = TRUE, # show messages during codebook generation
+  error = TRUE, # do not interrupt codebook generation in case of errors,
+                # TRUE is usually better for debugging
+  echo = FALSE  # show R code
+)
+ggplot2::theme_set(ggplot2::theme_bw())
+pander::panderOptions("table.split.table", Inf)
+library("codebook")
+library("tidyverse")
+```
+
+## Overview
+
+This document provides an overview of the final data set used for the
+meta-analysis. This contains all pairwise parameter pairs as well as our
+covariates.
+
+The data set used for the meta-analysis is `all_pairs`. This is available as file `all_pairs_core.RData` (or
+`all_pairs_core_OLD.RData` for using and `R` version before 3.5). This document
+provides a general overview of this data set and describes all covariates in this data set.
+
+```{r}
+load("../all_pairs_core.RData")
+```
+
+`all_pairs` contains all pair-wise group-level parameter estimates, where pairs are defined by the combination of estimation methods.   
+
+In total, the data set consists of `r nrow(all_pairs)` observations and `r ncol(all_pairs)` columns and considers `r length(levels(all_pairs$cond_x))` different methods:
+
+```{r}
+levels(all_pairs$cond_x)
+```
+
+
+## Estimates and Dependent Variable
+
+The dependent variable for our meta-analysis is the absolute deviation between the two estimates making up a pair, which is contained in variable `abs_dev`. The data set also contains both individual estimates for each pair as well as the information which method is used in each case. We label the two estimates making up each pair as `x` and `y` and the corresponding estimation methods `cond_x` and `cond_y`. An overview is provided next:
+
+```{r, echo=TRUE}
+str(all_pairs[, c("abs_dev", "x", "cond_x", "y", "cond_y") ])
+```
+
+**Note that the data set contains all pair-wise combinations so that each absolute deviation appears twice in the data set.** More specifically, for a particular parameter estimate of one data set and two methods *A* and *B*, both the combination of *A* as `x` and *B* as `y` as well as the combination of *A* as `y` and *B* as `x` appear in the data. An analysis of the absolute deviation (or other DV) therefore usually needs to pick one instance of each such pair. 
+
+## Metadata
+
+The data set contains several columns with metadata identifying an observations. As discussed above, `cond_x` and `cond_y` identify the method used for estimating both estimates of a pair. An overview of the additional metadata is provided next.
+
+```{r, echo=TRUE}
+str(all_pairs[, c("model", "model2", "dataset", "parameter",
+                  "condition", "orig_condition", "parameter_o") ])
+```
+
+`model` and `model2` provide information about the MPT model. An overview of the proportion of observations for each of the different models is shown next:
+
+```{r, echo=TRUE}
+map(all_pairs[, c("model", "model2")], ~round(prop.table(table(.)), 2))
+```
+
+The other variables containing metadata are described next:
+
+- `dataset`: Combination of original dataset name (defined during fitting) and `model2`. Thus uniquely identifies each data set.
+- `parameter`: Name of base parameter nested in model (i.e., `model2:parameter`). Uniquely identifies each parameter across models. 'Base parameter' here means that within-subjects identifiers or conditions are removed from the parameter name. 
+- `condition`: Uniquely identifies each condition that provides at least one base parameter per model that otherwise would not be unique given the base-model equations. Thus, this includes both within-subjects and between-conditions and also includes the `model2` string.
+- `orig_condition`: Original condition name from fitting process with `r length(unique(all_pairs$orig_condition))` unique values. 
+- `parameter_o`: Original parameter names as used during fitting and with added `model2` string to uniquely identify it across models. Has `r length(unique(all_pairs$parameter_o))` unique values. 
+
+## Covariates
+
+The data set contains the covariates we had previously agreed on. An overvieew is provided first followed by a description below.
+
+```{r, echo=TRUE}
+all_pairs %>% 
+  select(se_x, se_y, logp_hetero:sci_goal) %>% 
+  str
+```
+
+- `se_x` & `se_y`: Standard errors (to tap into $N$/sample size)
+- `logp_hetero` & `log1p_hetero`:  $p$-value of non-parametric test of heterogeneity. $p$-value is transformed using either `log()` or `log1p()` (i.e.,  `log(1+x)`).
+- `sd_emp`: Hetereogeneity across individual parameter estimates. Calculated as the empirical SD of partial-pooling estimates (as we did not save SD estimate).
+- `rho_max`, `rho_mean`, `rho_fzmean`, `rho_med`: `rho` is the correlation estimate from partial pooling model (i.e., correlation of individual-level estimates across parameters). Here, we provide a summary statistic for each parameter based on its absolute correlation with all other model parameters. The idea for `rho` was to focus on the average absolute correlation with other parameters,  `rho_mean` (idea was to include this only in case this correlation is substantial). `rho_max` is absolute maximum correlation, `rho_fzmean` is mean of absolute Fisher-z transormed correlations, and `rho_med` is median of absolute correlation estimates.
+- `fungi_max`, `fungi_mean`, `fungi_fzmean`, `fungi_med`: `fungi` is short for fungibility and describes the across-chain correlation of the group-level model parameters from the partial pooling model (i.e., correlation of group-level parameter estimates across posterior samples). Here, we provide a summary statistic for each parameter based on its absolute correlation with all other model parameters. The idea for `fungi` was to focus on the maximum absolute correlation with other parameters,  `fungi_max`. `fungi_mean` is absolute mean correlation, `fungi_fzmean` is mean of absolute Fisher-z transormed correlations, and `fungi_med` is median of absolute correlation estimates.
+- `log1p_fit_x`, `logp_fit_x`, `log1p_fit_y`, & `logp_fit_y`: Model fit based on $p$-value of model fit test for methods `x` and `y`. $p$-value is transformed using either `log()` or `log1p()` (i.e.,  `log(1+x)`).
+- `rel_par_weight_x`: Proportion of information available for estimating this parameter (or relative parameter weight). Calculated as sum of all branches containing a parameter (where branch is the product of the parameters in the branch).
+- `npar`: Number of parameters in a model (not a regsitered or agreed on covariate).
+- `population`: Factor with 5 levels describing the population of participants.
+- `sci_goal`: Factor with 2 levels describing scientific goal of original paper that used the model. Either `estimation` (i.e., interest was in parameter values or differences in parameter values across conditions) or `model_comparison` (i.e., interest was in comparing different models).
+
+## Codebook
+
+The following gives a codebook of `all_pairs` in which some variables with metadata containing many levels are removed
+
+```{r}
+codebook_data <- all_pairs %>% 
+  select(-dataset, -parameter, -condition, -orig_condition, -parameter_o)
+```
+
+```{r codebook, warning=FALSE}
+# omit the following lines, if your missing values are already properly labelled
+codebook_data <- detect_missing(codebook_data,
+    only_labelled = FALSE, # only labelled values are autodetected 
+    negative_values_are_missing = FALSE, # negative values are missing values
+    ninety_nine_problems = FALSE)
+
+codebook(codebook_data, survey_repetition = "single", 
+         metadata_table = TRUE, detailed_variables = TRUE)
+```
