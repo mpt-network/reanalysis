@@ -241,7 +241,10 @@ fungibility <- results %>%
   mutate(parameter_o = factor(paste0(model2, ":", parameter))) %>%
   group_by(model, dataset, inter, model2, 
            npar, npar_c, condition, parameter_o) %>% 
-  summarise(fungi = max(abs(correlation), na.rm = TRUE)) %>% 
+  summarise(fungi_max = max(abs(correlation), na.rm = TRUE),
+            fungi_mean = mean(abs(correlation), na.rm = TRUE),
+            fungi_fzmean = mean(FisherZ(abs(correlation)), na.rm = TRUE),
+            fungi_med = median(abs(correlation), na.rm = TRUE)) %>% 
   ungroup() %>% 
   rename(orig_condition = condition)
 
@@ -251,7 +254,10 @@ correlation <- results %>%
   gather("which_par", "parameter", parameter1, parameter2) %>% 
   group_by(model, dataset, inter, model2, 
            npar, npar_c, condition, parameter) %>% 
-  summarise(rho = mean(abs(est))) %>% 
+  summarise(rho_max = max(abs(est), na.rm = TRUE),
+            rho_mean = mean(abs(est), na.rm = TRUE),
+            rho_fzmean = mean(FisherZ(abs(est)), na.rm = TRUE),
+            rho_med = median(abs(est), na.rm = TRUE)) %>% 
   ungroup() %>% 
   rename(orig_condition = condition) %>% 
   mutate(parameter_o = factor(paste0(model2, ":", parameter))) %>% 
@@ -501,8 +507,8 @@ all_pairs <- all_pairs_full %>%
          sd_emp, ## Hetereogeneity across parameter based on average of 
                   ## partial-pooling (i.e., empirical SD of individual latent 
                   ## trait parameters.
-         rho, ## Rho (average correlation for each parameter)
-         fungi, ##  Fungibility/across-chain correlations 
+         starts_with("rho"), ## Rho (average correlation for each parameter)
+         starts_with("fungi"), ##  Fungibility/across-chain correlations 
          log1p_fit_x, logp_fit_x, log1p_fit_y, logp_fit_y, ## model fit
          rel_par_weight_x, rel_par_weight_y, ## Absolute parameter values 
          ## product of previous branches. Relative information available 
