@@ -23,7 +23,7 @@ theme_set(theme_bw(base_size = 15) +
             theme(legend.position="bottom", 
                   panel.grid.major.x = element_blank()))
 source("fun_univariate.R")
-INCLUDE_GAM <- FALSE
+INCLUDE_GAM <- TRUE
 ```
 
 ```{r load, include=FALSE}
@@ -169,3 +169,134 @@ bind_rows(
 )
 ```
 
+
+# DV: Absolute Deviation from Latent Trait Partial Pooling Estimate
+
+
+
+```{r}
+targ_lpp <- all_pairs %>% 
+  filter(cond_y == "Trait PP") %>% 
+  filter(cond_x != "Trait PP")
+```
+
+```{r}
+cur_data <- targ_lpp
+ylab <- "Abs. deviation (Trait PP)"
+```
+
+
+We begin by investigating the abolsute relationship from the simplest method, the complete pooling MLE method. This leaves us with `r nrow(targ_lpp)` observations for the analysis.
+
+## Effect of Method
+
+```{r, fig.width=8, fig.height=3, message=FALSE}
+m_method <- lm(abs_dev ~ cond_x, cur_data)
+afex_plot(m_method, "cond_x", 
+          data_geom = ggplot2::geom_violin, 
+          data_arg = list(width = 0.5)) +
+  annotate("text", x = 8, y = 0.9, label = 
+             paste0("paste(italic(R) ^ 2, ' = ", 
+                    substr(round(summary(m_method)$r.squared, 2), 2, 4), "')"), 
+                    parse = TRUE) +
+  labs(y = ylab, x = "Second Estimation Method")
+```
+
+
+## Effects of Continuous Covariates
+
+In the following plots, the blue line shows the fitted model (in case it is not a simple linear relationship, the transformation of the independent variable is given in parentheses in the x-axis label). The $R^2$ value shon in the plot is the $R^2$ of this model (i.e., the blue line). The red line shows a GAM on the independent variable with shrinkage applied cubic regression spline.
+
+In case observations had to be removed for the analysis, the percentage of removed (rem) observations is also shown in the x-axis caption.
+
+### Effect of Parameter Estimate
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, x)
+compare_continuous_covariate(cur_data, poly(x, 2))
+
+compare_continuous_covariate(cur_data, y)
+compare_continuous_covariate(cur_data, poly(y, 2))
+```
+
+### Standard Error
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, se_x)
+compare_continuous_covariate(cur_data, se_x, filter = se_x < 0.25)
+
+compare_continuous_covariate(cur_data, se_y)
+compare_continuous_covariate(cur_data, se_y, filter = se_y < 1)
+compare_continuous_covariate(cur_data, se_y, filter = se_y < 0.25)
+```
+
+### Hetereogeneity
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, log1p_hetero)
+compare_continuous_covariate(cur_data, poly(log1p_hetero, 2))
+compare_continuous_covariate(cur_data, poly(log1p_hetero, 3))
+
+compare_continuous_covariate(cur_data, sd_emp)
+compare_continuous_covariate(cur_data, poly(sd_emp, 2))
+```
+
+### Rho
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, rho_max)
+compare_continuous_covariate(cur_data, rho_mean)
+compare_continuous_covariate(cur_data, rho_fzmean)
+compare_continuous_covariate(cur_data, rho_med)
+```
+
+
+### Fungibility
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, fungi_max)
+compare_continuous_covariate(cur_data, fungi_mean)
+compare_continuous_covariate(cur_data, fungi_fzmean)
+compare_continuous_covariate(cur_data, fungi_med)
+```
+
+### Model Fit
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, log1p_fit_x)
+#compare_continuous_covariate(cur_data, logp_fit_x)
+compare_continuous_covariate(cur_data, log1p_fit_y)
+#compare_continuous_covariate(cur_data, logp_fit_y)
+```
+
+### Relative Parameter Information
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, log1p_hetero)
+compare_continuous_covariate(cur_data, sd_emp)
+```
+
+## Effects of Categroical Covariates
+
+The effect of covariate is shown in two ways. The table below all plots gives the $R^2$ values for the model given the covariate across all comparison methods. In case the number of levels is not too large, a plot of the difference in absolute deviation conditional on the factor levels is shown. Some factor levels may be removed for plotting (i.e., those levels for which the proportion of observations is less than `r formals(compare_categorical_covariate)$rm_levels_less`). In this case, the number of removed levels is also given.
+
+### Meta Data
+
+```{r, fig.width=20.5, fig.height=3.5, message=FALSE}
+
+bind_rows(
+  compare_categorical_covariate(cur_data, model),
+  compare_categorical_covariate(cur_data, model2),
+  compare_categorical_covariate(cur_data, parameter),
+  compare_categorical_covariate(cur_data, dataset, plot = FALSE)
+)
+```
+
+### Categorical Covariates
+
+```{r, fig.width=20.5, fig.height=4.5, message=FALSE}
+bind_rows(
+  compare_categorical_covariate(cur_data, population, rm_levels_less = 0),
+  compare_categorical_covariate(cur_data, sci_goal, rm_levels_less = 0)
+)
+```
