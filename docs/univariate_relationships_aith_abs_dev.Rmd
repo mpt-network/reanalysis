@@ -15,7 +15,7 @@ output:
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
 library("afex")
 library("tidyverse")
 theme_set(theme_bw(base_size = 15) + 
@@ -78,3 +78,53 @@ compare_continuous_covariate(cur_data, y)
 compare_continuous_covariate(cur_data, poly(y, 2))
 ```
 
+## Effect of Continuous Covariates
+
+### Standard Error
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, se_x)
+compare_continuous_covariate(cur_data, se_y)
+```
+
+### Hetereogeneity
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, log1p_hetero)
+compare_continuous_covariate(cur_data, sd_emp)
+```
+
+### Rho
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, rho_max)
+compare_continuous_covariate(cur_data, rho_mean)
+compare_continuous_covariate(cur_data, rho_fzmean)
+compare_continuous_covariate(cur_data, rho_med)
+```
+
+
+### Fungibility
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, fungi_max)
+compare_continuous_covariate(cur_data, fungi_mean)
+compare_continuous_covariate(cur_data, fungi_fzmean)
+compare_continuous_covariate(cur_data, fungi_med)
+```
+
+### Model Fit
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, log1p_fit_x)
+#compare_continuous_covariate(cur_data, logp_fit_x)
+compare_continuous_covariate(cur_data, log1p_fit_y)
+#compare_continuous_covariate(cur_data, logp_fit_y)
+```
+
+### Relative Parameter Information
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, log1p_hetero)
+compare_continuous_covariate(cur_data, sd_emp)
+```

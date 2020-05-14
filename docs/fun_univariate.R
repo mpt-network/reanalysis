@@ -14,7 +14,7 @@ compare_continuous_covariate <- function(data,
   
   varname <- all.vars(enquo(covariate))
   
-  rx <- range(data[[varname]])
+  rx <- range(data[[varname]], na.rm = TRUE)
   
   # rx <- data %>% 
   #   summarise(range = list(range(!!enquo(covariate)))) %>% 
@@ -31,6 +31,13 @@ compare_continuous_covariate <- function(data,
   } else {
     expr_cov <- quote(x)
   }
+  
+  new_xlab <- if (varname == as_label(enquo(covariate))) {
+    varname
+  } else {
+    paste0(varname, " (", as_label(enquo(covariate)), ")")
+  }
+  
   ggplot(data, aes(x = !!sym(varname), 
                    y = abs_dev)) +
     geom_point(alpha = alpha) +
@@ -43,6 +50,5 @@ compare_continuous_covariate <- function(data,
                       2, 4), "')")), 
               x = rx[2] - 0.2*diff(rx), 
               y = 0.9, parse = TRUE) +
-    labs(x = paste0(varname, " (", as_label(enquo(covariate)), ")"), 
-         y = ylab)
+    labs(x = new_xlab, y = ylab)
 }
