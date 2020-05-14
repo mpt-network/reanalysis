@@ -22,6 +22,7 @@ theme_set(theme_bw(base_size = 15) +
             theme(legend.position="bottom", 
                   panel.grid.major.x = element_blank()))
 source("fun_univariate.R")
+INCLUDE_GAM <- TRUE
 ```
 
 ```{r load, include=FALSE}
@@ -68,7 +69,14 @@ afex_plot(m_method, "cond_x",
   labs(y = ylab, x = "Second Estimation Method")
 ```
 
-## Effect of Parameter Estimate
+
+## Effects of Continuous Covariates
+
+In the following plots, the blue line shows the fitted model (in case it is not a simple linear relationship, the transformation of the independent variable is given in parentheses in the x-axis label). The $R^2$ value shon in the plot is the $R^2$ of this model (i.e., the blue line). The red line shows a GAM on the independent variable with shrinkage applied cubic regression spline.
+
+In case observations had to be removed for the analysis, the percentage of removed (rem) observations is also shown in the x-axis caption.
+
+### Effect of Parameter Estimate
 
 ```{r, fig.width=20.5, fig.height=3, message=FALSE}
 compare_continuous_covariate(cur_data, x)
@@ -78,20 +86,26 @@ compare_continuous_covariate(cur_data, y)
 compare_continuous_covariate(cur_data, poly(y, 2))
 ```
 
-## Effect of Continuous Covariates
-
 ### Standard Error
 
 ```{r, fig.width=20.5, fig.height=3, message=FALSE}
 compare_continuous_covariate(cur_data, se_x)
+compare_continuous_covariate(cur_data, se_x, filter = se_x < 0.25)
+
 compare_continuous_covariate(cur_data, se_y)
+compare_continuous_covariate(cur_data, se_y, filter = se_y < 1)
+compare_continuous_covariate(cur_data, se_y, filter = se_y < 0.25)
 ```
 
 ### Hetereogeneity
 
 ```{r, fig.width=20.5, fig.height=3, message=FALSE}
 compare_continuous_covariate(cur_data, log1p_hetero)
+compare_continuous_covariate(cur_data, poly(log1p_hetero, 2))
+compare_continuous_covariate(cur_data, poly(log1p_hetero, 3))
+
 compare_continuous_covariate(cur_data, sd_emp)
+compare_continuous_covariate(cur_data, poly(sd_emp, 2))
 ```
 
 ### Rho
@@ -128,3 +142,6 @@ compare_continuous_covariate(cur_data, log1p_fit_y)
 compare_continuous_covariate(cur_data, log1p_hetero)
 compare_continuous_covariate(cur_data, sd_emp)
 ```
+
+## Effects of Categroical Covariates
+

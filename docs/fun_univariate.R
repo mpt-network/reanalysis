@@ -1,7 +1,21 @@
 
 compare_continuous_covariate <- function(data, 
                                          covariate, 
+                                         filter,
                                          alpha = 0.3) {
+  orig_n <- nrow(data)
+  if (!missing(filter)) {
+    data <- data %>% 
+      dplyr::filter( !!enquo(filter) )
+  }
+  
+  varname <- all.vars(enquo(covariate))
+  
+  data <- data %>% 
+    dplyr::filter(!is.na(!!sym(varname)))
+  
+  removed <- 1 - nrow(data)/orig_n
+
   dlm <- data %>% 
     group_by(cond_x) %>% 
     summarise(lm = list(lm(formula(expr(abs_dev ~ !!enexpr(covariate)))))) 
@@ -11,8 +25,6 @@ compare_continuous_covariate <- function(data,
   dgof <- dlm %>% 
     select(-lm, -est) %>% 
     unnest(gof)
-  
-  varname <- all.vars(enquo(covariate))
   
   rx <- range(data[[varname]], na.rm = TRUE)
   
@@ -37,10 +49,22 @@ compare_continuous_covariate <- function(data,
   } else {
     paste0(varname, " (", as_label(enquo(covariate)), ")")
   }
+  if (!missing(filter)) {
+    new_xlab <- paste0(new_xlab, "; filter: ", as_label(enquo(filter)))
+  }
+  if (removed > 0) {
+    new_xlab <- paste0(new_xlab, "; rem: ", 
+                       scales::percent(removed, accuracy = 0.1))
+  }
   
-  ggplot(data, aes(x = !!sym(varname), 
+  outp <- ggplot(data, aes(x = !!sym(varname), 
                    y = abs_dev)) +
-    geom_point(alpha = alpha) +
+    geom_point(alpha = alpha)
+  if (INCLUDE_GAM) {
+    outp <- outp + geom_smooth(method = "gam", se = FALSE, 
+                formula = y ~ s(x, bs = "cs"), colour = "red")
+  }
+  outp + 
     geom_smooth(method = "lm", se = FALSE, 
                 formula = formula(expr(y ~ !!expr_cov)))  +
     facet_wrap("cond_x", nrow = 1) +
@@ -50,5 +74,6 @@ compare_continuous_covariate <- function(data,
                       2, 4), "')")), 
               x = rx[2] - 0.2*diff(rx), 
               y = 0.9, parse = TRUE) +
+    coord_cartesian(ylim = c(0, 1)) +
     labs(x = new_xlab, y = ylab)
 }
