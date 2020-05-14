@@ -16,13 +16,14 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
+options(width = 120)
 library("afex")
 library("tidyverse")
 theme_set(theme_bw(base_size = 15) + 
             theme(legend.position="bottom", 
                   panel.grid.major.x = element_blank()))
 source("fun_univariate.R")
-INCLUDE_GAM <- TRUE
+INCLUDE_GAM <- FALSE
 ```
 
 ```{r load, include=FALSE}
@@ -144,4 +145,27 @@ compare_continuous_covariate(cur_data, sd_emp)
 ```
 
 ## Effects of Categroical Covariates
+
+The effect of covariate is shown in two ways. The table below all plots gives the $R^2$ values for the model given the covariate across all comparison methods. In case the number of levels is not too large, a plot of the difference in absolute deviation conditional on the factor levels is shown. Some factor levels may be removed for plotting (i.e., those levels for which the proportion of observations is less than `r formals(compare_categorical_covariate)$rm_levels_less`). In this case, the number of removed levels is also given.
+
+### Meta Data
+
+```{r, fig.width=20.5, fig.height=3.5, message=FALSE}
+
+bind_rows(
+  compare_categorical_covariate(cur_data, model),
+  compare_categorical_covariate(cur_data, model2),
+  compare_categorical_covariate(cur_data, parameter),
+  compare_categorical_covariate(cur_data, dataset, plot = FALSE)
+)
+```
+
+### Categorical Covariates
+
+```{r, fig.width=20.5, fig.height=4.5, message=FALSE}
+bind_rows(
+  compare_categorical_covariate(cur_data, population, rm_levels_less = 0),
+  compare_categorical_covariate(cur_data, sci_goal, rm_levels_less = 0)
+)
+```
 
