@@ -538,3 +538,28 @@ save(all_pairs_full, file = "all_pairs_core_full.RData", compress = "xz")
 save(all_pairs_full, file = "all_pairs_core_full_OLD.RData", compress = "xz", 
      version = 2)
 
+############## check if estimates match
+
+load("all_pairs_core.RData")
+
+sel_data <- 1
+sel_parameter <- 2
+
+all_pairs %>% 
+  filter(dataset == all_pairs$dataset[[sel_data]], 
+         parameter == all_pairs$parameter[[sel_parameter]]) %>% 
+  select(dataset, x, cond_x, se_x, y, cond_y, se_y, 
+         orig_condition, parameter_o) %>%
+  filter(cond_x == "Comp MLE") %>% 
+  print(n = Inf)
+
+dm %>% 
+  filter(dataset == str_remove(all_pairs$dataset[[sel_data]], ":.+")) %>% 
+  select(model, dataset, inter, est_group) %>% 
+  unnest(est_group) %>% 
+  filter(parameter == 
+           str_remove(all_pairs$parameter_o[[sel_parameter]], ".+:")) %>% 
+  select(inter:se, orig_parameter, orig_condition)
+
+all_pairs %>% 
+  filter(se_x > 5)

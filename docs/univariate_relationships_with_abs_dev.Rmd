@@ -54,7 +54,7 @@ ylab <- "Abs. deviation (Comp MLE)"
 ```
 
 
-We begin by investigating the abolsute relationship from the simplest method, the complete pooling MLE method. This leaves us with `r nrow(targ_cmle)` observations for the analysis.
+We begin by investigating the abolsute relationship from the simplest method, the complete pooling MLE method (i.e., `y` always refers to `Comp MLE"` and `x` refers to the other method in the pair). This leaves us with `r nrow(targ_cmle)` observations for the analysis.
 
 ## Effect of Method
 
@@ -80,22 +80,23 @@ In case observations had to be removed for the analysis, the percentage of remov
 ### Effect of Parameter Estimate
 
 ```{r, fig.width=20.5, fig.height=3, message=FALSE}
-compare_continuous_covariate(cur_data, x)
-compare_continuous_covariate(cur_data, poly(x, 2))
-
 compare_continuous_covariate(cur_data, y)
 compare_continuous_covariate(cur_data, poly(y, 2))
+
+compare_continuous_covariate(cur_data, x)
+compare_continuous_covariate(cur_data, poly(x, 2))
 ```
 
 ### Standard Error
 
 ```{r, fig.width=20.5, fig.height=3, message=FALSE}
-compare_continuous_covariate(cur_data, se_x)
-compare_continuous_covariate(cur_data, se_x, filter = se_x < 0.25)
-
 compare_continuous_covariate(cur_data, se_y)
 compare_continuous_covariate(cur_data, se_y, filter = se_y < 1)
 compare_continuous_covariate(cur_data, se_y, filter = se_y < 0.25)
+
+compare_continuous_covariate(cur_data, se_x)
+compare_continuous_covariate(cur_data, se_x, filter = se_x < 1)
+compare_continuous_covariate(cur_data, se_x, filter = se_x < 0.25)
 ```
 
 ### Hetereogeneity
@@ -186,7 +187,8 @@ ylab <- "Abs. deviation (Trait PP)"
 ```
 
 
-We begin by investigating the abolsute relationship from the simplest method, the complete pooling MLE method. This leaves us with `r nrow(targ_lpp)` observations for the analysis.
+In the second analysis, we focus on investigating the absolute deviation from the most complex method, the latent trait partial pooling method (i.e., `y` always refers to `Trait PP` and `x` refers to the other method in the pair). This leaves us with `r nrow(cur_data)` observations for the analysis.
+
 
 ## Effect of Method
 
@@ -212,22 +214,23 @@ In case observations had to be removed for the analysis, the percentage of remov
 ### Effect of Parameter Estimate
 
 ```{r, fig.width=20.5, fig.height=3, message=FALSE}
-compare_continuous_covariate(cur_data, x)
-compare_continuous_covariate(cur_data, poly(x, 2))
-
 compare_continuous_covariate(cur_data, y)
 compare_continuous_covariate(cur_data, poly(y, 2))
+
+compare_continuous_covariate(cur_data, x)
+compare_continuous_covariate(cur_data, poly(x, 2))
 ```
 
 ### Standard Error
 
 ```{r, fig.width=20.5, fig.height=3, message=FALSE}
-compare_continuous_covariate(cur_data, se_x)
-compare_continuous_covariate(cur_data, se_x, filter = se_x < 0.25)
-
 compare_continuous_covariate(cur_data, se_y)
 compare_continuous_covariate(cur_data, se_y, filter = se_y < 1)
 compare_continuous_covariate(cur_data, se_y, filter = se_y < 0.25)
+
+compare_continuous_covariate(cur_data, se_x)
+compare_continuous_covariate(cur_data, se_x, filter = se_x < 1)
+compare_continuous_covariate(cur_data, se_x, filter = se_x < 0.25)
 ```
 
 ### Hetereogeneity
