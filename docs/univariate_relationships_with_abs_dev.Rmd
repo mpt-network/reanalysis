@@ -70,6 +70,15 @@ afex_plot(m_method, "cond_x",
   labs(y = ylab, x = "Second Estimation Method")
 ```
 
+We can also look at the histogram of the absolute deviation across methods.
+
+```{r, fig.width=8, fig.height=4}
+cur_data %>% 
+  ggplot(aes(abs_dev)) +
+  geom_histogram(binwidth = 0.05, boundary = 0) +
+  facet_wrap("cond_x", nrow = 2)
+```
+
 
 ## Effects of Continuous Covariates
 
@@ -141,8 +150,8 @@ compare_continuous_covariate(cur_data, log1p_fit_y)
 ### Relative Parameter Information
 
 ```{r, fig.width=20.5, fig.height=3, message=FALSE}
-compare_continuous_covariate(cur_data, log1p_hetero)
-compare_continuous_covariate(cur_data, sd_emp)
+compare_continuous_covariate(cur_data, rel_par_weight_x)
+compare_continuous_covariate(cur_data, rel_par_weight_y)
 ```
 
 ## Effects of Categroical Covariates
@@ -205,6 +214,16 @@ afex_plot(m_method, "cond_x",
 ```
 
 
+We can also look at the histogram of the absolute deviation across methods.
+
+```{r, fig.width=8, fig.height=4}
+cur_data %>% 
+  ggplot(aes(abs_dev)) +
+  geom_histogram(binwidth = 0.05, boundary = 0) +
+  facet_wrap("cond_x", nrow = 2)
+```
+
+
 ## Effects of Continuous Covariates
 
 In the following plots, the blue line shows the fitted model (in case it is not a simple linear relationship, the transformation of the independent variable is given in parentheses in the x-axis label). The $R^2$ value shon in the plot is the $R^2$ of this model (i.e., the blue line). The red line shows a GAM on the independent variable with shrinkage applied cubic regression spline.
@@ -275,8 +294,8 @@ compare_continuous_covariate(cur_data, log1p_fit_y)
 ### Relative Parameter Information
 
 ```{r, fig.width=20.5, fig.height=3, message=FALSE}
-compare_continuous_covariate(cur_data, log1p_hetero)
-compare_continuous_covariate(cur_data, sd_emp)
+compare_continuous_covariate(cur_data, rel_par_weight_x)
+compare_continuous_covariate(cur_data, rel_par_weight_y)
 ```
 
 ## Effects of Categroical Covariates
