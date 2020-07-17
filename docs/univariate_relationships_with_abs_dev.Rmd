@@ -82,7 +82,7 @@ cur_data %>%
 
 ## Effects of Continuous Covariates
 
-In the following plots, the blue line shows the fitted model (in case it is not a simple linear relationship, the transformation of the independent variable is given in parentheses in the x-axis label). The $R^2$ value shon in the plot is the $R^2$ of this model (i.e., the blue line). The red line shows a GAM on the independent variable with shrinkage applied cubic regression spline.
+In the following plots, the blue line shows the fitted model (in case it is not a simple linear relationship, the transformation of the independent variable is given in parentheses in the x-axis label). The $R^2$ value shon in the plot is the $R^2$ of this model (i.e., the blue line). The red line shows a GAM on the independent variable with shrinkage applied thin plagte regression spline.
 
 In case observations had to be removed for the analysis, the percentage of removed (rem) observations is also shown in the x-axis caption.
 
@@ -114,10 +114,37 @@ compare_continuous_covariate(cur_data, se_x, filter = se_x < 0.25)
 compare_continuous_covariate(cur_data, log1p_hetero)
 compare_continuous_covariate(cur_data, poly(log1p_hetero, 2))
 compare_continuous_covariate(cur_data, poly(log1p_hetero, 3))
+```
 
+The data suggests a step-like relationship such that only values that are at or near zero show a considerable probability of non-zero absolute deviations. To look at this further, we can see how probable it is to observe values near zero. The following table shows that at least 80% of observations have a `log1p` value that is very near to zero.
+
+```{r, message=FALSE}
+cur_data %>% 
+  group_by(cond_x) %>% 
+  summarise(less_than_00001 = mean(log1p_hetero < 0.00001),
+            less_than_01 = mean(log1p_hetero < 0.01))
+```
+
+If we look at the conditionmal disttirbution of absolute deviation whether or not it is very near to zero, we can see that there is some evidence for the step-like relationship, but the pattern is not overwhelming.
+
+```{r, fig.width=20.5, fig.height=3}
+cur_data %>% 
+  mutate(less_than_00001 = factor(log1p_hetero < 0.00001, levels = c("TRUE", "FALSE"))) %>% 
+  ggplot(aes(x = less_than_00001, y = abs_dev)) +
+  #geom_violin() +
+  geom_boxplot() +
+  facet_wrap("cond_x", nrow = 1)
+```
+
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
 compare_continuous_covariate(cur_data, sd_emp)
 compare_continuous_covariate(cur_data, poly(sd_emp, 2))
+
+compare_continuous_covariate(cur_data, sd_emp_inv)
+compare_continuous_covariate(cur_data, poly(sd_emp_inv, 2))
 ```
+
 
 ### Rho
 
@@ -126,6 +153,7 @@ compare_continuous_covariate(cur_data, rho_max)
 compare_continuous_covariate(cur_data, rho_mean)
 compare_continuous_covariate(cur_data, rho_fzmean)
 compare_continuous_covariate(cur_data, rho_med)
+compare_continuous_covariate(cur_data, rho_propl5)
 ```
 
 
@@ -136,6 +164,7 @@ compare_continuous_covariate(cur_data, fungi_max)
 compare_continuous_covariate(cur_data, fungi_mean)
 compare_continuous_covariate(cur_data, fungi_fzmean)
 compare_continuous_covariate(cur_data, fungi_med)
+compare_continuous_covariate(cur_data, fungi_propl5)
 ```
 
 ### Model Fit
@@ -252,16 +281,44 @@ compare_continuous_covariate(cur_data, se_x, filter = se_x < 1)
 compare_continuous_covariate(cur_data, se_x, filter = se_x < 0.25)
 ```
 
+
 ### Hetereogeneity
 
 ```{r, fig.width=20.5, fig.height=3, message=FALSE}
 compare_continuous_covariate(cur_data, log1p_hetero)
 compare_continuous_covariate(cur_data, poly(log1p_hetero, 2))
 compare_continuous_covariate(cur_data, poly(log1p_hetero, 3))
+```
 
+The data suggests a step-like relationship such that only values that are at or near zero show a considerable probability of non-zero absolute deviations. To look at this further, we can see how probable it is to observe values near zero. The following table shows that at least 80% of observations have a `log1p` value that is very near to zero.
+
+```{r, message=FALSE}
+cur_data %>% 
+  group_by(cond_x) %>% 
+  summarise(less_than_00001 = mean(log1p_hetero < 0.00001),
+            less_than_01 = mean(log1p_hetero < 0.01))
+```
+
+If we look at the conditionmal disttirbution of absolute deviation whether or not it is very near to zero, we can see that there is some evidence for the step-like relationship, but the pattern is not overwhelming.
+
+```{r, fig.width=20.5, fig.height=3}
+cur_data %>% 
+  mutate(less_than_00001 = factor(log1p_hetero < 0.00001, levels = c("TRUE", "FALSE"))) %>% 
+  ggplot(aes(x = less_than_00001, y = abs_dev)) +
+  #geom_violin() +
+  geom_boxplot() +
+  facet_wrap("cond_x", nrow = 1)
+```
+
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
 compare_continuous_covariate(cur_data, sd_emp)
 compare_continuous_covariate(cur_data, poly(sd_emp, 2))
+
+compare_continuous_covariate(cur_data, sd_emp_inv)
+compare_continuous_covariate(cur_data, poly(sd_emp_inv, 2))
 ```
+
 
 ### Rho
 
@@ -270,6 +327,7 @@ compare_continuous_covariate(cur_data, rho_max)
 compare_continuous_covariate(cur_data, rho_mean)
 compare_continuous_covariate(cur_data, rho_fzmean)
 compare_continuous_covariate(cur_data, rho_med)
+compare_continuous_covariate(cur_data, rho_propl5)
 ```
 
 
@@ -280,6 +338,7 @@ compare_continuous_covariate(cur_data, fungi_max)
 compare_continuous_covariate(cur_data, fungi_mean)
 compare_continuous_covariate(cur_data, fungi_fzmean)
 compare_continuous_covariate(cur_data, fungi_med)
+compare_continuous_covariate(cur_data, fungi_propl5)
 ```
 
 ### Model Fit

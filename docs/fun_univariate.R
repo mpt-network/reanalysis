@@ -164,7 +164,7 @@ compare_continuous_covariate <- function(data,
     geom_point(alpha = alpha)
   if (INCLUDE_GAM) {
     outp <- outp + geom_smooth(method = "gam", se = FALSE, 
-                formula = y ~ s(x, bs = "cs"), colour = "red")
+                formula = y ~ s(x, bs = "ts"), colour = "red")
   }
   outp + 
     geom_smooth(method = "lm", se = FALSE, 
