@@ -6,7 +6,7 @@ print(CURDIR)
 setwd(CURDIR)
 
 library(checkpoint)
-checkpoint("2020-04-25", R.version = "4.0.0")
+checkpoint("2020-04-25")  ## R 4.0.0 or higher is recommended.
 ## do not compile from source on windows!
 
 library("MPTmultiverse")
@@ -144,22 +144,6 @@ all_pars <- results %>%
   mutate(parameter_o = factor(paste0(model2, ":", orig_parameter))) %>% 
   droplevels()
 
-### check if covariates exists for all variables (and not more)
-### should be TRUE
-stopifnot(all(unique(covariates$dataset) %in% unique(all_pars$dataset)))
-stopifnot(all(unique(all_pars$dataset) %in% unique(covariates$dataset)))
-
-all_pars <- left_join(all_pars, covariates) %>%
-  mutate(model = factor(model, levels = lev_mod),
-         model2 = factor(model2, levels = lev_mod2))
-
-
-## should be length 0
-all_pars %>% 
-  filter(is.na(population)) %>% 
-  select(model, dataset, orig_condition) %>% 
-  unique()
-
 ##---------------------------------------------------------------
 ##                        More Covariates                       -
 ##---------------------------------------------------------------
@@ -244,7 +228,8 @@ fungibility <- results %>%
   summarise(fungi_max = max(abs(correlation), na.rm = TRUE),
             fungi_mean = mean(abs(correlation), na.rm = TRUE),
             fungi_fzmean = mean(FisherZ(abs(correlation)), na.rm = TRUE),
-            fungi_med = median(abs(correlation), na.rm = TRUE)) %>% 
+            fungi_med = median(abs(correlation), na.rm = TRUE),
+            fungi_propl5 = mean(abs(correlation) > .5, na.rm = TRUE)) %>% 
   ungroup() %>% 
   rename(orig_condition = condition)
 
@@ -257,7 +242,8 @@ correlation <- results %>%
   summarise(rho_max = max(abs(est), na.rm = TRUE),
             rho_mean = mean(abs(est), na.rm = TRUE),
             rho_fzmean = mean(FisherZ(abs(est)), na.rm = TRUE),
-            rho_med = median(abs(est), na.rm = TRUE)) %>% 
+            rho_med = median(abs(est), na.rm = TRUE),
+            rho_propl5 = mean(abs(est) > .5, na.rm = TRUE)) %>% 
   ungroup() %>% 
   rename(orig_condition = condition) %>% 
   mutate(parameter_o = factor(paste0(model2, ":", parameter))) %>% 
@@ -268,11 +254,13 @@ hetero_empirical <- results %>%
   unnest(est_indiv) %>% 
   group_by(model, dataset, model2, orig_condition, 
            orig_parameter, parameter) %>% 
-  summarise(sd_emp = sd(est)) %>%
+  summarise(sd_emp = sd(est),
+            sd_emp_inv = sd(qnorm(est))) %>%
   ungroup %>% 
   mutate(parameter_o = factor(paste0(model2, ":", orig_parameter))) %>% 
   select(-parameter, -orig_parameter)
 mean(is.na(hetero_empirical$sd_emp))
+mean(is.na(hetero_empirical$sd_emp_inv))
 
 ## covariates on parameters basis
 covariates_par <- left_join(fungibility, correlation) 
@@ -332,10 +320,6 @@ all_par_covariates %>%
 
 all_par_covariates %>% 
   filter(is.na(model2))
-
-all_par_covariates %>% 
-  group_by(model2) %>% 
-  summarise(mean(is.na(fungi)))
 
 all_par_covariates %>% 
   filter(model2 == "pd_e") %>% 
@@ -504,7 +488,7 @@ all_pairs <- all_pairs_full %>%
   select(model, model2, dataset, parameter, 
          abs_dev, x, se_x, cond_x, y, se_y, cond_y, 
          logp_hetero, log1p_hetero, ## Heterogeneity (non-parameteric)
-         sd_emp, ## Hetereogeneity across parameter based on average of 
+         sd_emp, sd_emp_inv, ## Hetereogeneity across parameter based on average of 
                   ## partial-pooling (i.e., empirical SD of individual latent 
                   ## trait parameters.
          starts_with("rho"), ## Rho (average correlation for each parameter)
