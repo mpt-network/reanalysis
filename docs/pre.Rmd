@@ -1,0 +1,115 @@
+---
+title: "Applying Prediction Rule ENsembles"
+author: "MPT Reanalysis Project (code and text current document: Henrik Singmann)"
+date: "Results from: `r Sys.Date()`"
+output: 
+  html_document:
+    toc: TRUE
+---
+
+<style>
+  .main-container {
+    max-width: 1200px !important;
+  }
+</style>
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
+options(width = 120)
+library("pre")
+library("tidyverse")
+theme_set(theme_bw(base_size = 15) + 
+            theme(legend.position="bottom", 
+                  panel.grid.major.x = element_blank()))
+```
+
+```{r load, include=FALSE}
+load("../all_pairs_core.RData")
+str(all_pairs)
+dput(levels(all_pairs$cond_x))
+```
+
+
+# Overview
+
+This document provides an overview of the univariate relationships of all covariates with the absolute parameter deviation.  We separate the relationships by focussing on one method as the target method and then investigating the relationships for each of the remaining methods with this method.
+
+
+
+# DV: Absolute Deviation from Complete Pooling MLE Estimate
+
+
+
+```{r}
+targ_cmle <- all_pairs %>% 
+  filter(cond_y == "Comp MLE") %>% 
+  filter(cond_x == "Trait PP") %>% 
+  #as.data.frame() %>% 
+  select(abs_dev, x, y, 
+         se_x, se_y, 
+         log1p_hetero, sd_emp_inv, 
+         rho_med, fungi_max) %>% 
+  na.omit
+
+targ_cmle2 <- all_pairs %>% 
+  mutate(is_small = factor(abs_dev < 0.05, 
+                           levels = c(TRUE, FALSE))) %>% 
+  filter(cond_y == "Comp MLE") %>% 
+  filter(cond_x == "Trait PP") %>% 
+  #as.data.frame() %>% 
+  select(is_small, 
+         y, #y, 
+         se_y, #se_y, 
+         log1p_hetero, sd_emp_inv, 
+         rho_med, fungi_max) %>% 
+  na.omit
+```
+
+```{r}
+cur_data <- targ_cmle
+ylab <- "Abs. deviation (Comp MLE)"
+```
+
+```{r}
+set.seed(667)
+compmle_ens <- pre(abs_dev ~ ., targ_cmle, winsfrac = 0)
+compmle_ens
+```
+
+
+```{r}
+imps <- importance(compmle_ens, standardize = TRUE, round = 4L)
+```
+
+```{r}
+plot(compmle_ens, nterms = 6, plot.dim = c(2, 3), standardize = TRUE, 
+     cex = 0.7)
+```
+
+
+```{r}
+set.seed(667)
+compmle_ens2 <- pre(is_small ~ ., targ_cmle2, winsfrac = 0, 
+                    family = "binomial")
+compmle_ens2
+```
+
+```{r}
+imps <- importance(compmle_ens2, round = 4L)
+```
+
+```{r}
+plot(compmle_ens2, nterms = 6, plot.dim = c(2, 3), cex = 0.7)
+```
+
+```{r}
+singleplot(compmle_ens2, varname = "se_x")
+```
+
+
+```{r, eval=FALSE}
+## fails due to RAM limits.
+pairplot(compmle_ens2, varnames = c("se_x", "sd_emp_inv"))
+```
+
