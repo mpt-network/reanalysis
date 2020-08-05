@@ -7,7 +7,7 @@ setwd(CURDIR)
 
 ## https://ukgovdatascience.github.io/rap-website/article-dependency-and-reproducibility.html
 library(checkpoint)
-checkpoint("2020-04-25", R.version = "4.0.0")
+checkpoint("2020-04-25")
 ## do not compile from source on windows!
 
 library("MPTmultiverse")
@@ -77,7 +77,8 @@ pm_i <- load_combine_info(fi_pm)
 all( unique(pm$dataset) %in% unique(pm_i$dataset) )
 all( unique(pm$orig_model) %in% unique(pm_i$orig_model) )
 
-pm <- left_join(pm, pm_i)
+pm <- left_join(pm, pm_i) %>% 
+  filter(dataset != "Smithetal2014_Exp1.csv")
 pm %>% 
   select(n_tree, rel_tree, model_df, model_exp, data_tree) %>% 
   summarise_all(list(null = ~any(map_lgl(., is.null)), 
@@ -490,7 +491,8 @@ c2ht %>%
   summarise_all(list(null = ~any(map_lgl(., is.null)), 
                      na = ~any(map_lgl(., ~isTRUE(is.na(.)))))) %>% 
   as.data.frame()
-
+c2ht <- c2ht %>% 
+  filter(dataset != "Slotnick16")
 
 ##################################################################
 ##                          Quad Model                          ##
