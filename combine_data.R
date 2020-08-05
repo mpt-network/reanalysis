@@ -978,6 +978,12 @@ htsm %>%
 #   slice(1) %>% 
 #   {.[[1]]}
 
+## rename one dataset
+htsm <- htsm %>% 
+  mutate(dataset = str_replace(dataset, "^Schuetz & Broeder$", 
+                               "Schuetz & Broeder (2011) Ex2"))
+
+
 ##################################################################
 ##                     Process Dissociation                     ##
 ##################################################################
