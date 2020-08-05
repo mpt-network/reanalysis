@@ -1,4 +1,32 @@
 
+make_categorical_table <- function(data, 
+                                   covariate, 
+                                   fun = mean,
+                                   ...,
+                                   filter, 
+                                   add_prop = TRUE) {
+  orig_n <- nrow(data)
+  if (!missing(filter)) {
+    data <- data %>% 
+      dplyr::filter( !!enquo(filter) )
+  }
+  removed <- 1 - nrow(data)/orig_n
+  
+  tmp_out <- data %>% 
+    group_by(!!enquo(covariate), cond_x) %>% 
+    summarise(tmp = fun(abs_dev, ...)) %>%
+    pivot_wider(names_from = cond_x, values_from = tmp)
+  
+  if (add_prop) {
+    tmp_prop <-  data %>% 
+      group_by(!!enquo(covariate)) %>% 
+      summarise(prop = n()/nrow(.))
+    tmp_out <- left_join(tmp_prop, tmp_out)
+  }
+  tmp_out %>% 
+    print(n = Inf)
+}
+
 compare_categorical_covariate <- function(data, 
                                           covariate, 
                                           filter, 

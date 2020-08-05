@@ -199,6 +199,24 @@ bind_rows(
 )
 ```
 
+Given that there are more than eight levels of `model2`, we also look at a table of the mean absolute deviations:
+
+```{r, message=FALSE}
+make_categorical_table(cur_data, model2)
+```
+
+We can also look at a table of the mean absolute deviations as a function of the parameter:
+
+```{r, message=FALSE}
+make_categorical_table(cur_data, parameter)
+```
+
+Or at the standard deviation of the absolute deviations as a function of the parameter:
+```{r, message=FALSE}
+make_categorical_table(cur_data, parameter, sd)
+```
+
+
 ### Categorical Covariates
 
 ```{r, fig.width=20.5, fig.height=4.5, message=FALSE}
@@ -372,6 +390,24 @@ bind_rows(
   compare_categorical_covariate(cur_data, dataset, plot = FALSE)
 )
 ```
+
+Given that there are more than eight levels of `model2`, we also look at a table of the mean absolute deviations:
+
+```{r, message=FALSE}
+make_categorical_table(cur_data, model2)
+```
+
+We can also look at a table of the mean absolute deviations as a function of the parameter:
+
+```{r, message=FALSE}
+make_categorical_table(cur_data, parameter)
+```
+
+Or at the standard deviation of the absolute deviations as a function of the parameter:
+```{r, message=FALSE}
+make_categorical_table(cur_data, parameter, sd)
+```
+
 
 ### Categorical Covariates
 
