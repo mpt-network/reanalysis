@@ -19,7 +19,7 @@ options(width = 150)
 
 ```{r, include=FALSE}
 library(checkpoint)
-checkpoint("2020-04-25", R.version = "4.0.0")
+checkpoint("2020-04-25")
 library("MPTmultiverse")
 library("tidyverse")
 tmpe <- new.env()
