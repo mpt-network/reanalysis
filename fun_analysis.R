@@ -133,6 +133,7 @@ get_rel_par_weight <- function(parameter, est, model_exp, rel_tree,
       sum
     
   }
+  #if (all(rel_weight == 0)) browser()
   rel_weight
   
 }

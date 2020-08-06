@@ -113,24 +113,24 @@ results %>%
 # 10 PP_TB_trait   0.946
 # 11 PP_TB_trait_u 0.952
 
-convergence %>% 
-  filter(value != 0) %>% 
-  mutate(method = factor(key, levels = c(
-    "Comp_MR_MLE", "No_MR_MLE", "No_MR_NPB", "No_MR_PB", 
-    "Comp_TB_ss", "No_TB_ss", "PP_TB_beta", "PP_TB_trait_u", "PP_TB_trait"), 
-    labels = c("Comp MLE", "No asy", "No PB", "No NPB", 
-               "Comp Bayes", "No Bayes",  
-               "Beta PP", "Trait_u PP", "Trait PP"))) %>% 
-  mutate(failure = 1 - value) %>% 
-  ggplot(aes(x = failure, y = method)) +
-  geom_point(size = 5) +
-  labs(y = "Method", x = "Failure Rate") +
-  coord_cartesian(xlim = c(0, 0.055)) +
-  theme_bw(base_size = 25) + 
-  scale_x_continuous(breaks = seq(0, 0.05, by = 0.01), 
-                     labels = scales::label_percent(accuracy = 1))
-ggsave("figures/failure.png", width = 16, height = 18, units = "cm",
-       dpi = 500)
+# convergence %>% 
+#   filter(value != 0) %>% 
+#   mutate(method = factor(key, levels = c(
+#     "Comp_MR_MLE", "No_MR_MLE", "No_MR_NPB", "No_MR_PB", 
+#     "Comp_TB_ss", "No_TB_ss", "PP_TB_beta", "PP_TB_trait_u", "PP_TB_trait"), 
+#     labels = c("Comp MLE", "No asy", "No PB", "No NPB", 
+#                "Comp Bayes", "No Bayes",  
+#                "Beta PP", "Trait_u PP", "Trait PP"))) %>% 
+#   mutate(failure = 1 - value) %>% 
+#   ggplot(aes(x = failure, y = method)) +
+#   geom_point(size = 5) +
+#   labs(y = "Method", x = "Failure Rate") +
+#   coord_cartesian(xlim = c(0, 0.055)) +
+#   theme_bw(base_size = 25) + 
+#   scale_x_continuous(breaks = seq(0, 0.05, by = 0.01), 
+#                      labels = scales::label_percent(accuracy = 1))
+# ggsave("figures/failure.png", width = 16, height = 18, units = "cm",
+#        dpi = 500)
 
 
 ##----------------------------------------------------------------
@@ -175,6 +175,7 @@ all_pars <- all_pars %>%
              orig_condition = orig_condition)) %>% 
   ungroup
 options("tidylog.display" = NULL)
+
 
 # all_pars %>%
 #   filter(is.na(rel_par_weight)) %>%

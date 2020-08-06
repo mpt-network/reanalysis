@@ -468,6 +468,8 @@ c2ht_models <- c(
 
 c2ht <- c2ht %>% 
   filter(model %in% c2ht_models)
+c2ht <- c2ht %>% 
+  filter(dataset != "Slotnick16")
 
 c2ht$model2 <- case_when(
   c2ht$model == "6_rrest" ~ "c2ht6",
@@ -491,8 +493,7 @@ c2ht %>%
   summarise_all(list(null = ~any(map_lgl(., is.null)), 
                      na = ~any(map_lgl(., ~isTRUE(is.na(.)))))) %>% 
   as.data.frame()
-c2ht <- c2ht %>% 
-  filter(dataset != "Slotnick16")
+
 
 ##################################################################
 ##                          Quad Model                          ##
