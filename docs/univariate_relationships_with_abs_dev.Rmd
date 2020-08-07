@@ -183,6 +183,40 @@ compare_continuous_covariate(cur_data, rel_par_weight_x)
 compare_continuous_covariate(cur_data, rel_par_weight_y)
 ```
 
+The reason both plots look pretty much the same is that both relative parameter information variables are highly correlated, $r \approx 1$. We therefore focus on one of the two below (`rel_par_weight_y`).
+
+Using a logarithm:
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, log(rel_par_weight_y))
+```
+
+And removing all with a relative weight of roughly 1:
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, log(rel_par_weight_y), 
+                             filter = rel_par_weight_y <= .999)
+
+```
+
+### Relative Parameter N 
+
+We can also consider the relative N. As tehse are again highly correlated ($r \approx 1$), we use `y` again exclusivly:
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, rel_n_y)
+compare_continuous_covariate(cur_data, log(rel_n_y))
+```
+
+Here it makes sense to trim the x-axis a bit:
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, rel_n_y, 
+                             filter = rel_n_y  < 15000)
+compare_continuous_covariate(cur_data, log(rel_n_y), 
+                             filter = rel_n_y  < 15000)
+```
+
+
 ## Effects of Categroical Covariates
 
 The effect of covariate is shown in two ways. The table below all plots gives the $R^2$ values for the model given the covariate across all comparison methods. In case the number of levels is not too large, a plot of the difference in absolute deviation conditional on the factor levels is shown. Some factor levels may be removed for plotting (i.e., those levels for which the proportion of observations is less than `r formals(compare_categorical_covariate)$rm_levels_less`). In this case, the number of removed levels is also given.
@@ -373,6 +407,39 @@ compare_continuous_covariate(cur_data, log1p_fit_y)
 ```{r, fig.width=20.5, fig.height=3, message=FALSE}
 compare_continuous_covariate(cur_data, rel_par_weight_x)
 compare_continuous_covariate(cur_data, rel_par_weight_y)
+```
+
+The reason both plots look pretty much the same is that both relative parameter information variables are highly correlated, $r \approx 1$. We therefore focus on one of the two below (`rel_par_weight_y`).
+
+Using a logarithm:
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, log(rel_par_weight_y))
+```
+
+And removing all with a relative weight of roughly 1:
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, log(rel_par_weight_y), 
+                             filter = rel_par_weight_y <= .999)
+
+```
+
+### Relative Parameter N 
+
+We can also consider the relative N. As tehse are again highly correlated ($r \approx 1$), we use `y` again exclusivly:
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, rel_n_y)
+compare_continuous_covariate(cur_data, log(rel_n_y))
+```
+
+Here it makes sense to trim the x-axis a bit:
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, rel_n_y, 
+                             filter = rel_n_y  < 15000)
+compare_continuous_covariate(cur_data, log(rel_n_y), 
+                             filter = rel_n_y  < 15000)
 ```
 
 ## Effects of Categroical Covariates

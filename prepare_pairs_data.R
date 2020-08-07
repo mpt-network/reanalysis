@@ -177,6 +177,11 @@ all_pars <- all_pars %>%
 options("tidylog.display" = NULL)
 
 
+## there should be no 0s:
+all_pars %>% 
+  select(model, dataset, inter, orig_model, orig_condition, rel_par_weight) %>% 
+  filter(rel_par_weight == 0) 
+
 # all_pars %>%
 #   filter(is.na(rel_par_weight)) %>%
 #   select(model, model2, dataset, rel_par_weight) %>%
@@ -496,6 +501,7 @@ all_pairs <- all_pairs_full %>%
          starts_with("fungi"), ##  Fungibility/across-chain correlations 
          log1p_fit_x, logp_fit_x, log1p_fit_y, logp_fit_y, ## model fit
          rel_par_weight_x, rel_par_weight_y, ## Absolute parameter values 
+         rel_n_x, rel_n_y,
          ## product of previous branches. Relative information available 
          npar, ## number of parameters
          population, sci_goal, ### external covariates

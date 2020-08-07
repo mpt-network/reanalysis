@@ -191,10 +191,22 @@ compare_continuous_covariate <- function(data,
                    y = abs_dev)) +
     geom_point(alpha = alpha)
   if (INCLUDE_GAM) {
+    gamr2 <- function(gam){
+      1-((sum(residuals(gam)^2))/
+                 (sum((gam$y - mean(gam$y))^2)))
+    }
+    dgam <- data %>% 
+      group_by(cond_x) %>% 
+      summarise(lm = list(mgcv::gam(formula(expr(
+        abs_dev ~ s(!!enexpr(covariate), bs = "ts")))))) 
+    dgam <- dgam %>% 
+      mutate(r.squared = map_dbl(lm, gamr2),
+             est = map(lm, ~ broom::tidy(.)), 
+             gof = map(lm, ~ broom::glance(.)))
     outp <- outp + geom_smooth(method = "gam", se = FALSE, 
                 formula = y ~ s(x, bs = "ts"), colour = "red")
   }
-  outp + 
+  outp <- outp + 
     geom_smooth(method = "lm", se = FALSE, 
                 formula = formula(expr(y ~ !!expr_cov)))  +
     facet_wrap("cond_x", nrow = 1) +
@@ -202,8 +214,19 @@ compare_continuous_covariate <- function(data,
                     substr(
                       formatC(r.squared, digits = 2, format = "f"), 
                       2, 4), "')")), 
-              x = rx[2] - 0.2*diff(rx), 
-              y = 0.9, parse = TRUE) +
+              x = rx[2] - 0.375*diff(rx), 
+              y = 0.95, parse = TRUE, colour = "blue")
+  if (INCLUDE_GAM) {
+    outp <- outp + 
+      geom_label(data = dgam, aes(label = paste0(#"paste(italic(R) ^ 2, ' = ", 
+                                                 substr(
+                      formatC(r.squared, digits = 2, format = "f"), 
+                      2, 4))),#"')")), 
+              x = rx[2] - 0.12*diff(rx), 
+              y = 0.95, parse = FALSE, colour = "red")
+  }
+  
+  outp +
     coord_cartesian(ylim = c(0, 1)) +
     labs(x = new_xlab, y = ylab)
 }
