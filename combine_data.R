@@ -893,7 +893,13 @@ check_core_pars(htsm)
 ## add info:
 htsm_e <- new.env()
 htsm_f <- load("data/2htsm/infos_2HTSM.RData", envir = htsm_e)
-htsm_f <- htsm_f[-8]
+htsm_f <- htsm_f[-8]  ## remove random seed from names
+## remove wrong BK2011:
+rm(list = htsm_f[6:7], envir = htsm_e)
+htsm_f <- htsm_f[-(6:7)]
+## add correct BK2011:
+htsm_f2 <- load("data/2htsm/BK2011_corrgetinfo.RData", envir = htsm_e)
+htsm_f <- c(htsm_f, htsm_f2[-1]) ## add names but without random seed
 htsm_i <- map_dfr(htsm_f, ~make_info_df(., env = htsm_e))
 
 htsm_i <- htsm_i %>% 
