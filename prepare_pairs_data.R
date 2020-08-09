@@ -533,7 +533,8 @@ set.seed(345)
 ## training data
 all_pairs_train <- all_pairs %>% 
   group_by(cond_x, cond_y, parameter) %>% 
-  sample_frac(0.75)
+  sample_frac(0.75) %>% 
+  ungroup()
 
 all_pairs_test <- anti_join(all_pairs, all_pairs_train, by = 'id')
 save(all_pairs_train, all_pairs_test, 
