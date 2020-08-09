@@ -532,13 +532,20 @@ all_pairs <- all_pairs %>%
 set.seed(345)
 ## training data
 all_pairs_train <- all_pairs %>% 
-  group_by(cond_x, cond_y, parameter) %>% 
+  group_by(cond_x, cond_y, model2) %>% 
   sample_frac(0.75) %>% 
-  ungroup()
+  ungroup() %>% 
+  mutate(part = factor("train", levels = c("train", "test")))
 
-all_pairs_test <- anti_join(all_pairs, all_pairs_train, by = 'id')
-save(all_pairs_train, all_pairs_test, 
-     file = "all_pairs_core_tt.RData", compress = "xz")
+all_pairs_test <- anti_join(all_pairs, all_pairs_train, by = 'id') %>% 
+  mutate(part = factor("test", levels = c("train", "test")))
+
+all_pairs_list <- list(
+  train = all_pairs_train,
+  test = all_pairs_test
+)
+
+save(all_pairs_list, file = "all_pairs_core_tt.RData", compress = "xz")
 
 
 save(all_pairs_full, file = "all_pairs_core_full.RData", compress = "xz")
