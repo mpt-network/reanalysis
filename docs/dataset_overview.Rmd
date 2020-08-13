@@ -324,11 +324,9 @@ all_pars_a3 <- all_pars_a2 %>%
   # mutate(parameter = factor(parameter,
   #                           levels = c("Do", "Dn", "g"))) %>%
   mutate(cond_x2 = cond_y,
-         cond_y2 = cond_x) %>% 
-  filter(!(str_detect(dataset, "Smith et al 2014")))
-
+         cond_y2 = cond_x) 
 all_pars_a3 %>% 
-  filter(!(model %in% "pm")) %>% 
+  #filter(!(model %in% "pm")) %>% 
   ggplot(aes(x = x, y = y)) +
   geom_abline(slope = 1, intercept = 0) +
   geom_point(alpha = 0.2) + #aes(size = trials)
