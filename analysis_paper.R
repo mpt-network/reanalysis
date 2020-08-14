@@ -32,18 +32,22 @@ ppairs <- all_pairs %>%
   ggplot(aes(x = x, y = y)) +
   geom_abline(slope = 1, intercept = 0) +
   geom_point(alpha = 0.2) + #aes(size = trials)
-  facet_grid(cond_x2~ cond_y2, switch = "both", as.table = FALSE) +
+  facet_grid(cond_x2~ cond_y2, switch = "both", as.table = TRUE) +
   geom_text(data=plot_text,
             aes(x = 0.15, y = 0.9, label=ccc),
             parse = FALSE, inherit.aes=FALSE, size = 5) +
   coord_fixed(xlim = c(0, 1), ylim = c(0, 1)) +
   scale_x_continuous(breaks = seq(0, 1, by = 0.25), 
                      labels = c("0", "", "0.5", "", "1")) +
+  scale_y_continuous(breaks = seq(0, 1, by = 0.25), 
+                     labels = c("0  ", "", "0.5", "", "1  ")) +
   #scale_size(range = c(0.5, 2.5)) +
   geom_smooth(method = "gam", se = FALSE, 
                 formula = y ~ s(x, bs = "ts"), colour = "red") +
   labs(x = "", y = "") +
-  theme(legend.position = "none")
+  theme(legend.position = "none") + 
+  theme(panel.grid.major.x = element_line(), 
+        panel.grid.minor = element_blank())
 ggsave("figures_man/pairsplot_all.png", plot = ppairs,
        width = 29, height = 28, units = "cm", 
        dpi = 500)
@@ -60,7 +64,7 @@ targ_cmle <- all_pairs %>%
 
 rel_vars <- c("se_x_w", "se_y_w", "fungi_max", "rel_weight", "rel_n")
 
-targ_cmle %>% 
+cors <- targ_cmle %>% 
   group_by(cond_x)  %>% 
   mutate(rel_weight = log(rel_weight),
          rel_n = log(rel_n)) %>% 
@@ -71,5 +75,10 @@ targ_cmle %>%
   mutate(cor = map(cor, ~pivot_longer(., -par1, names_to = "par2", values_to = "cor"))) %>% 
   unnest(cor) %>% 
   filter(par1 != par2) %>% 
-  pivot_wider(c(par1, par2), names_from = "cond_x", values_from = "cor")
+  pivot_wider(c(par1, par2), names_from = "cond_x", values_from = "cor") 
+
+## filter out all repeating columns
+cors %>% 
+  filter(par2 != "se_x", par1 != "rel_n") %>% 
+  slice(-8, -11, -12) 
   
