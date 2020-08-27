@@ -157,9 +157,29 @@ ns <- sing_dat %>%
   group_by(model2) %>% 
   summarise(n = n())
 
-sing_dat %>% 
+meansd <- sing_dat %>% 
   group_by(model2) %>% 
-  summarise(across(c(sd_emp_inv, rho_med)))
+  summarise(across(c(sd_emp_inv, rho_med, fungi_max, 
+                     rel_weight, rel_n_w, p_hetero, 
+                     p_fit_x), .fns = ~ paste0(
+                       formatC(mean(.), format = "f", digits = 2),
+                       " ±",
+                       formatC(sd(.), format = "f", digits = 2)
+                     )))
+
+minmax <- sing_dat %>% 
+  group_by(model2) %>% 
+  summarise(across(c(sd_emp_inv, rho_med, fungi_max, 
+                     rel_weight, rel_n_w, p_hetero, 
+                     p_fit_x), .fns = ~ paste0(
+                       formatC(min(.), format = "f", digits = 2),
+                       " - ", 
+                       formatC(max(.), format = "f", digits = 2)
+                     )))
+
+left_join(ns, meansd)
+
+left_join(ns, minmax)
 
 ##----------------------------------------------------------------
 ##              Correlation of Relevant Covariates               -
