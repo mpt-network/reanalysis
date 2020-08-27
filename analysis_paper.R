@@ -103,7 +103,7 @@ psd <- compare_continuous_covariate(data = targ_both, covariate = sd_emp_inv,
 prho <- compare_continuous_covariate(data = targ_both, covariate = rho_med, 
                                      cond_label, cond_iv_label, ylab = ylab) +
   xlab("Parameter correlations (median)")
-pfungi <- compare_continuous_covariate(data = targ_both, covariate = sd_emp_inv, 
+pfungi <- compare_continuous_covariate(data = targ_both, covariate = fungi_max, 
                                      cond_label, cond_iv_label, ylab = ylab) +
   xlab("Parameter trade-off (max)")
 prelw <- compare_continuous_covariate(data = targ_both, covariate = log(rel_weight), 
@@ -114,10 +114,10 @@ preln <- compare_continuous_covariate(data = targ_both, covariate = log(rel_n_w)
   xlab("Relative N (log)")
 
 ## data-set-level covariates
-phetero <- compare_continuous_covariate(data = targ_both, covariate = log1p_hetero, 
+phetero <- compare_continuous_covariate(data = targ_both, covariate = log1p(p_hetero), 
                                      cond_label, cond_iv_label, ylab = ylab) +
   xlab("Hetereogeneity (log p + 1)")
-pfit <- compare_continuous_covariate(data = targ_both, covariate = log1p_fit_x, 
+pfit <- compare_continuous_covariate(data = targ_both, covariate = log1p(p_fit_x), 
                                      cond_label, cond_iv_label, ylab = ylab) +
   xlab("Model fit (IV, log p + 1)")
 
@@ -144,6 +144,22 @@ ggsave("figures_man/univariate_notgood.png", plot = puniv_notgood,
        width = 28, height = 25, units = "cm", 
        dpi = 500)
 
+
+##---------------------------------------------------------------
+##                      Table of Covariates                     -
+##---------------------------------------------------------------
+
+sing_dat <- all_pairs %>% 
+  filter(cond_y == "Comp MLE") %>% 
+  filter(cond_x == "Trait PP")
+
+ns <- sing_dat %>% 
+  group_by(model2) %>% 
+  summarise(n = n())
+
+sing_dat %>% 
+  group_by(model2) %>% 
+  summarise(across(c(sd_emp_inv, rho_med)))
 
 ##----------------------------------------------------------------
 ##              Correlation of Relevant Covariates               -
