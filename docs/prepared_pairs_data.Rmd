@@ -84,16 +84,16 @@ The data set contains the covariates we had previously agreed on. An overvieew i
 
 ```{r, echo=TRUE}
 all_pairs %>% 
-  select(se_x, se_y, logp_hetero:sci_goal) %>% 
+  select(se_x, se_y, p_hetero:sci_goal) %>% 
   str
 ```
 
 - `se_x` & `se_y`: Standard errors (to tap into $N$/sample size)
-- `logp_hetero` & `log1p_hetero`:  $p$-value of non-parametric test of heterogeneity. $p$-value is transformed using either `log()` or `log1p()` (i.e.,  `log(1+x)`).
+- `p_hetero`, `logp_hetero` & `log1p_hetero`:  $p$-value of non-parametric test of heterogeneity. $p$-value is transformed using either `log()` or `log1p()` (i.e.,  `log(1+x)`).
 - `sd_emp` and `sd_emp_inv`: Hetereogeneity across individual parameter estimates. Calculated as the empirical SD of partial-pooling estimates (as we did not save SD estimate). `sd_emp` is simply the SD of the estimates, whereas `sd_emp_inv` is the SD of the estimates after applying the probit link function to the estimates first (i.e., `qnorm`).
 - `rho_max`, `rho_mean`, `rho_fzmean`, `rho_med`, `rho_propl5`: `rho` is the correlation estimate from partial pooling model (i.e., correlation of individual-level estimates across parameters). Here, we provide a summary statistic for each parameter based on its absolute correlation with all other model parameters. The idea for `rho` was to focus on the average absolute correlation with other parameters,  `rho_mean` (idea was to include this only in case this correlation is substantial). `rho_max` is absolute maximum correlation, `rho_fzmean` is mean of absolute Fisher-z transormed correlations, `rho_med` is median of absolute correlation estimates, and `rho_propl5` is the proportion of correlation that are larger than absolute .5.
 - `fungi_max`, `fungi_mean`, `fungi_fzmean`, `fungi_med`, `fungi_propl5`: `fungi` is short for fungibility and describes the across-chain correlation of the group-level model parameters from the partial pooling model (i.e., correlation of group-level parameter estimates across posterior samples). Here, we provide a summary statistic for each parameter based on its absolute correlation with all other model parameters. The idea for `fungi` was to focus on the maximum absolute correlation with other parameters,  `fungi_max`. `fungi_mean` is absolute mean correlation, `fungi_fzmean` is mean of absolute Fisher-z transormed correlations, `fungi_med` is median of absolute correlation estimates, and `fungi_propl5` is the proportion of correlation that are larger than absolute .5
-- `log1p_fit_x`, `logp_fit_x`, `log1p_fit_y`, & `logp_fit_y`: Model fit based on $p$-value of model fit test for methods `x` and `y`. $p$-value is transformed using either `log()` or `log1p()` (i.e.,  `log(1+x)`).
+- `p_fit_x`, `log1p_fit_x`, `logp_fit_x`, `p_fit_y`, `log1p_fit_y`, & `logp_fit_y`: Model fit based on $p$-value of model fit test for methods `x` and `y`. $p$-value is transformed using either `log()` or `log1p()` (i.e.,  `log(1+x)`).
 - `rel_par_weight`: Proportion of information available for estimating this parameter (or relative parameter weight). Calculated as sum of all branches containing a parameter (where branch is the product of the parameters in the branch).
 - `rel_n`: Relative N available for estimating this parameter. `rel_par_weight` times N.
 - `npar`: Number of parameters in a model (not a regsitered or agreed on covariate).

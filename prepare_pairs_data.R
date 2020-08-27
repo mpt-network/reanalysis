@@ -494,12 +494,13 @@ str(all_pairs_full)
 all_pairs <- all_pairs_full %>% 
   select(model, model2, dataset, parameter, 
          abs_dev, x, se_x, cond_x, y, se_y, cond_y, 
-         logp_hetero, log1p_hetero, ## Heterogeneity (non-parameteric)
+         p_hetero, logp_hetero, log1p_hetero, ## Heterogeneity (non-parameteric)
          sd_emp, sd_emp_inv, ## Hetereogeneity across parameter based on average of 
                   ## partial-pooling (i.e., empirical SD of individual latent 
                   ## trait parameters.
          starts_with("rho"), ## Rho (average correlation for each parameter)
          starts_with("fungi"), ##  Fungibility/across-chain correlations 
+         p_fit_x, p_fit_y,
          log1p_fit_x, logp_fit_x, log1p_fit_y, logp_fit_y, ## model fit
          rel_par_weight_x, rel_par_weight_y, ## Absolute parameter values 
          rel_n_x, rel_n_y,

@@ -111,6 +111,7 @@ compare_continuous_covariate(cur_data, se_x, filter = se_x < 0.25)
 ### Hetereogeneity
 
 ```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, log1p(p_hetero))
 compare_continuous_covariate(cur_data, log1p_hetero)
 compare_continuous_covariate(cur_data, poly(log1p_hetero, 2))
 compare_continuous_covariate(cur_data, poly(log1p_hetero, 3))
@@ -170,8 +171,10 @@ compare_continuous_covariate(cur_data, fungi_propl5)
 ### Model Fit
 
 ```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, p_fit_x)
 compare_continuous_covariate(cur_data, log1p_fit_x)
 #compare_continuous_covariate(cur_data, logp_fit_x)
+compare_continuous_covariate(cur_data, p_fit_y)
 compare_continuous_covariate(cur_data, log1p_fit_y)
 #compare_continuous_covariate(cur_data, logp_fit_y)
 ```
@@ -337,6 +340,7 @@ compare_continuous_covariate(cur_data, se_x, filter = se_x < 0.25)
 ### Hetereogeneity
 
 ```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, log1p(p_hetero))
 compare_continuous_covariate(cur_data, log1p_hetero)
 compare_continuous_covariate(cur_data, poly(log1p_hetero, 2))
 compare_continuous_covariate(cur_data, poly(log1p_hetero, 3))
@@ -396,8 +400,10 @@ compare_continuous_covariate(cur_data, fungi_propl5)
 ### Model Fit
 
 ```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, p_fit_x)
 compare_continuous_covariate(cur_data, log1p_fit_x)
 #compare_continuous_covariate(cur_data, logp_fit_x)
+compare_continuous_covariate(cur_data, p_fit_y)
 compare_continuous_covariate(cur_data, log1p_fit_y)
 #compare_continuous_covariate(cur_data, logp_fit_y)
 ```
