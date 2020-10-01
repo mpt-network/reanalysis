@@ -143,6 +143,40 @@ n_tab %>%
   summarise_if(is.numeric, sum)
 ```
 
+## Number of Parameter Estimates
+
+We can also get an overview of the number of (core) parameter estimates per model:
+
+```{r}
+dm %>% 
+  filter(inter == "Comp MLE") %>% 
+  unnest(est_group) %>% 
+  filter(core) %>% 
+  group_by(model) %>% 
+  tally
+```
+
+Overall this provides the following number of estimates:
+
+```{r}
+dm %>% 
+  filter(inter == "Comp MLE") %>% 
+  unnest(est_group) %>% 
+  filter(core) %>% 
+  #group_by(model) %>% 
+  tally
+```
+
+If we include all parameters (i.e., core and non-core) we get the following table:
+
+```{r}
+dm %>% 
+  filter(inter == "Comp MLE") %>% 
+  unnest(est_group) %>% 
+  #filter(core) %>% 
+  group_by(model) %>% 
+  tally
+```
 
 ## Methods
 

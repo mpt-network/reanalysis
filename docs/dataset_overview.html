@@ -364,7 +364,7 @@ summary {
 
 <h1 class="title toc-ignore">Overview of Data Sets Included in the Meta-Analysis</h1>
 <h4 class="author">MPT Reanalysis Project (code and text current document: Henrik Singmann)</h4>
-<h4 class="date">Results from: 2020-08-13</h4>
+<h4 class="date">Results from: 2020-10-01</h4>
 
 </div>
 
@@ -429,6 +429,40 @@ summary {
 ##     par n_within_between n_between n_study
 ##   &lt;int&gt;            &lt;int&gt;     &lt;int&gt;   &lt;int&gt;
 ## 1 13956              452       305     164</code></pre>
+</div>
+<div id="number-of-parameter-estimates" class="section level2">
+<h2>Number of Parameter Estimates</h2>
+<p>We can also get an overview of the number of (core) parameter estimates per model:</p>
+<pre><code>## # A tibble: 9 x 2
+##   model     n
+##   &lt;fct&gt; &lt;int&gt;
+## 1 2htsm   623
+## 2 c2ht     45
+## 3 pc      246
+## 4 pd       62
+## 5 pm      144
+## 6 hb      103
+## 7 rm      264
+## 8 real    147
+## 9 quad    145</code></pre>
+<p>Overall this provides the following number of estimates:</p>
+<pre><code>## # A tibble: 1 x 1
+##       n
+##   &lt;int&gt;
+## 1  1779</code></pre>
+<p>If we include all parameters (i.e., core and non-core) we get the following table:</p>
+<pre><code>## # A tibble: 9 x 2
+##   model     n
+##   &lt;fct&gt; &lt;int&gt;
+## 1 2htsm   623
+## 2 c2ht    159
+## 3 pc      246
+## 4 pd       62
+## 5 pm      144
+## 6 hb      331
+## 7 rm      264
+## 8 real    210
+## 9 quad    145</code></pre>
 </div>
 <div id="methods" class="section level2">
 <h2>Methods</h2>
