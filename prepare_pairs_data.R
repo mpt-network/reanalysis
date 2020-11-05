@@ -91,27 +91,33 @@ convergence_data <- results %>%
     {suppressWarnings(map_dfr(., check_set))}
 convergence_data$sum <- rowSums(convergence_data[,-(1:2)])
 
+table(convergence_data$sum)
+
 table(convergence_data$sum) %>% 
   prop.table
-#          7          8          9 
-# 0.03012048 0.10843373 0.86144578 
+#         7         8         9 
+# 0.0304878 0.1036585 0.8658537 
 
-results %>% 
-  get_convergence(model, split = FALSE)
-# # A tibble: 11 x 2
-#    key           value
-#    <chr>         <dbl>
-#  1 Comp_MR_MLE   1    
-#  2 Comp_TB_ss    1    
-#  3 No_MR_MLE     1    
-#  4 No_MR_NPB     0.982
-#  5 No_MR_PB      1    
-#  6 No_TB_ss      0.964
-#  7 PP_LC_lc      0    
-#  8 PP_TB_beta    0.988
-#  9 PP_TB_beta++  0    
-# 10 PP_TB_trait   0.946
-# 11 PP_TB_trait_u 0.952
+convergence %>% 
+  mutate(fail = 1 - value)
+# # A tibble: 11 x 3
+#    key           value   fail
+#    <chr>         <dbl>  <dbl>
+#  1 Comp_MR_MLE   1     0     
+#  2 Comp_TB_ss    1     0     
+#  3 No_MR_MLE     1     0     
+#  4 No_MR_NPB     0.982 0.0183
+#  5 No_MR_PB      1     0     
+#  6 No_TB_ss      0.963 0.0366
+#  7 PP_LC_lc      0     1     
+#  8 PP_TB_beta    0.988 0.0122
+#  9 PP_TB_beta++  0     1     
+# 10 PP_TB_trait   0.951 0.0488
+# 11 PP_TB_trait_u 0.951 0.0488
+
+convergence_data %>% 
+  summarise(across(-c(model, dataset, sum), ~sum(!.))) %>% 
+  pivot_longer(everything())
 
 # convergence %>% 
 #   filter(value != 0) %>% 
