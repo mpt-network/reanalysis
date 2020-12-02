@@ -56,6 +56,60 @@ ggsave("figures_man/pairsplot_all.png", plot = ppairs,
        dpi = 500)
 
 
+##-------------------
+##  Partial Pooling  
+##-------------------
+
+pp_methods <- c("Beta PP", "Trait_u PP", "Trait PP")
+
+all_pairs %>% 
+  filter(cond_x %in% pp_methods, cond_y %in% pp_methods) %>% 
+  arrange(desc(abs_dev)) %>% 
+  slice(seq(1, n(), by = 2))
+
+
+##---------------------
+##  Bootstrap Methods  
+##---------------------
+
+boot_methods <- c("No PB", "No NPB")
+
+all_pairs %>% 
+  filter(cond_x %in% boot_methods, cond_y %in% boot_methods) %>% 
+  arrange(desc(abs_dev)) %>% 
+  slice(seq(1, n(), by = 2))
+
+
+##---------------
+##  All Methods  
+##---------------
+
+comp_methods <- c("Comp MLE", "Comp Bayes")
+
+largest <- all_pairs %>% 
+  arrange(desc(abs_dev)) %>% 
+  select(model, model2, parameter, abs_dev, cond_x, cond_y) %>% 
+  filter(abs_dev > 0.75)
+
+## are there any large divergences not including complete pooling
+largest %>% 
+  filter(!(cond_x %in% comp_methods) & !(cond_y %in% comp_methods))
+
+## 
+largest %>% 
+  mutate(comp_method = 
+           case_when(
+             (cond_x %in% comp_methods) & (cond_y %in% comp_methods) ~ "Comp MLE",
+             cond_x %in% comp_methods ~ as.character(cond_x), 
+             TRUE ~ as.character(cond_y)),
+         other_method = case_when(
+             (cond_x %in% comp_methods) & (cond_y %in% comp_methods) ~ "Comp Bayes",
+             cond_x %in% comp_methods ~ as.character(cond_y), 
+             TRUE ~ as.character(cond_x))) %>% 
+  select(-cond_x, -cond_y) %>% 
+  unique %>% 
+  print(n = Inf)
+
 ##----------------------------------------------------------------
 ##                    Univariate Relationships                   -
 ##----------------------------------------------------------------
