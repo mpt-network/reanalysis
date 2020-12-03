@@ -6,7 +6,7 @@ print(CURDIR)
 setwd(CURDIR)
 
 library(checkpoint)
-checkpoint("2020-04-25")  ## R 4.0.0 or higher is recommended.
+checkpoint("2020-07-01")  ## R 4.0.0 or higher is recommended.
 ## do not compile from source on windows!
 
 library("MPTmultiverse")
@@ -92,6 +92,8 @@ convergence_data <- results %>%
 convergence_data$sum <- rowSums(convergence_data[,-(1:2)])
 
 table(convergence_data$sum)
+  # 7   8   9 
+  # 5  17 142
 
 table(convergence_data$sum) %>% 
   prop.table
@@ -118,6 +120,20 @@ convergence %>%
 convergence_data %>% 
   summarise(across(-c(model, dataset, sum), ~sum(!.))) %>% 
   pivot_longer(everything())
+# # A tibble: 11 x 2
+#    name          value
+#    <chr>         <int>
+#  1 Comp_MR_MLE       0
+#  2 Comp_TB_ss        0
+#  3 No_MR_MLE         0
+#  4 No_MR_NPB         3
+#  5 No_MR_PB          0
+#  6 No_TB_ss          6
+#  7 PP_LC_lc        164
+#  8 PP_TB_beta        2
+#  9 PP_TB_beta++    164
+# 10 PP_TB_trait       8
+# 11 PP_TB_trait_u     8
 
 # convergence %>% 
 #   filter(value != 0) %>% 
