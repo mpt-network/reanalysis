@@ -110,6 +110,14 @@ largest %>%
   unique %>% 
   print(n = Inf)
 
+all_pairs %>% 
+  group_by(cond_x, cond_y) %>% 
+  summarise(max = max(abs_dev),
+            model = model[which.max(abs_dev)]) %>% 
+  ungroup %>% 
+  arrange(max) %>% 
+  print(n = Inf)
+
 ##----------------------------------------------------------------
 ##                    Univariate Relationships                   -
 ##----------------------------------------------------------------
