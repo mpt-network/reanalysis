@@ -311,7 +311,7 @@ hb %>%
 ### following email from Julia from 06/10/2019 after discussion with Edgar,
 ### retain only "within" condition from Erdfelder2007
 for (i in seq_len(nrow(hb))) {
-  if (hb[i,]$dataset == "ErdfelderBrandtBröder2007Exp1.csv") {
+  if (hb[i,]$dataset == "ErdfelderBrandtBr?der2007Exp1.csv") {
     for (j in seq_along(hb)) {
       if (is.data.frame(hb[i,][[j]][[1]]) && 
           ("condition" %in% colnames(hb[i,][[j]][[1]]))) {
@@ -338,7 +338,7 @@ pc$dataset <- str_remove(pc$dataset, pattern = ".+\\/")
 pc <- pc %>% 
   mutate(dataset = case_when(
     dataset == "Broeder.csv" ~ "Broeder_sixTrials.csv",
-    dataset == "Francis et al 2018_Englisch Ausschließlich.csv" ~ 
+    dataset == "Francis et al 2018_Englisch Ausschlie?lich.csv" ~ 
       "Francis_fourTrials_english.csv",
     dataset == "Francis et al 2018_Englisch Dominant.csv" ~ 
       "Francis_fourTrials_englishDominant.csv",
@@ -904,8 +904,8 @@ htsm_i <- map_dfr(htsm_f, ~make_info_df(., env = htsm_e))
 
 htsm_i <- htsm_i %>% 
   mutate(dataset = str_remove(dataset, ".csv$")) %>% 
-  mutate(dataset = str_replace_all(dataset, "ö", "oe")) %>% 
-  mutate(dataset = str_replace_all(dataset, "ü", "ue")) %>% 
+  mutate(dataset = str_replace_all(dataset, "Ã¶", "oe")) %>% 
+  mutate(dataset = str_replace_all(dataset, "Ã¼", "ue")) %>% 
   mutate(dataset = if_else(dataset == "Schuetz & Broeder (2011) Ex2", 
                            "Schuetz & Broeder", dataset)) %>% 
   mutate(dataset = if_else(dataset == "Kueppers & Bayen (2014)", 

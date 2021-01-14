@@ -412,6 +412,17 @@ ext_covariates <- read_csv("covariates.csv",
 any(is.na(ext_covariates$population))
 any(is.na(ext_covariates$sci_goal))
 
+
+## must be TRUE
+all( sort(unique(covariates$dataset)) %in% sort(unique(ext_covariates$dataset)) )
+
+unique(covariates$dataset)[! (unique(covariates$dataset) %in% unique(ext_covariates$dataset) )]
+
+# unique(ext_covariates$dataset)[! (unique(ext_covariates$dataset) %in% unique(covariates$dataset))]
+
+
+all( sort(unique(covariates$model)) %in% sort(unique(ext_covariates$model)) )
+
 covariates <- left_join(covariates, ext_covariates)
 
 #################################################################

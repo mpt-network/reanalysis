@@ -44,11 +44,11 @@ model,model2,dataset,orig_condition,population,parameter estimation?
 2htsm,2htsm_4,S2002_E2,Control,older adults,yes
 2htsm,2htsm_4,S2002_E2,SemDementia,patients,yes
 2htsm,2htsm_4,S2002_E3,FrontDementia,patients,yes
-2htsm,2htsm_4,Schuetz & Broeder,1,college students,yes
-2htsm,2htsm_4,Schuetz & Broeder,2,college students,yes
-2htsm,2htsm_4,Schuetz & Broeder,3,college students,yes
-2htsm,2htsm_4,Schuetz & Broeder,4,college students,yes
-2htsm,2htsm_4,Schuetz & Broeder,5,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex2,1,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex2,2,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex2,3,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex2,4,college students,yes
+2htsm,2htsm_4,Schuetz & Broeder (2011) Ex2,5,college students,yes
 2htsm,2htsm_4,Schuetz & Broeder (2011) Ex1,1,college students,yes
 2htsm,2htsm_4,Schuetz & Broeder (2011) Ex1,2,college students,yes
 2htsm,2htsm_4,Schuetz & Broeder (2011) Ex1,3,college students,yes
