@@ -28,7 +28,13 @@ plot_text <- all_pairs %>%
   summarise(ccc = substr(formatC(
     CCC(x, y, na.rm = TRUE)$rho.c$est, 
     digits = 2, format = "f"), 2, 4))
-plot_text$ccc
+# plot_text$ccc
+
+plot_rmse <- all_pairs %>%
+  group_by(cond_x2, cond_y2) %>% 
+  summarise(rmse = substr(formatC(
+    sqrt(mean((x - y)^2)), 
+    digits = 3, format = "f"), 2, 5))
 
 ppairs <- all_pairs %>% 
   #filter(!(model %in% "pm")) %>% 
@@ -36,9 +42,12 @@ ppairs <- all_pairs %>%
   geom_abline(slope = 1, intercept = 0) +
   geom_point(alpha = 0.2) + #aes(size = trials)
   facet_grid(cond_x2~ cond_y2, switch = "both", as.table = TRUE) +
-  geom_text(data=plot_text,
-            aes(x = 0.15, y = 0.9, label=ccc),
-            parse = FALSE, inherit.aes=FALSE, size = 5) +
+  geom_text(data=plot_rmse,
+            aes(y = 0.13, x = 0.85, label=rmse),
+            parse = FALSE, inherit.aes=FALSE, size = 4) +
+  # geom_text(data=plot_rmse,
+  #           aes(y = 0.1, x = 0.85, label=rmse),
+  #           parse = FALSE, inherit.aes=FALSE, size = 5, color = "blue") +
   coord_fixed(xlim = c(0, 1), ylim = c(0, 1)) +
   scale_x_continuous(breaks = seq(0, 1, by = 0.25), 
                      labels = c("0", "", "0.5", "", "1")) +
@@ -206,6 +215,45 @@ ggsave("figures_man/univariate_notgood.png", plot = puniv_notgood,
        width = 28, height = 25, units = "cm", 
        dpi = 500)
 
+
+##----------------------------------------------------------------
+##                          RMSE table                           -
+##----------------------------------------------------------------
+
+rmse_tab_1 <- targ_both %>% 
+  group_by(cond_label, cond_iv_label) %>% 
+  summarise(mean = mean(abs_dev), 
+            sd = sd(abs_dev), 
+            rmse = sqrt(mean((mean(abs_dev) - abs_dev)^2)), 
+            sigma = sigma(lm(abs_dev ~ 1))) %>% 
+  mutate(across(where(is.double), ~formatC(.x, digits = 3, format = "f")))
+rmse_tab_1
+
+rmse_tab_2 <- targ_both %>% 
+  group_by(cond_label, cond_iv_label) %>% 
+  summarise(
+    model = sigma(lm(abs_dev ~ model)),
+    model2 = sigma(lm(abs_dev ~ model2)), 
+    parameter = sigma(lm(abs_dev ~ parameter)),
+    dataset = sigma(lm(abs_dev ~ dataset)), 
+    population = sigma(lm(abs_dev ~ population)), 
+    sci_goal = sigma(lm(abs_dev ~ sci_goal)) 
+  ) %>% 
+  mutate(across(where(is.double), ~formatC(.x, digits = 3, format = "f")))
+rmse_tab_2
+
+rmse_tab_3 <- targ_both %>% 
+  group_by(cond_label, cond_iv_label) %>% 
+  summarise(
+    model = length(unique(model)),
+    model2 = length(unique(model2)), 
+    parameter = length(unique(parameter)),
+    dataset = length(unique(dataset)), 
+    population = length(unique(population)),
+    sci_goal = length(unique(sci_goal))
+  ) %>% 
+  mutate(across(where(is.double), ~formatC(.x, digits = 3, format = "f")))
+rmse_tab_3
 
 ##---------------------------------------------------------------
 ##                      Table of Covariates                     -

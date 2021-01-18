@@ -67,12 +67,16 @@ compare_continuous_covariate <- function(data,
       1-((sum(residuals(gam)^2))/
                  (sum((gam$y - mean(gam$y))^2)))
     }
+    gam_sigma <- function(gam) {
+      sqrt(mean(residuals(gam)^2))
+    }
     dgam <- data %>% 
       group_by(...) %>% 
       summarise(lm = list(mgcv::gam(formula(expr(
         abs_dev ~ s(!!enexpr(covariate), bs = "ts")))))) 
     dgam <- dgam %>% 
       mutate(r.squared = map_dbl(lm, gamr2),
+             sigma = map_dbl(lm, gam_sigma),
              est = map(lm, ~ broom::tidy(.)), 
              gof = map(lm, ~ broom::glance(.)))
     outp <- outp + geom_smooth(method = "gam", se = FALSE, 
@@ -82,20 +86,21 @@ compare_continuous_covariate <- function(data,
     geom_smooth(method = "lm", se = FALSE, 
                 formula = formula(expr(y ~ !!expr_cov)))  +
     facet_wrap(vars(...), nrow = 1) +
-    geom_label(data = dgof, aes(label = paste0("paste(italic(R) ^ 2, ' = ", 
+    geom_label(data = dgof, aes(
+      label = paste0("'", #paste0("paste(bar(Delta), ' = ", 
                     substr(
-                      formatC(r.squared, digits = 2, format = "f"), 
-                      2, 4), "')")), 
-              x = rx[2] - 0.5*diff(rx), 
-              y = 0.95, parse = TRUE, colour = "blue")
+                      formatC(sigma, digits = 3, format = "f"), 
+                      2, 5), "'")), #"')")), 
+              x = rx[2] - 0.4*diff(rx), 
+              y = 0.94, parse = TRUE, colour = "blue")
   if (INCLUDE_GAM) {
     outp <- outp + 
       geom_label(data = dgam, aes(label = paste0(#"paste(italic(R) ^ 2, ' = ", 
                                                  substr(
-                      formatC(r.squared, digits = 2, format = "f"), 
-                      2, 4))),#"')")), 
+                      formatC(sigma, digits = 3, format = "f"), 
+                      2, 5))),#"')")), 
               x = rx[2] - 0.12*diff(rx), 
-              y = 0.95, parse = FALSE, colour = "red")
+              y = 0.94, parse = FALSE, colour = "red")
   }
   
   outp +
