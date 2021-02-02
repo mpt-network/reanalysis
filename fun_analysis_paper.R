@@ -108,3 +108,9 @@ compare_continuous_covariate <- function(data,
     labs(x = new_xlab, y = ylab)
 }
 
+create_filter_from_formula <- function(formula) {
+  mm <- model.frame(formula(formula), data = parent.frame(), 
+                    na.action = NULL)
+  unname(!apply(mm, 1, function(x) any(is.na(x))))
+}
+

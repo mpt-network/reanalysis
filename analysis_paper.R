@@ -136,7 +136,18 @@ theme_set(theme_bw(base_size = 13) +
                   panel.grid.major.x = element_blank()))
 
 sel_methods <- c("Comp MLE", "No asy", "Beta PP", "Trait PP")
-#, "Trait_u PP"
+
+rel_vars <- c("se_x_w", "se_y_w", "fungi_max", "rel_weight", "rel_n_w")
+other_vars <- c("y", "sd_emp_inv", "rho_med", "p_hetero", "p_fit_x")
+all_vars <- c(rel_vars, other_vars)
+form_main <- paste0("abs_dev ~ ", paste(all_vars, collapse = " + "))
+
+all_pairs_red <- all_pairs %>% 
+  mutate(filtervar = create_filter_from_formula(form_main)) %>% 
+  filter(filtervar)
+
+1 - nrow(all_pairs_red)/nrow(all_pairs)
+
 
 ## see corresponding Report in docs folder for full overview
 str(all_pairs)
