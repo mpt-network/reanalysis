@@ -151,20 +151,20 @@ all_pairs_red <- all_pairs %>%
 
 ## see corresponding Report in docs folder for full overview
 str(all_pairs)
-targ_cmle <- all_pairs %>% 
+targ_cmle <- all_pairs_red %>% 
   filter(cond_y == "Comp MLE") %>% 
   filter(cond_x != "Comp MLE")
-targ_lpp <- all_pairs %>% 
+targ_lpp <- all_pairs_red %>% 
   filter(cond_y == "Trait PP") %>% 
   filter(cond_x != "Trait PP")
 
 targ_both <- bind_rows(targ_cmle, targ_lpp) %>% 
   filter(cond_x %in% sel_methods) %>% 
   droplevels %>% 
-  mutate(cond_label = factor(paste("DV:", cond_y), 
-                             levels = c("DV: Comp MLE", "DV: Trait PP"))) %>% 
-  mutate(cond_iv_label = factor(paste("IV:", cond_x), levels = 
-                                  paste(paste("IV:", levels(cond_x)))))
+  mutate(cond_label = factor(paste("T:", cond_y), 
+                             levels = c("T: Comp MLE", "T: Trait PP"))) %>% 
+  mutate(cond_iv_label = factor(paste("P:", cond_x), levels = 
+                                  paste(paste("P:", levels(cond_x)))))
   
 ylab <- "Abs. deviation"
 
@@ -172,13 +172,13 @@ ylab <- "Abs. deviation"
 ### parameter-level covariates
 pest <- compare_continuous_covariate(data = targ_both, covariate = poly(y, 2), 
                                      cond_label, cond_iv_label, ylab = ylab) +
-  xlab("Estimate (quadratic)")
+  xlab("Value of parameter estimate (quadratic)")
 psex <- compare_continuous_covariate(data = targ_both, covariate = se_x_w, 
                                      cond_label, cond_iv_label, ylab = ylab) +
-  xlab("SE (IV)")
+  xlab("SE (predicting method)")
 psey <- compare_continuous_covariate(data = targ_both, covariate = se_y_w, 
                                      cond_label, cond_iv_label, ylab = ylab) +
-  xlab("SE (DV)")
+  xlab("SE (target method)")
 psd <- compare_continuous_covariate(data = targ_both, covariate = sd_emp_inv, 
                                      cond_label, cond_iv_label, ylab = ylab) +
   xlab("Individual variability (SD)")
@@ -187,7 +187,7 @@ prho <- compare_continuous_covariate(data = targ_both, covariate = rho_med,
   xlab("Parameter correlations (median)")
 pfungi <- compare_continuous_covariate(data = targ_both, covariate = fungi_max, 
                                      cond_label, cond_iv_label, ylab = ylab) +
-  xlab("Parameter trade-off (max)")
+  xlab("Parameter trade-offs (max)")
 prelw <- compare_continuous_covariate(data = targ_both, covariate = log(rel_weight), 
                                      cond_label, cond_iv_label, ylab = ylab) +
   xlab("Relative information (log)")
@@ -201,7 +201,7 @@ phetero <- compare_continuous_covariate(data = targ_both, covariate = log1p(p_he
   xlab("Hetereogeneity (log p + 1)")
 pfit <- compare_continuous_covariate(data = targ_both, covariate = log1p(p_fit_x), 
                                      cond_label, cond_iv_label, ylab = ylab) +
-  xlab("Model fit (IV, log p + 1)")
+  xlab("Model fit (predicting method, log p + 1)")
 
 
 puniv_good <- cowplot::plot_grid(
