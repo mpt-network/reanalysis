@@ -127,9 +127,12 @@ all_pairs %>%
   arrange(max) %>% 
   print(n = Inf)
 
-##----------------------------------------------------------------
-##                    Univariate Relationships                   -
-##----------------------------------------------------------------
+
+
+##################################################################
+##        Selected Pairs of Target and Predicting Method        ##
+##################################################################
+
 
 theme_set(theme_bw(base_size = 13) + 
             theme(legend.position="bottom", 
@@ -148,7 +151,6 @@ all_pairs_red <- all_pairs %>%
 
 1 - nrow(all_pairs_red)/nrow(all_pairs)
 
-
 ## see corresponding Report in docs folder for full overview
 str(all_pairs)
 targ_cmle <- all_pairs_red %>% 
@@ -161,24 +163,49 @@ targ_lpp <- all_pairs_red %>%
 targ_both <- bind_rows(targ_cmle, targ_lpp) %>% 
   filter(cond_x %in% sel_methods) %>% 
   droplevels %>% 
-  mutate(cond_label = factor(paste("T:", cond_y), 
-                             levels = c("T: Comp MLE", "T: Trait PP"))) %>% 
-  mutate(cond_iv_label = factor(paste("P:", cond_x), levels = 
-                                  paste(paste("P:", levels(cond_x)))))
-  
+  mutate(cond_label = factor(paste("P:", cond_y), 
+                             levels = c("P: Comp MLE", "P: Trait PP"))) %>% 
+  mutate(cond_iv_label = factor(paste("T:", cond_x), levels = 
+                                  paste(paste("T:", levels(cond_x)))))
+
 ylab <- "Abs. deviation"
+  
+
+##----------------------------------------------------------------
+##                  Absolute Mean Deviation Plot                 -
+##----------------------------------------------------------------
+
+targ_both %>% 
+  ggplot(aes(x = cond_x, y = abs_dev)) +
+  geom_boxplot(width = 0.1, outlier.shape = NA) +
+  geom_violin(fill = "transparent", width = 1.1) +
+  stat_summary(fun = mean, fun.max = mean, fun.min = mean, fatten = 0.9) +
+  facet_wrap("cond_label", scales = "free_x") +
+  labs(x = "Target method", y = ylab)
+ggsave("figures_man/mad.png", 
+       width = 16, height = 7, units = "cm", 
+       dpi = 500)
+
+
+
+##----------------------------------------------------------------
+##                    Univariate Relationships                   -
+##----------------------------------------------------------------
+
+
+
 
 
 ### parameter-level covariates
 pest <- compare_continuous_covariate(data = targ_both, covariate = poly(y, 2), 
                                      cond_label, cond_iv_label, ylab = ylab) +
-  xlab("Value of parameter estimate (quadratic)")
+  xlab("Value of parameter estimate (predicting method, quadratic)")
 psex <- compare_continuous_covariate(data = targ_both, covariate = se_x_w, 
                                      cond_label, cond_iv_label, ylab = ylab) +
-  xlab("SE (predicting method)")
+  xlab("SE (target method)")
 psey <- compare_continuous_covariate(data = targ_both, covariate = se_y_w, 
                                      cond_label, cond_iv_label, ylab = ylab) +
-  xlab("SE (target method)")
+  xlab("SE (predicting method)")
 psd <- compare_continuous_covariate(data = targ_both, covariate = sd_emp_inv, 
                                      cond_label, cond_iv_label, ylab = ylab) +
   xlab("Individual variability (SD)")
@@ -201,7 +228,7 @@ phetero <- compare_continuous_covariate(data = targ_both, covariate = log1p(p_he
   xlab("Hetereogeneity (log p + 1)")
 pfit <- compare_continuous_covariate(data = targ_both, covariate = log1p(p_fit_x), 
                                      cond_label, cond_iv_label, ylab = ylab) +
-  xlab("Model fit (predicting method, log p + 1)")
+  xlab("Model fit (target method, log p + 1)")
 
 
 puniv_good <- cowplot::plot_grid(
@@ -329,3 +356,5 @@ cors %>%
   filter(par2 != "se_x", par1 != "rel_n") %>% 
   slice(-8, -11, -12) 
   
+
+
