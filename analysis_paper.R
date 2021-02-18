@@ -163,10 +163,10 @@ targ_lpp <- all_pairs_red %>%
 targ_both <- bind_rows(targ_cmle, targ_lpp) %>% 
   filter(cond_x %in% sel_methods) %>% 
   droplevels %>% 
-  mutate(cond_label = factor(paste("P:", cond_y), 
-                             levels = c("P: Comp MLE", "P: Trait PP"))) %>% 
-  mutate(cond_iv_label = factor(paste("T:", cond_x), levels = 
-                                  paste(paste("T:", levels(cond_x)))))
+  mutate(cond_label = factor(paste("R:", cond_y), 
+                             levels = c("R: Comp MLE", "R: Trait PP"))) %>% 
+  mutate(cond_iv_label = factor(paste("C:", cond_x), levels = 
+                                  paste(paste("C:", levels(cond_x)))))
 
 ylab <- "Abs. deviation"
   
@@ -181,7 +181,7 @@ targ_both %>%
   geom_violin(fill = "transparent", width = 1.1) +
   stat_summary(fun = mean, fun.max = mean, fun.min = mean, fatten = 0.9) +
   facet_wrap("cond_label", scales = "free_x") +
-  labs(x = "Target method", y = ylab)
+  labs(x = "Comparison method", y = ylab)
 ggsave("figures_man/mad.png", 
        width = 16, height = 7, units = "cm", 
        dpi = 500)
@@ -199,13 +199,13 @@ ggsave("figures_man/mad.png",
 ### parameter-level covariates
 pest <- compare_continuous_covariate(data = targ_both, covariate = poly(y, 2), 
                                      cond_label, cond_iv_label, ylab = ylab) +
-  xlab("Value of parameter estimate (predicting method, quadratic)")
+  xlab("Value of parameter estimate (reference method, quadratic)")
 psex <- compare_continuous_covariate(data = targ_both, covariate = se_x_w, 
                                      cond_label, cond_iv_label, ylab = ylab) +
-  xlab("SE (target method)")
+  xlab("SE (comparison method)")
 psey <- compare_continuous_covariate(data = targ_both, covariate = se_y_w, 
                                      cond_label, cond_iv_label, ylab = ylab) +
-  xlab("SE (predicting method)")
+  xlab("SE (reference method)")
 psd <- compare_continuous_covariate(data = targ_both, covariate = sd_emp_inv, 
                                      cond_label, cond_iv_label, ylab = ylab) +
   xlab("Individual variability (SD)")
@@ -228,7 +228,7 @@ phetero <- compare_continuous_covariate(data = targ_both, covariate = log1p(p_he
   xlab("Hetereogeneity (log p + 1)")
 pfit <- compare_continuous_covariate(data = targ_both, covariate = log1p(p_fit_x), 
                                      cond_label, cond_iv_label, ylab = ylab) +
-  xlab("Model fit (target method, log p + 1)")
+  xlab("Model fit (comparison method, log p + 1)")
 
 
 puniv_good <- cowplot::plot_grid(
