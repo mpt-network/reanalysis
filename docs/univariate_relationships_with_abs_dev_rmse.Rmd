@@ -126,7 +126,16 @@ cur_data %>%
             less_than_01 = mean(log1p_hetero < 0.01))
 ```
 
-If we look at the conditionmal disttirbution of absolute deviation whether or not it is very near to zero, we can see that there is some evidence for the step-like relationship, but the pattern is not overwhelming.
+We can also get this table for the p-value itself (i.e., not `log1p`) which is identical as for very small values `log1p` is approximately equal to `p`.
+
+```{r, message=FALSE}
+cur_data %>% 
+  group_by(cond_x) %>% 
+  summarise(less_than_00001 = mean(p_hetero < 0.00001),
+            less_than_01 = mean(p_hetero < 0.01))
+```
+
+If we look at the conditional distribution of absolute deviation whether or not it is very near to zero, we can see that there is some evidence for the step-like relationship, but the pattern is not overwhelming.
 
 ```{r, fig.width=20.5, fig.height=3}
 cur_data %>% 
