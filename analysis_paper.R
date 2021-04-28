@@ -17,6 +17,10 @@ all_pairs <- all_pairs %>%
          rel_n_w = if_else(rel_n > 15000, 15000, rel_n)) %>% 
     mutate(cond_x2 = cond_y,
          cond_y2 = cond_x)
+all_pairs <- all_pairs %>%
+  mutate(cond_co = apply(cbind(as.character(cond_x), 
+            as.character(cond_y)), 1, 
+      function(x) paste(sort(x), collapse = " - ")))
 
 
 ##----------------------------------------------------------------
@@ -65,16 +69,94 @@ ggsave("figures_man/pairsplot_all.png", plot = ppairs,
        dpi = 500)
 
 
+## ecdf
+theme_set(theme_bw(base_size = 15) + 
+            theme(legend.position="bottom"))
+library("ggthemes")
+
+all_pairs %>% 
+  filter(cond_x != "No Bayes", cond_y != "No Bayes") %>% 
+  ggplot(aes(abs_dev, color = cond_y2)) +
+  stat_ecdf(geom = "step", 
+            mapping = aes(y = after_stat(1 - y))) +
+  facet_grid(~cond_x2, as.table = TRUE) +
+  coord_cartesian(xlim = c(0.00, 0.35), expand = FALSE) + 
+  labs(y = expression(paste(
+    italic("Pr"), "(abs. deviation > ", italic("x"), ")")),  
+       x = "Abs. deviation") +
+  guides(color = guide_legend(title = NULL)) + scale_colour_colorblind()
+ggsave("figures_man/eccdf.png", 
+       width = 25, height = 9, units = "cm", 
+       dpi = 500)
+
+theme_set(theme_bw(base_size = 15) + 
+            theme(legend.position="bottom", 
+                  panel.grid.major.x = element_blank()))
+
+
+##------------------------
+##  W/o no pooling Bayes  
+##------------------------
+
+unique_pairs <- all_pairs %>% 
+  distinct(model, model2, dataset, parameter, cond_co, 
+           parameter_o, condition, orig_condition, .keep_all = TRUE) %>% 
+  filter(cond_x != "No Bayes", cond_y != "No Bayes", cond_x != cond_y) 
+
+unique_pairs %>% 
+  summarise(
+    l05 = mean(abs_dev > .05),
+    l10 = mean(abs_dev > .10),
+    l25 = mean(abs_dev > .25),
+    l33 = mean(abs_dev > .33),
+    l50 = mean(abs_dev > .50),
+    l75 = mean(abs_dev > .75),
+    l90 = mean(abs_dev > .90),
+  )
+
+unique_pairs %>% 
+  group_by(cond_co) %>% 
+  summarise(
+    max = max(abs_dev), 
+    which = model2[which.max(abs_dev)],
+    par = parameter[which.max(abs_dev)],
+    data = dataset[which.max(abs_dev)]
+  ) %>% 
+  arrange(max) %>% 
+  print(n = Inf)
+
+unique_pairs %>% 
+  group_by(cond_co) %>% 
+  summarise(max = max(abs_dev), 
+            which = model2[which.max(abs_dev)]) %>% 
+  count(which) %>% 
+  mutate(prob = n / sum(n))
+
+unique_pairs %>% 
+  summarise(mean = mean(abs_dev > 0.75),
+         sum = sum(abs_dev > 0.75))
+
+unique_pairs %>% 
+  filter(abs_dev > 0.75) %>% 
+  count(dataset, model, cond_co)
+
 ##-------------------
 ##  Partial Pooling  
 ##-------------------
 
 pp_methods <- c("Beta PP", "Trait_u PP", "Trait PP")
 
-all_pairs %>% 
+unique_pairs %>% 
   filter(cond_x %in% pp_methods, cond_y %in% pp_methods) %>% 
   arrange(desc(abs_dev)) %>% 
-  slice(seq(1, n(), by = 2))
+  select(model:abs_dev, cond_x, cond_y) 
+
+unique_pairs %>% 
+  filter(cond_x %in% pp_methods, cond_y %in% pp_methods) %>% 
+  arrange(desc(abs_dev)) %>% 
+  select(model:abs_dev, cond_x, cond_y) %>% 
+  filter(abs_dev > .1) %>% 
+  count(model)
 
 
 ##---------------------
