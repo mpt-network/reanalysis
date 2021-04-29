@@ -16,7 +16,8 @@ all_pairs <- all_pairs %>%
          se_y_w = if_else(se_y > 0.25, 0.25, se_y),
          rel_n_w = if_else(rel_n > 15000, 15000, rel_n)) %>% 
     mutate(cond_x2 = cond_y,
-         cond_y2 = cond_x)
+         cond_y2 = cond_x) %>% 
+  mutate(se_c = (se_x_w + se_y_w)/2) 
 all_pairs <- all_pairs %>%
   mutate(cond_co = apply(cbind(as.character(cond_x), 
             as.character(cond_y)), 1, 
@@ -439,4 +440,97 @@ cors %>%
   slice(-8, -11, -12) 
   
 
+#################################################################
+##                     Plots in Discussion                     ##
+#################################################################
+
+all_pairs_red <- all_pairs_red %>% 
+  mutate(par = str_remove(parameter, ".+:")) %>% 
+  mutate(par = str_remove(par, "_")) %>% 
+  mutate(par2 = case_when(
+    model == "quad" ~ paste0("scriptstyle(italic(",
+                            str_extract(par, "[[:upper:]]+"), 
+                            "[", 
+                            str_extract(par, "[[:lower:]]+"), 
+                            "]))"),
+    nchar(par) > 1 ~ paste0("italic(", 
+                            substr(par, 1, nchar(par)-1), 
+                            "[", 
+                            substr(par, nchar(par), nchar(par)), 
+                            "])"),
+    TRUE ~ paste0("italic(", par, ")")
+  ))
+# %>% 
+#   select(par, par2) %>% 
+#   {table(.$par2)}
+
+all_pairs_red$mlab <- factor(
+  all_pairs_red$model2, 
+  levels = c("2htsm_4", "2htsm_5d","2htsm_6e","c2ht6","c2ht8",
+             "pc","pd_s","pd_e","pm","hb","rm","real","quad"),
+  labels = c("2HTSM 4", "2HTSM 5d","2HTSM 6e","c2HT 6","c2HT 8",
+             "PC","PD","PD_e","PM","HB","RM","ReAL","QUAD")
+)
+
+##----------------------------------------------------------------
+##            Absolute Mean Deviation Plot (Model)               -
+##----------------------------------------------------------------
+
+targ_cmle_lpp<- all_pairs_red %>% 
+  filter(cond_y == "Comp MLE") %>% 
+  filter(cond_x == "Trait PP") %>%
+  filter(model2 != "pd_e")
+
+targ_cmle_lpp %>% 
+  ggplot(aes(x = par2, y = abs_dev)) +
+  geom_boxplot(width = 0.08, outlier.shape = NA) +
+  geom_violin(fill = "transparent", width = 0.8) +
+  stat_summary(fun = mean, fun.max = mean, fun.min = mean, fatten = 0.9) +
+  facet_wrap("mlab", scales = "free_x", ncol=4) +
+  labs(x = "Parameter", y = ylab)+
+  theme(axis.text.x = element_text(angle = 0,size=10)) +
+  scale_x_discrete(labels = ggplot2:::parse_safe, 
+                   guide = guide_axis(angle = 0)) 
+# guide = guide_axis(check.overlap = TRUE)
+
+ggsave("figures_man/mad_model.png", 
+       width = 16, height = 16, units = "cm", 
+       dpi = 500)
+
+##----------------------------------------------------------------
+##                          Trade off Plot                       -
+##----------------------------------------------------------------
+
+targ_cmle_lpp %>% 
+  ggplot(aes(x = par2, y = fungi_max)) +
+  geom_boxplot(width = 0.08, outlier.shape = NA) +
+  geom_violin(fill = "transparent", width = 0.8) +
+  stat_summary(fun = mean, fun.max = mean, fun.min = mean, fatten = 0.9) +
+  facet_wrap("mlab", scales = "free_x", ncol=4) +
+  labs(x = "Parameter", y = "Max. trade-off")+
+  theme(axis.text.x = element_text(angle = 0,size=10))  +
+  scale_x_discrete(labels = ggplot2:::parse_safe)
+
+
+ggsave("figures_man/trade_model.png", 
+       width = 16, height = 16, units = "cm", 
+       dpi = 500)
+
+##----------------------------------------------------------------
+##                           SE Plot                             -
+##----------------------------------------------------------------
+
+targ_cmle_lpp %>% 
+  ggplot(aes(x = par2, y = se_c)) +
+  geom_boxplot(width = 0.08, outlier.shape = NA) +
+  geom_violin(fill = "transparent", width = 0.8) +
+  stat_summary(fun = mean, fun.max = mean, fun.min = mean, fatten = 0.9) +
+  facet_wrap("mlab", scales = "free_x", ncol=4) +
+  labs(x = "Parameter", y = "Standard error") +
+  theme(axis.text.x = element_text(angle = 0,size=10))  +
+  scale_x_discrete(labels = ggplot2:::parse_safe)
+
+ggsave("figures_man/se_model.png", 
+       width = 16, height = 16, units = "cm", 
+       dpi = 500)
 
