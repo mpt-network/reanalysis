@@ -448,11 +448,16 @@ all_pairs_red <- all_pairs_red %>%
   mutate(par = str_remove(parameter, ".+:")) %>% 
   mutate(par = str_remove(par, "_")) %>% 
   mutate(par2 = case_when(
-    model == "quad" ~ paste0("scriptstyle(italic(",
+    model == "quad" ~ paste0("scriptstyle(",
                             str_extract(par, "[[:upper:]]+"), 
                             "[", 
                             str_extract(par, "[[:lower:]]+"), 
-                            "]))"),
+                            "])"),
+    model == "hb" & nchar(par) > 1 ~ paste0("italic(", 
+                            substr(par, 1, nchar(par)-1), 
+                            ")[", 
+                            toupper(substr(par, nchar(par), nchar(par))), 
+                            "]"),
     nchar(par) > 1 ~ paste0("italic(", 
                             substr(par, 1, nchar(par)-1), 
                             "[", 
@@ -489,8 +494,7 @@ targ_cmle_lpp %>%
   facet_wrap("mlab", scales = "free_x", ncol=4) +
   labs(x = "Parameter", y = ylab)+
   theme(axis.text.x = element_text(angle = 0,size=10)) +
-  scale_x_discrete(labels = ggplot2:::parse_safe, 
-                   guide = guide_axis(angle = 0)) 
+  scale_x_discrete(labels = ggplot2:::parse_safe) 
 # guide = guide_axis(check.overlap = TRUE)
 
 ggsave("figures_man/mad_model.png", 
