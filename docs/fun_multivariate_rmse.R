@@ -27,6 +27,14 @@ produce_interaction_matrix <- function(inter_ind, length) {
   mat
 }
 
+produce_me_vector <- function(me_ind, length) {
+  out <- numeric(length)
+  for (i in me_ind) {
+    out[i] <- 1
+  }
+  out
+}
+
 fit_ramp <- function(formula, center = FALSE) {
   mmtmp <- model.frame(formula(formula), data = parent.frame())
   #head(mmtmp)

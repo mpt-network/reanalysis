@@ -1,0 +1,534 @@
+---
+title: "Univariate Relationships with Absolute Deviation"
+author: "MPT Reanalysis Project (code and text current document: Henrik Singmann)"
+date: "Results from: `r Sys.Date()`"
+output: 
+  html_document:
+    toc: TRUE
+---
+
+<style>
+  .main-container {
+    max-width: 1200px !important;
+  }
+</style>
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
+options(width = 120)
+library("afex")
+library("tidyverse")
+theme_set(theme_bw(base_size = 15) + 
+            theme(legend.position="bottom", 
+                  panel.grid.major.x = element_blank()))
+source("fun_univariate_rmse.R")
+INCLUDE_GAM <- TRUE
+```
+
+```{r load, include=FALSE}
+load("../all_pairs_core.RData")
+all_pairs <- all_pairs %>% 
+  filter(model != "pc") %>% 
+  droplevels()
+str(all_pairs)
+```
+
+
+# Overview
+
+This document provides an overview of the univariate relationships of all covariates with the absolute parameter deviation.  We separate the relationships by focussing on one method as the target method and then investigating the relationships for each of the remaining methods with this method.
+
+
+
+# DV: Absolute Deviation from Complete Pooling MLE Estimate
+
+
+
+```{r}
+targ_cmle <- all_pairs %>% 
+  filter(cond_y == "Comp MLE") %>% 
+  filter(cond_x != "Comp MLE")
+```
+
+```{r}
+cur_data <- targ_cmle
+ylab <- "Abs. deviation (Comp MLE)"
+```
+
+
+We begin by investigating the abolsute relationship from the simplest method, the complete pooling MLE method (i.e., `y` always refers to `Comp MLE"` and `x` refers to the other method in the pair). This leaves us with `r nrow(targ_cmle)` observations for the analysis.
+
+## Effect of Method
+
+```{r, fig.width=8, fig.height=3, message=FALSE}
+m_method <- lm(abs_dev ~ cond_x, cur_data)
+afex_plot(m_method, "cond_x", 
+          data_geom = ggplot2::geom_violin, 
+          data_arg = list(width = 0.5)) +
+  annotate("text", x = 8, y = 0.9, label = 
+             paste0("paste(bar(Delta), ' = ", 
+                    substr(round(sigma(m_method), 2), 2, 5), "')"), 
+                    parse = TRUE) +
+  labs(y = ylab, x = "Second Estimation Method")
+```
+
+We can also look at the histogram of the absolute deviation across methods.
+
+```{r, fig.width=8, fig.height=4}
+cur_data %>% 
+  ggplot(aes(abs_dev)) +
+  geom_histogram(binwidth = 0.05, boundary = 0) +
+  facet_wrap("cond_x", nrow = 2)
+```
+
+
+## Effects of Continuous Covariates
+
+In the following plots, the blue line shows the fitted model (in case it is not a simple linear relationship, the transformation of the independent variable is given in parentheses in the x-axis label), The RMSE value shown in the plot is the RMSE of this model (i.e., the blue line). The red line shows a GAM on the independent variable with shrinkage applied thin plate regression spline and the red number is the corresponding RMSE.
+
+In case observations had to be removed for the analysis, the percentage of removed (`rem`) observations is also shown in the x-axis caption. In some cases, some observationds are filtered to show a clearer picture, this is indicated with `filter`.
+
+### Effect of Parameter Estimate
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, y)
+compare_continuous_covariate(cur_data, poly(y, 2))
+
+compare_continuous_covariate(cur_data, x)
+compare_continuous_covariate(cur_data, poly(x, 2))
+```
+
+### Standard Error
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, se_y)
+compare_continuous_covariate(cur_data, se_y, filter = se_y < 1)
+compare_continuous_covariate(cur_data, se_y, filter = se_y < 0.25)
+
+compare_continuous_covariate(cur_data, se_x)
+compare_continuous_covariate(cur_data, se_x, filter = se_x < 1)
+compare_continuous_covariate(cur_data, se_x, filter = se_x < 0.25)
+```
+
+### Hetereogeneity
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, log1p(p_hetero))
+compare_continuous_covariate(cur_data, log1p_hetero)
+compare_continuous_covariate(cur_data, poly(log1p_hetero, 2))
+compare_continuous_covariate(cur_data, poly(log1p_hetero, 3))
+```
+
+The data suggests a step-like relationship such that only values that are at or near zero show a considerable probability of non-zero absolute deviations. To look at this further, we can see how probable it is to observe values near zero. The following table shows that at least 80% of observations have a `log1p` value that is very near to zero.
+
+```{r, message=FALSE}
+cur_data %>% 
+  group_by(cond_x) %>% 
+  summarise(less_than_00001 = mean(log1p_hetero < 0.00001),
+            less_than_01 = mean(log1p_hetero < 0.01))
+```
+
+We can also get this table for the p-value itself (i.e., not `log1p`) which is identical as for very small values `log1p` is approximately equal to `p`.
+
+```{r, message=FALSE}
+cur_data %>% 
+  group_by(cond_x) %>% 
+  summarise(less_than_00001 = mean(p_hetero < 0.00001),
+            less_than_01 = mean(p_hetero < 0.01))
+```
+
+If we look at the conditional distribution of absolute deviation whether or not it is very near to zero, we can see that there is some evidence for the step-like relationship, but the pattern is not overwhelming.
+
+```{r, fig.width=20.5, fig.height=3}
+cur_data %>% 
+  mutate(less_than_00001 = factor(log1p_hetero < 0.00001, levels = c("TRUE", "FALSE"))) %>% 
+  ggplot(aes(x = less_than_00001, y = abs_dev)) +
+  #geom_violin() +
+  geom_boxplot() +
+  facet_wrap("cond_x", nrow = 1)
+```
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, chisq_hetero)
+compare_continuous_covariate(cur_data, chisq_hetero, 
+                             filter = chisq_hetero < 7500)
+```
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, sd_emp)
+compare_continuous_covariate(cur_data, poly(sd_emp, 2))
+
+compare_continuous_covariate(cur_data, sd_emp_inv)
+compare_continuous_covariate(cur_data, poly(sd_emp_inv, 2))
+```
+
+
+### Rho
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, rho_max)
+compare_continuous_covariate(cur_data, rho_mean)
+compare_continuous_covariate(cur_data, rho_fzmean)
+compare_continuous_covariate(cur_data, rho_med)
+compare_continuous_covariate(cur_data, rho_propl5)
+```
+
+
+### Fungibility
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, fungi_max)
+compare_continuous_covariate(cur_data, fungi_mean)
+compare_continuous_covariate(cur_data, fungi_fzmean)
+compare_continuous_covariate(cur_data, fungi_med)
+compare_continuous_covariate(cur_data, fungi_propl5)
+```
+
+### Model Fit
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, p_fit_x)
+compare_continuous_covariate(cur_data, log1p_fit_x)
+#compare_continuous_covariate(cur_data, logp_fit_x)
+compare_continuous_covariate(cur_data, stat_fit_x)
+compare_continuous_covariate(cur_data, stat_fit_z_x)
+compare_continuous_covariate(cur_data, stat_fit_scaled_x)
+compare_continuous_covariate(cur_data, stat_fit_scaled_x, 
+                             filter = stat_fit_scaled_x < 0.5)
+compare_continuous_covariate(cur_data, p_fit_y)
+compare_continuous_covariate(cur_data, log1p_fit_y)
+#compare_continuous_covariate(cur_data, logp_fit_y)
+compare_continuous_covariate(cur_data, stat_fit_y)
+compare_continuous_covariate(cur_data, stat_fit_z_y)
+compare_continuous_covariate(cur_data, stat_fit_scaled_y)
+compare_continuous_covariate(cur_data, stat_fit_scaled_y, 
+                             filter = stat_fit_scaled_y < 0.2)
+```
+
+### Relative Parameter Information
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, rel_par_weight_x)
+compare_continuous_covariate(cur_data, rel_par_weight_y)
+```
+
+The reason both plots look pretty much the same is that both relative parameter information variables are highly correlated, $r \approx 1$. We therefore focus on one of the two below (`rel_par_weight_y`).
+
+Using a logarithm:
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, log(rel_par_weight_y))
+```
+
+And removing all with a relative weight of roughly 1:
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, log(rel_par_weight_y), 
+                             filter = rel_par_weight_y <= .999)
+
+```
+
+### Relative Parameter N 
+
+We can also consider the relative N. As tehse are again highly correlated ($r \approx 1$), we use `y` again exclusivly:
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, rel_n_y)
+compare_continuous_covariate(cur_data, log(rel_n_y))
+```
+
+Here it makes sense to trim the x-axis a bit:
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, rel_n_y, 
+                             filter = rel_n_y  < 15000)
+compare_continuous_covariate(cur_data, log(rel_n_y), 
+                             filter = rel_n_y  < 15000)
+```
+
+
+## Effects of Categroical Covariates
+
+The effect of covariate is shown in two ways. The table below all plots gives the RMSEs for the model given the covariate across all comparison methods. In case the number of levels is not too large, a plot of the difference in absolute deviation conditional on the factor levels is shown. Some factor levels may be removed for plotting (i.e., those levels for which the proportion of observations is less than `r formals(compare_categorical_covariate)$rm_levels_less`). In this case, the number of removed levels is also given.
+
+### Meta Data
+
+```{r, fig.width=20.5, fig.height=3.5, message=FALSE}
+
+bind_rows(
+  compare_categorical_covariate(cur_data, model),
+  compare_categorical_covariate(cur_data, model2),
+  compare_categorical_covariate(cur_data, parameter),
+  compare_categorical_covariate(cur_data, dataset, plot = FALSE)
+)
+```
+
+Given that there are more than eight levels of `model2`, we also look at a table of the mean absolute deviations:
+
+```{r, message=FALSE}
+make_categorical_table(cur_data, model2)
+```
+
+We can also look at a table of the mean absolute deviations as a function of the parameter:
+
+```{r, message=FALSE}
+make_categorical_table(cur_data, parameter)
+```
+
+Or at the standard deviation of the absolute deviations as a function of the parameter:
+```{r, message=FALSE}
+make_categorical_table(cur_data, parameter, sd)
+```
+
+
+### Categorical Covariates
+
+```{r, fig.width=20.5, fig.height=4.5, message=FALSE}
+bind_rows(
+  compare_categorical_covariate(cur_data, population, rm_levels_less = 0),
+  compare_categorical_covariate(cur_data, sci_goal, rm_levels_less = 0)
+)
+```
+
+
+# DV: Absolute Deviation from Latent Trait Partial Pooling Estimate
+
+
+
+```{r}
+targ_lpp <- all_pairs %>% 
+  filter(cond_y == "Trait PP") %>% 
+  filter(cond_x != "Trait PP")
+```
+
+```{r}
+cur_data <- targ_lpp
+ylab <- "Abs. deviation (Trait PP)"
+```
+
+
+In the second analysis, we focus on investigating the absolute deviation from the most complex method, the latent trait partial pooling method (i.e., `y` always refers to `Trait PP` and `x` refers to the other method in the pair). This leaves us with `r nrow(cur_data)` observations for the analysis.
+
+
+## Effect of Method
+
+```{r, fig.width=8, fig.height=3, message=FALSE}
+m_method <- lm(abs_dev ~ cond_x, cur_data)
+afex_plot(m_method, "cond_x", 
+          data_geom = ggplot2::geom_violin, 
+          data_arg = list(width = 0.5)) +
+  annotate("text", x = 8, y = 0.9, label = 
+             paste0("paste(bar(Delta), ' = ", 
+                    substr(round(sigma(m_method), 2), 2, 5), "')"), 
+                    parse = TRUE) +
+  labs(y = ylab, x = "Second Estimation Method")
+```
+
+
+We can also look at the histogram of the absolute deviation across methods.
+
+```{r, fig.width=8, fig.height=4}
+cur_data %>% 
+  ggplot(aes(abs_dev)) +
+  geom_histogram(binwidth = 0.05, boundary = 0) +
+  facet_wrap("cond_x", nrow = 2)
+```
+
+
+## Effects of Continuous Covariates
+
+In the following plots, the blue line shows the fitted model (in case it is not a simple linear relationship, the transformation of the independent variable is given in parentheses in the x-axis label), The RMSE value shown in the plot is the RMSE of this model (i.e., the blue line). The red line shows a GAM on the independent variable with shrinkage applied thin plate regression spline and the red number is the corresponding RMSE.
+
+In case observations had to be removed for the analysis, the percentage of removed (`rem`) observations is also shown in the x-axis caption. In some cases, some observationds are filtered to show a clearer picture, this is indicated with `filter`.
+
+### Effect of Parameter Estimate
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, y)
+compare_continuous_covariate(cur_data, poly(y, 2))
+
+compare_continuous_covariate(cur_data, x)
+compare_continuous_covariate(cur_data, poly(x, 2))
+```
+
+### Standard Error
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, se_y)
+compare_continuous_covariate(cur_data, se_y, filter = se_y < 1)
+compare_continuous_covariate(cur_data, se_y, filter = se_y < 0.25)
+
+compare_continuous_covariate(cur_data, se_x)
+compare_continuous_covariate(cur_data, se_x, filter = se_x < 1)
+compare_continuous_covariate(cur_data, se_x, filter = se_x < 0.25)
+```
+
+
+### Hetereogeneity
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, log1p(p_hetero))
+compare_continuous_covariate(cur_data, log1p_hetero)
+compare_continuous_covariate(cur_data, poly(log1p_hetero, 2))
+compare_continuous_covariate(cur_data, poly(log1p_hetero, 3))
+```
+
+The data suggests a step-like relationship such that only values that are at or near zero show a considerable probability of non-zero absolute deviations. To look at this further, we can see how probable it is to observe values near zero. The following table shows that at least 80% of observations have a `log1p` value that is very near to zero.
+
+```{r, message=FALSE}
+cur_data %>% 
+  group_by(cond_x) %>% 
+  summarise(less_than_00001 = mean(log1p_hetero < 0.00001),
+            less_than_01 = mean(log1p_hetero < 0.01))
+```
+
+If we look at the conditionmal disttirbution of absolute deviation whether or not it is very near to zero, we can see that there is some evidence for the step-like relationship, but the pattern is not overwhelming.
+
+```{r, fig.width=20.5, fig.height=3}
+cur_data %>% 
+  mutate(less_than_00001 = factor(log1p_hetero < 0.00001, levels = c("TRUE", "FALSE"))) %>% 
+  ggplot(aes(x = less_than_00001, y = abs_dev)) +
+  #geom_violin() +
+  geom_boxplot() +
+  facet_wrap("cond_x", nrow = 1)
+```
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, chisq_hetero)
+compare_continuous_covariate(cur_data, chisq_hetero, 
+                             filter = chisq_hetero < 7500)
+```
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, sd_emp)
+compare_continuous_covariate(cur_data, poly(sd_emp, 2))
+
+compare_continuous_covariate(cur_data, sd_emp_inv)
+compare_continuous_covariate(cur_data, poly(sd_emp_inv, 2))
+```
+
+
+### Rho
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, rho_max)
+compare_continuous_covariate(cur_data, rho_mean)
+compare_continuous_covariate(cur_data, rho_fzmean)
+compare_continuous_covariate(cur_data, rho_med)
+compare_continuous_covariate(cur_data, rho_propl5)
+```
+
+
+### Fungibility
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, fungi_max)
+compare_continuous_covariate(cur_data, fungi_mean)
+compare_continuous_covariate(cur_data, fungi_fzmean)
+compare_continuous_covariate(cur_data, fungi_med)
+compare_continuous_covariate(cur_data, fungi_propl5)
+```
+
+### Model Fit
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, p_fit_x)
+compare_continuous_covariate(cur_data, log1p_fit_x)
+#compare_continuous_covariate(cur_data, logp_fit_x)
+compare_continuous_covariate(cur_data, stat_fit_x)
+compare_continuous_covariate(cur_data, stat_fit_z_x)
+compare_continuous_covariate(cur_data, stat_fit_scaled_x)
+compare_continuous_covariate(cur_data, stat_fit_scaled_x, 
+                             filter = stat_fit_scaled_x < 0.5)
+compare_continuous_covariate(cur_data, p_fit_y)
+compare_continuous_covariate(cur_data, log1p_fit_y)
+#compare_continuous_covariate(cur_data, logp_fit_y)
+compare_continuous_covariate(cur_data, stat_fit_y)
+compare_continuous_covariate(cur_data, stat_fit_z_y)
+compare_continuous_covariate(cur_data, stat_fit_scaled_y)
+compare_continuous_covariate(cur_data, stat_fit_scaled_y, 
+                             filter = stat_fit_scaled_y < 0.2)
+```
+
+### Relative Parameter Information
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, rel_par_weight_x)
+compare_continuous_covariate(cur_data, rel_par_weight_y)
+```
+
+The reason both plots look pretty much the same is that both relative parameter information variables are highly correlated, $r \approx 1$. We therefore focus on one of the two below (`rel_par_weight_y`).
+
+Using a logarithm:
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, log(rel_par_weight_y))
+```
+
+And removing all with a relative weight of roughly 1:
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, log(rel_par_weight_y), 
+                             filter = rel_par_weight_y <= .999)
+
+```
+
+### Relative Parameter N 
+
+We can also consider the relative N. As tehse are again highly correlated ($r \approx 1$), we use `y` again exclusivly:
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, rel_n_y)
+compare_continuous_covariate(cur_data, log(rel_n_y))
+```
+
+Here it makes sense to trim the x-axis a bit:
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, rel_n_y, 
+                             filter = rel_n_y  < 15000)
+compare_continuous_covariate(cur_data, log(rel_n_y), 
+                             filter = rel_n_y  < 15000)
+```
+
+## Effects of Categroical Covariates
+
+The effect of covariate is shown in two ways. The table below all plots gives the RMSEs for the model given the covariate across all comparison methods. In case the number of levels is not too large, a plot of the difference in absolute deviation conditional on the factor levels is shown. Some factor levels may be removed for plotting (i.e., those levels for which the proportion of observations is less than `r formals(compare_categorical_covariate)$rm_levels_less`). In this case, the number of removed levels is also given.
+
+### Meta Data
+
+```{r, fig.width=20.5, fig.height=3.5, message=FALSE}
+
+bind_rows(
+  compare_categorical_covariate(cur_data, model),
+  compare_categorical_covariate(cur_data, model2),
+  compare_categorical_covariate(cur_data, parameter),
+  compare_categorical_covariate(cur_data, dataset, plot = FALSE)
+)
+```
+
+Given that there are more than eight levels of `model2`, we also look at a table of the mean absolute deviations:
+
+```{r, message=FALSE}
+make_categorical_table(cur_data, model2)
+```
+
+We can also look at a table of the mean absolute deviations as a function of the parameter:
+
+```{r, message=FALSE}
+make_categorical_table(cur_data, parameter)
+```
+
+Or at the standard deviation of the absolute deviations as a function of the parameter:
+```{r, message=FALSE}
+make_categorical_table(cur_data, parameter, sd)
+```
+
+
+### Categorical Covariates
+
+```{r, fig.width=20.5, fig.height=4.5, message=FALSE}
+bind_rows(
+  compare_categorical_covariate(cur_data, population, rm_levels_less = 0),
+  compare_categorical_covariate(cur_data, sci_goal, rm_levels_less = 0)
+)
+```
