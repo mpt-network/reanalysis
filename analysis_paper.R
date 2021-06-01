@@ -80,14 +80,14 @@ all_pairs %>%
   ggplot(aes(abs_dev, color = cond_y2)) +
   stat_ecdf(geom = "step", 
             mapping = aes(y = after_stat(1 - y))) +
-  facet_grid(~cond_x2, as.table = TRUE) +
+  facet_wrap("cond_x2", as.table = TRUE, nrow = 2) +
   coord_cartesian(xlim = c(0.00, 0.35), expand = FALSE) + 
   labs(y = expression(paste(
     italic("Pr"), "(abs. deviation > ", italic("x"), ")")),  
        x = "Abs. deviation") +
   guides(color = guide_legend(title = NULL)) + scale_colour_colorblind()
 ggsave("figures_man/eccdf.png", 
-       width = 25, height = 9, units = "cm", 
+       width = 15, height = 12.5, units = "cm", 
        dpi = 500)
 
 theme_set(theme_bw(base_size = 15) + 
