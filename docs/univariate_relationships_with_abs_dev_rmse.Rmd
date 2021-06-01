@@ -146,6 +146,11 @@ cur_data %>%
   facet_wrap("cond_x", nrow = 1)
 ```
 
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, chisq_hetero)
+compare_continuous_covariate(cur_data, chisq_hetero, 
+                             filter = chisq_hetero < 7500)
+```
 
 ```{r, fig.width=20.5, fig.height=3, message=FALSE}
 compare_continuous_covariate(cur_data, sd_emp)
@@ -183,9 +188,19 @@ compare_continuous_covariate(cur_data, fungi_propl5)
 compare_continuous_covariate(cur_data, p_fit_x)
 compare_continuous_covariate(cur_data, log1p_fit_x)
 #compare_continuous_covariate(cur_data, logp_fit_x)
+compare_continuous_covariate(cur_data, stat_fit_x)
+compare_continuous_covariate(cur_data, stat_fit_z_x)
+compare_continuous_covariate(cur_data, stat_fit_scaled_x)
+compare_continuous_covariate(cur_data, stat_fit_scaled_x, 
+                             filter = stat_fit_scaled_x < 0.5)
 compare_continuous_covariate(cur_data, p_fit_y)
 compare_continuous_covariate(cur_data, log1p_fit_y)
 #compare_continuous_covariate(cur_data, logp_fit_y)
+compare_continuous_covariate(cur_data, stat_fit_y)
+compare_continuous_covariate(cur_data, stat_fit_z_y)
+compare_continuous_covariate(cur_data, stat_fit_scaled_y)
+compare_continuous_covariate(cur_data, stat_fit_scaled_y, 
+                             filter = stat_fit_scaled_y < 0.2)
 ```
 
 ### Relative Parameter Information
@@ -375,6 +390,11 @@ cur_data %>%
   facet_wrap("cond_x", nrow = 1)
 ```
 
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, chisq_hetero)
+compare_continuous_covariate(cur_data, chisq_hetero, 
+                             filter = chisq_hetero < 7500)
+```
 
 ```{r, fig.width=20.5, fig.height=3, message=FALSE}
 compare_continuous_covariate(cur_data, sd_emp)
@@ -412,9 +432,19 @@ compare_continuous_covariate(cur_data, fungi_propl5)
 compare_continuous_covariate(cur_data, p_fit_x)
 compare_continuous_covariate(cur_data, log1p_fit_x)
 #compare_continuous_covariate(cur_data, logp_fit_x)
+compare_continuous_covariate(cur_data, stat_fit_x)
+compare_continuous_covariate(cur_data, stat_fit_z_x)
+compare_continuous_covariate(cur_data, stat_fit_scaled_x)
+compare_continuous_covariate(cur_data, stat_fit_scaled_x, 
+                             filter = stat_fit_scaled_x < 0.5)
 compare_continuous_covariate(cur_data, p_fit_y)
 compare_continuous_covariate(cur_data, log1p_fit_y)
 #compare_continuous_covariate(cur_data, logp_fit_y)
+compare_continuous_covariate(cur_data, stat_fit_y)
+compare_continuous_covariate(cur_data, stat_fit_z_y)
+compare_continuous_covariate(cur_data, stat_fit_scaled_y)
+compare_continuous_covariate(cur_data, stat_fit_scaled_y, 
+                             filter = stat_fit_scaled_y < 0.2)
 ```
 
 ### Relative Parameter Information

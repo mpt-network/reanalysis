@@ -307,10 +307,21 @@ p_vals <- results %>%
     stat_fit = stat_obs
   )
 p_vals <- p_vals %>% 
-  group_by(model) %>% 
-  mutate(stat_fit_z = (stat_fit - mean(stat_fit, na.rm = TRUE)) / 
-           sd(stat_fit, na.rm = TRUE) ) %>% 
+  group_by(inter) %>% 
+  mutate(
+    stat_fit_z = (stat_fit - mean(stat_fit, na.rm = TRUE)) / 
+           sd(stat_fit, na.rm = TRUE),
+    stat_fit_scaled = stat_fit / max(stat_fit)) %>% 
   ungroup()
+
+p_vals %>% 
+  ggplot(aes(stat_fit_z)) +
+  geom_histogram(bins = 100) +
+  facet_wrap("inter")
+
+p_vals %>% 
+  group_by(inter) %>% 
+  summarise(min(stat_fit_z), max(stat_fit_z))
 
 hetero_np <- results %>% 
   filter(inter == "Comp MLE") %>% 
@@ -510,6 +521,7 @@ all_pairs <- covariates %>%
          p_fit_x = p_fit, 
          stat_fit_x = stat_fit,
          stat_fit_z_x = stat_fit_z,
+         stat_fit_scaled_x = stat_fit_scaled,
          chisq_hetero = chisq,
          se_x = se) 
 any(is.na(all_pairs$abs_dev))
@@ -519,7 +531,8 @@ all_pairs <- covariates %>%
   droplevels %>% 
   rename(cond_y = inter) %>% 
   select(c("model", "dataset", "model2", "cond_y", "parameter", "condition"), 
-         rel_par_weight, rel_n, p_fit, se, stat_fit, stat_fit_z) %>% 
+         rel_par_weight, rel_n, p_fit, se, 
+         stat_fit, stat_fit_z, stat_fit_scaled) %>% 
   right_join(all_pairs) %>% 
   mutate(log1p_fit_y = log1p(p_fit),
          logp_fit_y = log(p_fit)) %>% 
@@ -528,6 +541,7 @@ all_pairs <- covariates %>%
          p_fit_y = p_fit,
          stat_fit_y = stat_fit,
          stat_fit_z_y = stat_fit_z,
+         stat_fit_scaled_y = stat_fit_scaled,
          se_y = se)
 
 all_pairs_full <- all_pairs %>% 
@@ -548,6 +562,7 @@ all_pairs <- all_pairs_full %>%
          starts_with("fungi"), ##  Fungibility/across-chain correlations 
          p_fit_x, p_fit_y,
          stat_fit_x, stat_fit_y, stat_fit_z_x, stat_fit_z_y,
+         stat_fit_scaled_x, stat_fit_scaled_y,
          chisq_hetero, 
          log1p_fit_x, logp_fit_x, log1p_fit_y, logp_fit_y, ## model fit
          rel_par_weight_x, rel_par_weight_y, ## Absolute parameter values 
