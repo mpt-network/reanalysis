@@ -21,6 +21,7 @@ library("DescTools") # for CCC
 
 load("combined_results.RData")
 source("fun_analysis.R")
+source("extra_fun_pairs.R")
 
 ## combine with other data
 lev_mod <- levels(dm$model)
@@ -246,6 +247,11 @@ core_pars <- all_pars %>%
 
 length(unique(core_pars$parameter))
 
+## shows real model equation
+# results %>%
+#   filter(model == "pm") %>%
+#   select(model_df) %>%
+#   {.[[1]][[1]]}
 
 fungibility <- results %>% 
   filter(inter == "Trait PP") %>% 
@@ -261,6 +267,121 @@ fungibility <- results %>%
             fungi_propl5 = mean(abs(correlation) > .5, na.rm = TRUE)) %>% 
   ungroup() %>% 
   rename(orig_condition = condition)
+
+mean(is.na(fungibility$fungi_max))
+
+## prepare data for fungibility in which only parameters on branches survive
+fungibility_2 <- results %>% 
+  filter(inter == "Trait PP") %>% 
+  select(model:dataset, model2, fungibility, 
+         inter, npar, npar_c) %>% 
+  unnest(fungibility) 
+fungibility_2 <- bind_rows(
+  mutate(fungibility_2, 
+         parameter_a = parameter1,
+         parameter_b = parameter2,
+         parameter_o = factor(paste0(model2, ":", parameter1))),
+  mutate(fungibility_2, 
+         parameter_a = parameter2,
+         parameter_b = parameter1,
+         parameter_o = factor(paste0(model2, ":", parameter2)))
+) %>% 
+  select(-parameter1, -parameter2) %>% 
+  mutate(
+    parameter_a = harmonize_parname(model = model, model2 = model2, 
+                                         parameter = parameter_a),
+    parameter_b = harmonize_parname(model = model, model2 = model2, 
+                                         parameter = parameter_b)
+    ) %>% 
+  rename(
+    parameter1 = parameter_a,
+    parameter2 = parameter_b
+  )
+
+# fungibility_2 %>% 
+#   group_by(model2) %>% 
+#   summarise(pars = paste(sort(unique(parameter1)), collapse = ", " )) 
+# 
+# fungibility_2 %>% 
+#   group_by(model2) %>% 
+#   summarise(pars = paste(sort(unique(parameter1)), collapse = ", " )) %>% 
+#   pull(pars)
+  
+
+# fungibility_2 %>% 
+#   filter(dataset == "BG2008") %>% 
+#   select(-npar, -npar_c, -dataset, -model)
+
+# results %>% 
+#   filter(inter == "Trait PP", dataset == "BG2008") %>% 
+#   select(model:dataset, model2, fungibility, 
+#          inter, npar, npar_c) %>% 
+#   unnest(fungibility) %>% 
+#   group_by(parameter1) %>% 
+#   count
+# 
+# results %>% 
+#   filter(inter == "Trait PP", dataset == "BG2008") %>% 
+#   select(model:dataset, model2, fungibility, 
+#          inter, npar, npar_c) %>% 
+#   unnest(fungibility) %>% 
+#   group_by(parameter2) %>% 
+#   count
+
+fungibility_2 <- fungibility_2 %>% 
+  group_by(model, dataset, inter, model2, 
+           npar, npar_c, condition, parameter_o) %>% 
+  summarise(
+    fungis_max = 
+      get_red_corr(
+        model = model, model2 = model2, 
+        parameter1 = parameter1, parameter2 = parameter2, 
+        parameter_o = parameter_o, 
+        variable = correlation, 
+        operation = function(x) max(abs(x), na.rm = TRUE)
+      ),
+    fungis_mean = 
+      get_red_corr(
+        model = model, model2 = model2, 
+        parameter1 = parameter1, parameter2 = parameter2, 
+        parameter_o = parameter_o, 
+        variable = correlation, 
+        operation = function(x) mean(abs(x), na.rm = TRUE)
+      ),
+    fungis_fzmean = 
+      get_red_corr(
+        model = model, model2 = model2, 
+        parameter1 = parameter1, parameter2 = parameter2, 
+        parameter_o = parameter_o, 
+        variable = correlation, 
+        operation = function(x) mean(FisherZ(abs(x)), na.rm = TRUE)
+      ),
+    fungis_med = 
+      get_red_corr(
+        model = model, model2 = model2, 
+        parameter1 = parameter1, parameter2 = parameter2, 
+        parameter_o = parameter_o, 
+        variable = correlation, 
+        operation = function(x) median(abs(x), na.rm = TRUE)
+      ),
+    fungis_propl5 = 
+      get_red_corr(
+        model = model, model2 = model2, 
+        parameter1 = parameter1, parameter2 = parameter2, 
+        parameter_o = parameter_o, 
+        variable = correlation, 
+        operation = function(x) mean(abs(x) > .5, na.rm = TRUE)
+      )
+    ) %>% 
+  rename(orig_condition = condition)
+
+fungibility_par <- left_join(fungibility, fungibility_2)
+
+fungibility_par %>% 
+  filter(!is.na(fungi_max), is.na(fungis_max)) %>% 
+  group_by(model2, dataset) %>% 
+  count() %>% 
+  print(n = Inf)
 
 correlation <- results %>% 
   filter(inter == "Trait PP") %>% 
@@ -278,6 +399,82 @@ correlation <- results %>%
   mutate(parameter_o = factor(paste0(model2, ":", parameter))) %>% 
   select(-parameter)
 
+## prepare data for correlation in which only parameters on branches survive
+correlation_2 <- results %>% 
+  filter(inter == "Trait PP") %>% 
+  select(model:dataset, model2, est_rho, 
+         inter, npar, npar_c) %>% 
+  unnest(est_rho) 
+
+correlation_2 <- bind_rows(
+  mutate(correlation_2, 
+         parameter_a = parameter1,
+         parameter_b = parameter2,
+         parameter_o = factor(paste0(model2, ":", parameter1))),
+  mutate(correlation_2, 
+         parameter_a = parameter2,
+         parameter_b = parameter1,
+         parameter_o = factor(paste0(model2, ":", parameter2)))
+) %>% 
+  select(-parameter1, -parameter2) %>% 
+  mutate(
+    parameter_a = harmonize_parname(model = model, model2 = model2, 
+                                    parameter = parameter_a),
+    parameter_b = harmonize_parname(model = model, model2 = model2, 
+                                    parameter = parameter_b)
+  ) %>% 
+  rename(
+    parameter1 = parameter_a,
+    parameter2 = parameter_b
+  )
+
+correlation_2 <- correlation_2 %>% 
+  group_by(model, dataset, inter, model2, 
+           npar, npar_c, condition, parameter_o) %>% 
+  summarise(
+    rhos_max = 
+      get_red_corr(
+        model = model, model2 = model2, 
+        parameter1 = parameter1, parameter2 = parameter2, 
+        parameter_o = parameter_o, 
+        variable = est, 
+        operation = function(x) max(abs(x), na.rm = TRUE)
+      ),
+    rhos_mean = 
+      get_red_corr(
+        model = model, model2 = model2, 
+        parameter1 = parameter1, parameter2 = parameter2, 
+        parameter_o = parameter_o, 
+        variable = est, 
+        operation = function(x) mean(abs(x), na.rm = TRUE)
+      ),
+    rhos_fzmean = 
+      get_red_corr(
+        model = model, model2 = model2, 
+        parameter1 = parameter1, parameter2 = parameter2, 
+        parameter_o = parameter_o, 
+        variable = est, 
+        operation = function(x) mean(FisherZ(abs(x)), na.rm = TRUE)
+      ),
+    rhos_med = 
+      get_red_corr(
+        model = model, model2 = model2, 
+        parameter1 = parameter1, parameter2 = parameter2, 
+        parameter_o = parameter_o, 
+        variable = est, 
+        operation = function(x) median(abs(x), na.rm = TRUE)
+      ),
+    rhos_propl5 = 
+      get_red_corr(
+        model = model, model2 = model2, 
+        parameter1 = parameter1, parameter2 = parameter2, 
+        parameter_o = parameter_o, 
+        variable = est, 
+        operation = function(x) mean(abs(x) > .5, na.rm = TRUE)
+      )
+    ) %>% 
+  rename(orig_condition = condition)
+
 hetero_empirical <- results %>% 
   filter(inter == "Trait PP") %>% 
   unnest(est_indiv) %>% 
@@ -292,7 +489,9 @@ mean(is.na(hetero_empirical$sd_emp))
 mean(is.na(hetero_empirical$sd_emp_inv))
 
 ## covariates on parameters basis
-covariates_par <- left_join(fungibility, correlation) 
+fungibility_par <- left_join(fungibility, fungibility_2)
+correlation_par <- left_join(correlation, correlation_2) 
+covariates_par <- left_join(fungibility_par, correlation_par) 
 covariates_par <- left_join(covariates_par, hetero_empirical)
 
 ## Note: models where Trait PP failed, do not have values here

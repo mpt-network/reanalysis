@@ -18,7 +18,7 @@ all_pairs <- all_pairs %>%
     mutate(cond_x2 = cond_y,
          cond_y2 = cond_x) %>% 
   mutate(se_c = (se_x_w + se_y_w)/2) %>% 
-  filter(model != "pc")
+  filter(model != "pc", parameter != "rm:g")
 all_pairs <- all_pairs %>%
   mutate(cond_co = apply(cbind(as.character(cond_x), 
             as.character(cond_y)), 1, 

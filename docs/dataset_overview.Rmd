@@ -249,6 +249,20 @@ dm %>%
     })
 ```
 
+## Core Parameters Per Submodel
+
+The following gives an overview of the core and (if present) non-core parameters for each submodel.
+
+```{r}
+dm %>% 
+  group_split(model2) %>% 
+  walk(~{
+    cat(paste(.$model2[1]), "\n")
+    check_core_pars(.)
+    cat("\n")
+    })
+```
+
 ## Pairwise Plots of Core Parameters
 
 We plot the core parameters for each condition that are usable in the following plot.
