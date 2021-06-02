@@ -33,7 +33,7 @@ options('na.action' = NULL)   ## for MuMIn::dredge
 ```{r load, include=FALSE}
 load("../all_pairs_core.RData")
 all_pairs <- all_pairs %>% 
-  filter(model != "pc") %>% 
+  filter(model != "pc", parameter != "rm:g") %>% 
   droplevels()
 str(all_pairs)
 all_pairs <- all_pairs %>% 
