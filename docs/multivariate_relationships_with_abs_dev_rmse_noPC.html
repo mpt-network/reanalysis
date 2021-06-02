@@ -363,15 +363,15 @@ pre code {
 ## 13 DV: Trait ~ IV: Beta PP   0.035     0.030    0.032 0.033 0.028     0.031   0.024        0.030      0.030 0.031 0.030 0.029
 ## 14 DV: Trait ~ IV: Trait_u ~ 0.024     0.019    0.020 0.020 0.018     0.019   0.015        0.017      0.020 0.020 0.020 0.019</code></pre>
 <p>We can also reduce this table to only the comparison methods selected in the paper:</p>
-<pre><code>## # A tibble: 6 x 13
-##   cond_label   cond_iv_label parameter mse_both mse_c  main main_good inter_2 inter_2_good se_y_fungi  se_y best2 best3
-##   &lt;fct&gt;        &lt;fct&gt;             &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1 DV: Comp MLE IV: No asy        0.037    0.039 0.041 0.036     0.038   0.030        0.037      0.038 0.039 0.039 0.037
-## 2 DV: Comp MLE IV: Beta PP       0.027    0.030 0.031 0.027     0.029   0.023        0.028      0.028 0.029 0.029 0.028
-## 3 DV: Comp MLE IV: Trait PP      0.031    0.032 0.032 0.029     0.030   0.026        0.030      0.030 0.031 0.031 0.030
-## 4 DV: Trait PP IV: Comp MLE      0.031    0.032 0.032 0.029     0.030   0.026        0.030      0.030 0.031 0.031 0.030
-## 5 DV: Trait PP IV: No asy        0.036    0.043 0.044 0.039     0.043   0.034        0.042      0.040 0.041 0.041 0.040
-## 6 DV: Trait PP IV: Beta PP       0.030    0.032 0.033 0.028     0.031   0.024        0.030      0.030 0.031 0.030 0.029</code></pre>
+<pre><code>## # A tibble: 6 x 14
+##   cond_label   cond_iv_label  mean parameter mse_both mse_c  main main_good inter_2 inter_2_good se_y_fungi  se_y best2 best3
+##   &lt;fct&gt;        &lt;fct&gt;         &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 DV: Comp MLE IV: No asy    0.050     0.037    0.039 0.041 0.036     0.038   0.030        0.037      0.038 0.039 0.039 0.037
+## 2 DV: Comp MLE IV: Beta PP   0.035     0.027    0.030 0.031 0.027     0.029   0.023        0.028      0.028 0.029 0.029 0.028
+## 3 DV: Comp MLE IV: Trait PP  0.038     0.031    0.032 0.032 0.029     0.030   0.026        0.030      0.030 0.031 0.031 0.030
+## 4 DV: Trait PP IV: Comp MLE  0.038     0.031    0.032 0.032 0.029     0.030   0.026        0.030      0.030 0.031 0.031 0.030
+## 5 DV: Trait PP IV: No asy    0.049     0.036    0.043 0.044 0.039     0.043   0.034        0.042      0.040 0.041 0.041 0.040
+## 6 DV: Trait PP IV: Beta PP   0.035     0.030    0.032 0.033 0.028     0.031   0.024        0.030      0.030 0.031 0.030 0.029</code></pre>
 <p>The results show that the model with all <code>main</code> effects usually provides an account that is very similar to the <code>parameter</code> model. The model only containing the “good” moderators fares slightly worse but not much. Even including interaction does not bring too much, akthough including all adds many parameters.</p>
 <p>The following table shows the additional variable in the model with the best two moderators and the two additional predictors in the model with the best three moderators.</p>
 <pre><code>## # A tibble: 6 x 7
