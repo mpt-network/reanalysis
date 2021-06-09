@@ -4,7 +4,8 @@ compare_continuous_covariate <- function(data,
                                          ...,
                                          filter,
                                          ylab,
-                                         alpha = 0.3) {
+                                         alpha = 0.3, 
+                                         scales = "fixed") {
   orig_n <- nrow(data)
   if (!missing(filter)) {
     data <- data %>% 
@@ -20,15 +21,22 @@ compare_continuous_covariate <- function(data,
 
   dlm <- data %>% 
     group_by(...) %>% 
-    summarise(lm = list(lm(formula(expr(abs_dev ~ !!enexpr(covariate)))))) 
+    summarise(lm = list(lm(formula(expr(abs_dev ~ !!enexpr(covariate))))),
+              xpos_label1 = max(!!sym(varname)) - 0.4*diff(range(!!sym(varname))),
+              xpos_label2 = max(!!sym(varname)) - 0.12*diff(range(!!sym(varname)))) 
   dlm <- dlm %>% 
     mutate(est = map(lm, ~ broom::tidy(.)), 
            gof = map(lm, ~ broom::glance(.)))
   dgof <- dlm %>% 
     select(-lm, -est) %>% 
     unnest(gof)
+  if (scales == "fixed") {
+    dgof$xpos_label1 <- max(data[[varname]]) - 0.4*diff(range(data[[varname]]))
+    dgof$xpos_label2 <- max(data[[varname]]) - 0.12*diff(range(data[[varname]]))
+  }
   
-  rx <- range(data[[varname]], na.rm = TRUE)
+  #rx <- range(data[[varname]], na.rm = TRUE)
+  
   
   # rx <- data %>% 
   #   summarise(range = list(range(!!enquo(covariate)))) %>% 
@@ -79,27 +87,30 @@ compare_continuous_covariate <- function(data,
              sigma = map_dbl(lm, gam_sigma),
              est = map(lm, ~ broom::tidy(.)), 
              gof = map(lm, ~ broom::glance(.)))
+    dgam <- left_join(dgam, select(dgof, cond_label, cond_iv_label, xpos_label2))
     outp <- outp + geom_smooth(method = "gam", se = FALSE, 
                 formula = y ~ s(x, bs = "ts"), colour = "red")
   }
   outp <- outp + 
     geom_smooth(method = "lm", se = FALSE, 
                 formula = formula(expr(y ~ !!expr_cov)))  +
-    facet_wrap(vars(...), nrow = 1) +
+    facet_wrap(vars(...), nrow = 1, scales = scales) +
     geom_label(data = dgof, aes(
       label = paste0("'", #paste0("paste(bar(Delta), ' = ", 
                     substr(
                       formatC(sigma, digits = 3, format = "f"), 
-                      2, 5), "'")), #"')")), 
-              x = rx[2] - 0.4*diff(rx), 
+                      2, 5), "'"), 
+      x = xpos_label1), #"')")), 
+              #x = rx[2] - 0.4*diff(rx), 
               y = 0.94, parse = TRUE, colour = "blue")
   if (INCLUDE_GAM) {
     outp <- outp + 
       geom_label(data = dgam, aes(label = paste0(#"paste(italic(R) ^ 2, ' = ", 
                                                  substr(
                       formatC(sigma, digits = 3, format = "f"), 
-                      2, 5))),#"')")), 
-              x = rx[2] - 0.12*diff(rx), 
+                      2, 5)), 
+                      x = xpos_label2),#"')")), 
+              #x = rx[2] - 0.12*diff(rx), 
               y = 0.94, parse = FALSE, colour = "red")
   }
   
@@ -114,3 +125,8 @@ create_filter_from_formula <- function(formula) {
   unname(!apply(mm, 1, function(x) any(is.na(x))))
 }
 
+
+make_cut_labels <- function(labels) {
+  nums <- map(str_extract_all(labels, "0\\.?\\d*"), as.numeric)
+  substr(as.character(map_dbl(nums, 1) + map_dbl(nums, diff)/2), 2, 10)
+}

@@ -8,6 +8,9 @@ theme_set(theme_bw(base_size = 15) +
 source("fun_analysis_paper.R")
 INCLUDE_GAM <- TRUE
 
+library("mgcv")
+library("gratia")
+
 load("all_pairs_core.RData")
 all_pairs <- all_pairs %>% 
   mutate(rel_weight = (rel_par_weight_x + rel_par_weight_y)/2,
@@ -213,6 +216,7 @@ all_pairs %>%
 
 
 
+
 ##################################################################
 ##        Selected Pairs of Target and Predicting Method        ##
 ##################################################################
@@ -273,6 +277,154 @@ ggsave("figures_man/mad_noPC.png",
 
 
 ##----------------------------------------------------------------
+##              bivariate absolute deviation plots               -
+##----------------------------------------------------------------
+
+### with reference SE
+
+sum1 <- targ_both %>% 
+  mutate(across(c(rhos_max), 
+                .fns = ~cut_width(., width = 0.05, boundary = 0))) %>% 
+  mutate(across(c(se_y), 
+                .fns = ~cut_width(., width = 0.025, boundary = 0))) %>% 
+  group_by(cond_label, cond_iv_label, se_y, rhos_max) %>% 
+  summarise(mean_abs_dev = mean(abs_dev),
+            max_abs_dev = max(abs_dev),
+            n = n(), 
+            sd = sd(abs_dev),
+            se = sd(abs_dev)/sqrt(n())) 
+
+sum1$se_y <- as.numeric(as.character(make_cut_labels(sum1$se_y)))
+sum1$rhos_max <- as.numeric(as.character(make_cut_labels(sum1$rhos_max)))
+
+sum1 %>% 
+  mutate(mean_abs_dev = if_else(n >= 3, mean_abs_dev, NA_real_)) %>% 
+  ggplot(aes(x = se_y, y = rhos_max, fill = mean_abs_dev)) +
+  geom_raster() +
+  scale_fill_gradient2(limits = c(0, 0.2), 
+                      low = "darkgreen", mid = "orange", high = "red", 
+                      midpoint = 0.06, name = "Mean abs. deviation", 
+                      na.value = "transparent") + 
+  #trans=scales::pseudo_log_trans(base = 10)
+  facet_grid(~cond_label+cond_iv_label) +
+  coord_fixed(ratio = 1) +
+  scale_x_continuous(guide = guide_axis(angle = -90, check.overlap = TRUE)) +
+  # scale_y_discrete(guide = guide_axis(check.overlap = TRUE)) +
+  labs(x = "SE (reference method)", y = "rel. correlations (max)") 
+ggsave("figures_man/bivd_noPC.png", 
+       width = 22, height = 12, units = "cm", 
+       dpi = 500)
+
+
+### bivariate gam
+
+
+bigams <- targ_both %>% 
+  filter(abs_dev != 0) %>% 
+  group_by(cond_label, cond_iv_label) %>% 
+  nest() %>% 
+  mutate(res = map(data, ~gam(abs_dev ~ te(se_y, rhos_max, bs = "ts"), 
+                              data = ., family=Gamma(link=log))))
+bigams <- bigams %>% 
+  mutate(nd = map(res, ~evaluate_smooth(., "te(se_y,rhos_max)", n = 100))) %>% 
+  mutate(nd = map2(res, nd, ~mutate(.y, abs_dev = predict(.x, newdata = .y, 
+                                                          type = "response"))))
+
+bigams %>% 
+  select(cond_label, cond_iv_label, nd) %>% 
+  unnest(nd) %>% 
+  mutate(abs_dev = if_else(is.na(est), NA_real_, abs_dev)) %>% 
+  ggplot(., aes(x = se_y, y = rhos_max)) +
+                  geom_raster(mapping = aes(fill = abs_dev)) +
+                  geom_contour(aes(z = abs_dev)) +
+                  scale_fill_gradient2(limits = c(0, 0.3), 
+                                       low = "darkgreen", mid = "orange", 
+                                       high = "red", 
+                                       midpoint = 0.06, 
+                                       name = "Mean abs. deviation", 
+                                       na.value = "transparent") +
+  coord_fixed() +
+  facet_grid(~cond_label+cond_iv_label) +
+  labs(x = "SE (reference method)", y = "rel. correlations (max)") +
+  scale_x_continuous(guide = guide_axis(angle = -90, check.overlap = TRUE))
+ggsave("figures_man/bigam_noPC.png", 
+       width = 22, height = 12, units = "cm", 
+       dpi = 500)
+
+
+### with comparison SE
+
+sum1 <- targ_both %>% 
+  mutate(across(c(rhos_max), 
+                .fns = ~cut_width(., width = 0.05, boundary = 0))) %>% 
+  mutate(across(c(se_x), 
+                .fns = ~cut_width(., width = 0.025, boundary = 0))) %>% 
+  group_by(cond_label, cond_iv_label, se_x, rhos_max) %>% 
+  summarise(mean_abs_dev = mean(abs_dev),
+            max_abs_dev = max(abs_dev),
+            n = n(), 
+            sd = sd(abs_dev),
+            se = sd(abs_dev)/sqrt(n())) 
+
+sum1$se_x <- as.numeric(as.character(make_cut_labels(sum1$se_x)))
+sum1$rhos_max <- as.numeric(as.character(make_cut_labels(sum1$rhos_max)))
+
+sum1 %>% 
+  mutate(mean_abs_dev = if_else(n >= 3, mean_abs_dev, NA_real_)) %>% 
+  ggplot(aes(x = se_x, y = rhos_max, fill = mean_abs_dev)) +
+  geom_raster() +
+  scale_fill_gradient2(limits = c(0, 0.2), 
+                      low = "darkgreen", mid = "orange", high = "red", 
+                      midpoint = 0.06, name = "Mean abs. deviation", 
+                      na.value = "transparent") + 
+  #trans=scales::pseudo_log_trans(base = 10)
+  facet_grid(~cond_label+cond_iv_label) +
+  coord_fixed(ratio = 1) +
+  scale_x_continuous(guide = guide_axis(angle = -90, check.overlap = TRUE)) +
+  # scale_y_discrete(guide = guide_axis(check.overlap = TRUE)) +
+  labs(x = "SE (comparison method)", y = "rel. correlations (max)") 
+ggsave("figures_man/bivd_noPC_c.png", 
+       width = 22, height = 12, units = "cm", 
+       dpi = 500)
+
+
+### bivariate gam
+
+
+bigams <- targ_both %>% 
+  filter(abs_dev != 0) %>% 
+  group_by(cond_label, cond_iv_label) %>% 
+  nest() %>% 
+  mutate(res = map(data, ~gam(abs_dev ~ te(se_x, rhos_max, bs = "ts"), 
+                              data = ., family=Gamma(link=log))))
+bigams <- bigams %>% 
+  mutate(nd = map(res, ~evaluate_smooth(., "te(se_x,rhos_max)", n = 100))) %>% 
+  mutate(nd = map2(res, nd, ~mutate(.y, abs_dev = predict(.x, newdata = .y, 
+                                                          type = "response"))))
+
+bigams %>% 
+  select(cond_label, cond_iv_label, nd) %>% 
+  unnest(nd) %>% 
+  mutate(abs_dev = if_else(is.na(est), NA_real_, abs_dev)) %>% 
+  ggplot(., aes(x = se_x, y = rhos_max)) +
+                  geom_raster(mapping = aes(fill = abs_dev)) +
+                  geom_contour(aes(z = abs_dev)) +
+                  scale_fill_gradient2(limits = c(0, 0.3), 
+                                       low = "darkgreen", mid = "orange", 
+                                       high = "red", 
+                                       midpoint = 0.06, 
+                                       name = "Mean abs. deviation", 
+                                       na.value = "transparent") +
+  coord_fixed() +
+  facet_grid(~cond_label+cond_iv_label) +
+  labs(x = "SE (comparison method)", y = "rel. correlations (max)") +
+  scale_x_continuous(guide = guide_axis(angle = -90, check.overlap = TRUE))
+ggsave("figures_man/bigam_noPC_c.png", 
+       width = 22, height = 12, units = "cm", 
+       dpi = 500)
+
+
+##----------------------------------------------------------------
 ##                    Univariate Relationships                   -
 ##----------------------------------------------------------------
 
@@ -293,10 +445,10 @@ psey <- compare_continuous_covariate(data = targ_both, covariate = se_y_w,
 psd <- compare_continuous_covariate(data = targ_both, covariate = sd_emp_inv, 
                                      cond_label, cond_iv_label, ylab = ylab) +
   xlab("Individual variability (SD)")
-prho <- compare_continuous_covariate(data = targ_both, covariate = rho_med, 
+prho <- compare_continuous_covariate(data = targ_both, covariate = rhos_max, 
                                      cond_label, cond_iv_label, ylab = ylab) +
-  xlab("Parameter correlations (median)")
-pfungi <- compare_continuous_covariate(data = targ_both, covariate = fungi_max, 
+  xlab("Parameter correlations (max)")
+pfungi <- compare_continuous_covariate(data = targ_both, covariate = fungis_max, 
                                      cond_label, cond_iv_label, ylab = ylab) +
   xlab("Parameter trade-offs (max)")
 prelw <- compare_continuous_covariate(data = targ_both, covariate = log(rel_weight), 
@@ -310,32 +462,79 @@ preln <- compare_continuous_covariate(data = targ_both, covariate = log(rel_n_w)
 phetero <- compare_continuous_covariate(data = targ_both, covariate = log1p(p_hetero), 
                                      cond_label, cond_iv_label, ylab = ylab) +
   xlab("Hetereogeneity (log p + 1)")
+
+phetero_b <- targ_both %>% 
+  mutate(chisq_hetero = if_else(chisq_hetero > 7500, 7500, chisq_hetero)) %>% 
+  compare_continuous_covariate(covariate = chisq_hetero, 
+                               cond_label, cond_iv_label, ylab = ylab) +
+  xlab("Hetereogeneity")
+
 pfit <- compare_continuous_covariate(data = targ_both, covariate = log1p(p_fit_x), 
                                      cond_label, cond_iv_label, ylab = ylab) +
   xlab("Model fit (comparison method, log p + 1)")
+
+pfit_b <- 
+  compare_continuous_covariate(data = targ_both, covariate = stat_fit_x, 
+                                     cond_label, cond_iv_label, ylab = ylab, 
+                               scales = "free_x") +
+  xlab("Model fit")
+
 
 
 puniv_good <- cowplot::plot_grid(
   psey, 
   psex + theme(strip.text = element_blank()), 
-  pfungi + theme(strip.text = element_blank()), 
-  prelw + theme(strip.text = element_blank()), 
-  preln + theme(strip.text = element_blank()), 
+  prho + theme(strip.text = element_blank()),
+  pfungi + theme(strip.text = element_blank()),
+  pest + theme(strip.text = element_blank()), 
   ncol = 1, rel_heights = c(1.3, rep(1, 4)))
 ggsave("figures_man/univariate_good_noPC.png", plot = puniv_good, 
        width = 28, height = 25, units = "cm", 
        dpi = 500)
 
 puniv_notgood <- cowplot::plot_grid(
-  pest, 
+  prelw, 
+  preln + theme(strip.text = element_blank()), 
   psd + theme(strip.text = element_blank()), 
-  prho + theme(strip.text = element_blank()), 
   phetero + theme(strip.text = element_blank()), 
   pfit + theme(strip.text = element_blank()), 
   ncol = 1, rel_heights = c(1.3, rep(1, 4)))
 ggsave("figures_man/univariate_notgood_noPC.png", plot = puniv_notgood, 
        width = 28, height = 25, units = "cm", 
        dpi = 500)
+
+puniv_notgoodb <- cowplot::plot_grid(
+  prelw, 
+  preln + theme(strip.text = element_blank()), 
+  psd + theme(strip.text = element_blank()), 
+  phetero_b + theme(strip.text = element_blank()), 
+  pfit_b + theme(strip.text = element_blank()), 
+  ncol = 1, rel_heights = c(1.3, rep(1, 4)))
+ggsave("figures_man/univariate_notgoodb_noPC_b.png", plot = puniv_notgoodb, 
+       width = 28, height = 25, units = "cm", 
+       dpi = 500)
+
+# puniv_good <- cowplot::plot_grid(
+#   psey, 
+#   psex + theme(strip.text = element_blank()), 
+#   pfungi + theme(strip.text = element_blank()), 
+#   prelw + theme(strip.text = element_blank()), 
+#   preln + theme(strip.text = element_blank()), 
+#   ncol = 1, rel_heights = c(1.3, rep(1, 4)))
+# ggsave("figures_man/univariate_good_noPC.png", plot = puniv_good, 
+#        width = 28, height = 25, units = "cm", 
+#        dpi = 500)
+# 
+# puniv_notgood <- cowplot::plot_grid(
+#   pest, 
+#   psd + theme(strip.text = element_blank()), 
+#   prho + theme(strip.text = element_blank()), 
+#   phetero + theme(strip.text = element_blank()), 
+#   pfit + theme(strip.text = element_blank()), 
+#   ncol = 1, rel_heights = c(1.3, rep(1, 4)))
+# ggsave("figures_man/univariate_notgood_noPC.png", plot = puniv_notgood, 
+#        width = 28, height = 25, units = "cm", 
+#        dpi = 500)
 
 
 ##----------------------------------------------------------------
