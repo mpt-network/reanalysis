@@ -301,7 +301,7 @@ sum1 %>%
   mutate(mean_abs_dev = if_else(n >= 3, mean_abs_dev, NA_real_)) %>% 
   ggplot(aes(x = se_y, y = rhos_max, fill = mean_abs_dev)) +
   geom_raster() +
-  scale_fill_gradient2(limits = c(0, 0.2), 
+  scale_fill_gradient2(limits = c(0, 0.3), 
                       low = "darkgreen", mid = "orange", high = "red", 
                       midpoint = 0.06, name = "Mean abs. deviation", 
                       na.value = "transparent") + 
@@ -373,7 +373,7 @@ sum1 %>%
   mutate(mean_abs_dev = if_else(n >= 3, mean_abs_dev, NA_real_)) %>% 
   ggplot(aes(x = se_x, y = rhos_max, fill = mean_abs_dev)) +
   geom_raster() +
-  scale_fill_gradient2(limits = c(0, 0.2), 
+  scale_fill_gradient2(limits = c(0, 0.3), 
                       low = "darkgreen", mid = "orange", high = "red", 
                       midpoint = 0.06, name = "Mean abs. deviation", 
                       na.value = "transparent") + 
