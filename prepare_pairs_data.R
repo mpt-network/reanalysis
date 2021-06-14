@@ -497,14 +497,18 @@ covariates_par <- left_join(covariates_par, hetero_empirical)
 ## Note: models where Trait PP failed, do not have values here
 
 p_vals <- results %>% 
+  mutate(nobs = map_dbl(n_tree, ~sum(.[,-1]))) %>% 
   unnest(gof_group) %>% 
   filter(focus == "mean") %>% 
-  select(model, dataset, inter, model2, condition, stat_obs, p, npar) %>% 
+  select(model, dataset, inter, model2, condition, stat_obs, stat_df, 
+         nobs, p, npar) %>% 
   rename(orig_condition = condition) %>% 
   rename(
     p_fit = p,
     stat_fit = stat_obs
-  )
+  ) %>% 
+  mutate(fit_cohenw = sqrt(if_else(stat_fit > 0, stat_fit, 0) / nobs))
+
 p_vals <- p_vals %>% 
   group_by(inter) %>% 
   mutate(
@@ -524,10 +528,14 @@ p_vals %>%
 
 hetero_np <- results %>% 
   filter(inter == "Comp MLE") %>% 
+  mutate(nobs = map_dbl(n_tree, ~sum(.[,-1]))) %>% 
   unnest(test_homogeneity) %>% 
-  select(model, dataset, model2, condition:p) %>% 
+  select(model, dataset, model2, condition:p, nobs) %>% 
   rename(orig_condition = condition) %>% 
-  rename(p_hetero = p)
+  rename(p_hetero = p) %>% 
+  mutate(hetero_cohenw = sqrt(chisq / nobs),
+         hetero_cramerv = sqrt(chisq / 
+                              (nobs * df)))
 
 stopifnot(all(p_vals$orig_condition %in% hetero_np$orig_condition))
 stopifnot(all(hetero_np$orig_condition %in% p_vals$orig_condition))
@@ -721,6 +729,7 @@ all_pairs <- covariates %>%
          stat_fit_x = stat_fit,
          stat_fit_z_x = stat_fit_z,
          stat_fit_scaled_x = stat_fit_scaled,
+         fit_cohenw_x = fit_cohenw,
          chisq_hetero = chisq,
          se_x = se) 
 any(is.na(all_pairs$abs_dev))
@@ -731,7 +740,7 @@ all_pairs <- covariates %>%
   rename(cond_y = inter) %>% 
   select(c("model", "dataset", "model2", "cond_y", "parameter", "condition"), 
          rel_par_weight, rel_n, p_fit, se, 
-         stat_fit, stat_fit_z, stat_fit_scaled) %>% 
+         stat_fit, stat_fit_z, stat_fit_scaled, fit_cohenw) %>% 
   right_join(all_pairs) %>% 
   mutate(log1p_fit_y = log1p(p_fit),
          logp_fit_y = log(p_fit)) %>% 
@@ -741,6 +750,7 @@ all_pairs <- covariates %>%
          stat_fit_y = stat_fit,
          stat_fit_z_y = stat_fit_z,
          stat_fit_scaled_y = stat_fit_scaled,
+         fit_cohenw_y = fit_cohenw,
          se_y = se)
 
 all_pairs_full <- all_pairs %>% 
@@ -762,7 +772,8 @@ all_pairs <- all_pairs_full %>%
          p_fit_x, p_fit_y,
          stat_fit_x, stat_fit_y, stat_fit_z_x, stat_fit_z_y,
          stat_fit_scaled_x, stat_fit_scaled_y,
-         chisq_hetero, 
+         fit_cohenw_x, fit_cohenw_y,
+         chisq_hetero, hetero_cohenw, hetero_cramerv,
          log1p_fit_x, logp_fit_x, log1p_fit_y, logp_fit_y, ## model fit
          rel_par_weight_x, rel_par_weight_y, ## Absolute parameter values 
          rel_n_x, rel_n_y,

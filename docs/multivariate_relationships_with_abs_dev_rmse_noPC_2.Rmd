@@ -324,9 +324,10 @@ all_lm <- targ_both %>%
   group_by(cond_label, cond_iv_label)  %>% 
   summarise(
     mean = list(lm(abs_dev ~ 1)),
-    parameter = list(lm(abs_dev ~ parameter)),
+    parameterr = list(lm(abs_dev ~ parameter)),
     mse_both = list(lm(abs_dev ~ se_x_w + se_y_w)),
     mse_c = list(lm(abs_dev ~ se_c)),
+    mse_pc = list(lm(abs_dev ~ se_c + parameter)),
     main = list(lm(formula(form_main))), 
     main_good = list(lm(formula(form_main_sel))), 
     #main_sel = list(lm(formula(form_selection))), 

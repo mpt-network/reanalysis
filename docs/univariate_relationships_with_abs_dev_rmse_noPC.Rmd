@@ -114,6 +114,11 @@ compare_continuous_covariate(cur_data, se_x, filter = se_x < 0.25)
 ### Hetereogeneity
 
 ```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, hetero_cohenw)
+compare_continuous_covariate(cur_data, hetero_cramerv)
+```
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
 compare_continuous_covariate(cur_data, log1p(p_hetero))
 compare_continuous_covariate(cur_data, log1p_hetero)
 compare_continuous_covariate(cur_data, poly(log1p_hetero, 2))
@@ -212,6 +217,7 @@ compare_continuous_covariate(cur_data, fungis_propl5)
 ```{r, fig.width=20.5, fig.height=3, message=FALSE}
 compare_continuous_covariate(cur_data, p_fit_x)
 compare_continuous_covariate(cur_data, log1p_fit_x)
+compare_continuous_covariate(cur_data, fit_cohenw_x)
 #compare_continuous_covariate(cur_data, logp_fit_x)
 compare_continuous_covariate(cur_data, stat_fit_x)
 compare_continuous_covariate(cur_data, stat_fit_z_x)
@@ -220,6 +226,7 @@ compare_continuous_covariate(cur_data, stat_fit_scaled_x,
                              filter = stat_fit_scaled_x < 0.5)
 compare_continuous_covariate(cur_data, p_fit_y)
 compare_continuous_covariate(cur_data, log1p_fit_y)
+compare_continuous_covariate(cur_data, fit_cohenw_y)
 #compare_continuous_covariate(cur_data, logp_fit_y)
 compare_continuous_covariate(cur_data, stat_fit_y)
 compare_continuous_covariate(cur_data, stat_fit_z_y)
@@ -389,6 +396,12 @@ compare_continuous_covariate(cur_data, se_x, filter = se_x < 0.25)
 ### Hetereogeneity
 
 ```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, hetero_cohenw)
+compare_continuous_covariate(cur_data, hetero_cramerv)
+```
+
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
 compare_continuous_covariate(cur_data, log1p(p_hetero))
 compare_continuous_covariate(cur_data, log1p_hetero)
 compare_continuous_covariate(cur_data, poly(log1p_hetero, 2))
@@ -477,6 +490,7 @@ compare_continuous_covariate(cur_data, fungis_propl5)
 ```{r, fig.width=20.5, fig.height=3, message=FALSE}
 compare_continuous_covariate(cur_data, p_fit_x)
 compare_continuous_covariate(cur_data, log1p_fit_x)
+compare_continuous_covariate(cur_data, fit_cohenw_x)
 #compare_continuous_covariate(cur_data, logp_fit_x)
 compare_continuous_covariate(cur_data, stat_fit_x)
 compare_continuous_covariate(cur_data, stat_fit_z_x)
@@ -485,6 +499,7 @@ compare_continuous_covariate(cur_data, stat_fit_scaled_x,
                              filter = stat_fit_scaled_x < 0.5)
 compare_continuous_covariate(cur_data, p_fit_y)
 compare_continuous_covariate(cur_data, log1p_fit_y)
+compare_continuous_covariate(cur_data, fit_cohenw_y)
 #compare_continuous_covariate(cur_data, logp_fit_y)
 compare_continuous_covariate(cur_data, stat_fit_y)
 compare_continuous_covariate(cur_data, stat_fit_z_y)

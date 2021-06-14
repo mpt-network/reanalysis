@@ -424,6 +424,13 @@ ggsave("figures_man/bigam_noPC_c.png",
        dpi = 500)
 
 
+targ_both %>% 
+  filter(rhos_max < 0.05, se_y < 0.02) %>% 
+  select(model2, dataset, parameter, cond_x, cond_y, 
+         abs_dev, se_y, rhos_max, x, y) %>% 
+  arrange(desc(abs_dev)) %>% 
+  print(n = 40)
+
 ##----------------------------------------------------------------
 ##                    Univariate Relationships                   -
 ##----------------------------------------------------------------
