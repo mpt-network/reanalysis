@@ -435,6 +435,9 @@ targ_both %>%
 ##                    Univariate Relationships                   -
 ##----------------------------------------------------------------
 
+theme_set(theme_bw(base_size = 13) + 
+            theme(legend.position="bottom"))
+
 
 
 
@@ -466,9 +469,10 @@ preln <- compare_continuous_covariate(data = targ_both, covariate = log(rel_n_w)
   xlab("Relative N (log)")
 
 ## data-set-level covariates
-phetero <- compare_continuous_covariate(data = targ_both, covariate = log1p(p_hetero), 
+phetero <- compare_continuous_covariate(data = targ_both, 
+                                        covariate = hetero_cohenw, 
                                      cond_label, cond_iv_label, ylab = ylab) +
-  xlab("Hetereogeneity (log p + 1)")
+  xlab("Hetereogeneity")
 
 phetero_b <- targ_both %>% 
   mutate(chisq_hetero = if_else(chisq_hetero > 7500, 7500, chisq_hetero)) %>% 
@@ -476,9 +480,11 @@ phetero_b <- targ_both %>%
                                cond_label, cond_iv_label, ylab = ylab) +
   xlab("Hetereogeneity")
 
-pfit <- compare_continuous_covariate(data = targ_both, covariate = log1p(p_fit_x), 
-                                     cond_label, cond_iv_label, ylab = ylab) +
-  xlab("Model fit (comparison method, log p + 1)")
+pfit <- compare_continuous_covariate(data = targ_both, 
+                                     covariate = fit_cohenw_x, 
+                                     cond_label, cond_iv_label, ylab = ylab, 
+                                     scales = "free_x") +
+  xlab("Model fit (comparison method)")
 
 pfit_b <- 
   compare_continuous_covariate(data = targ_both, covariate = stat_fit_x, 
@@ -499,12 +505,28 @@ ggsave("figures_man/univariate_good_noPC.png", plot = puniv_good,
        width = 28, height = 25, units = "cm", 
        dpi = 500)
 
+newbreaks <- function (n = 5, ...) 
+{
+    n_default <- n
+    function(x, n = n_default) {
+        x <- x[is.finite(x)]
+        if (length(x) == 0) {
+            return(numeric())
+        }
+        rng <- range(x)
+        rng[2] <- rng[2]*0.8
+        labeling::extended(rng[1], rng[2], n, ...)
+    }
+}
+
 puniv_notgood <- cowplot::plot_grid(
   prelw, 
   preln + theme(strip.text = element_blank()), 
-  psd + theme(strip.text = element_blank()), 
   phetero + theme(strip.text = element_blank()), 
-  pfit + theme(strip.text = element_blank()), 
+  pfit + theme(strip.text = element_blank()) + 
+    scale_x_continuous(
+      breaks = newbreaks(3)), 
+  psd + theme(strip.text = element_blank()),
   ncol = 1, rel_heights = c(1.3, rep(1, 4)))
 ggsave("figures_man/univariate_notgood_noPC.png", plot = puniv_notgood, 
        width = 28, height = 25, units = "cm", 
