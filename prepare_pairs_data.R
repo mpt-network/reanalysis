@@ -540,8 +540,50 @@ hetero_np <- results %>%
 stopifnot(all(p_vals$orig_condition %in% hetero_np$orig_condition))
 stopifnot(all(hetero_np$orig_condition %in% p_vals$orig_condition))
 
+
+### individual-level misfit
+
+imisfit_trait <- results %>% 
+  filter(inter == "Trait PP") %>% 
+  select(model, dataset, model2, gof_indiv) %>% 
+  unnest(gof_indiv) %>% 
+  rename(orig_condition = condition) %>% 
+  group_by(model, model2, dataset, orig_condition) %>% 
+  summarise(prop_ns_trait = mean(p < .05))
+
+imisfit_noasy <- results %>% 
+  filter(inter == "No asy") %>% 
+  select(model, dataset, model2, gof_indiv) %>% 
+  unnest(gof_indiv) %>% 
+  rename(orig_condition = condition) %>% 
+  group_by(model, model2, dataset, orig_condition) %>% 
+  summarise(prop_ns_noasy = mean(p < .05))
+
+imisfit_nopb <- results %>% 
+  filter(inter == "No PB") %>% 
+  select(model, dataset, model2, gof_indiv) %>% 
+  unnest(gof_indiv) %>% 
+  rename(orig_condition = condition) %>% 
+  group_by(model, model2, dataset, orig_condition) %>% 
+  summarise(prop_ns_nopb = mean(p < .05))
+
+imisfit_nonpb <- results %>% 
+  filter(inter == "No NPB") %>% 
+  select(model, dataset, model2, gof_indiv) %>% 
+  unnest(gof_indiv) %>% 
+  rename(orig_condition = condition) %>% 
+  group_by(model, model2, dataset, orig_condition) %>% 
+  summarise(prop_ns_nonpb = mean(p < .05))
+
+imisfit <- left_join(imisfit_noasy, imisfit_trait) %>% 
+  left_join(imisfit_nopb) %>% 
+  left_join(imisfit_nonpb)
+
+# model, dataset, model2, orig_condition
+
 ## covariates not relative to parameter
-covariates_nopar <- left_join(p_vals, hetero_np)
+covariates_nopar <- left_join(p_vals, hetero_np) %>% 
+  left_join(imisfit)
 
 ## should be of length 0
 covariates_nopar %>% 
@@ -778,6 +820,7 @@ all_pairs <- all_pairs_full %>%
          rel_par_weight_x, rel_par_weight_y, ## Absolute parameter values 
          rel_n_x, rel_n_y,
          ## product of previous branches. Relative information available 
+         starts_with("prop_ns_"),
          npar, ## number of parameters
          population, sci_goal, ### external covariates
          condition, orig_condition, parameter_o
