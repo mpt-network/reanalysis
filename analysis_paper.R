@@ -24,6 +24,19 @@ all_pairs <- all_pairs %>%
       function(x) paste(sort(x), collapse = " - ")))
 
 
+##---------------------------------------------------------------
+##                  absolute deviation by model                 -
+##---------------------------------------------------------------
+
+all_pairs %>% 
+  mutate(SAI = factor(if_else(model == "pc", "Not SAI", "SAI"), 
+                      levels = c("SAI", "Not SAI"))) %>% 
+  ggplot(aes(x = SAI, y = abs_dev)) +
+  geom_boxplot() +
+  stat_summary(color = "red") +
+  facet_grid(cond_x2~ cond_y2, switch = "both", as.table = TRUE)
+
+
 ##----------------------------------------------------------------
 ##                          Pairs Plot                           -
 ##----------------------------------------------------------------

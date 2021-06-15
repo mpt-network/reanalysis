@@ -235,6 +235,16 @@ compare_continuous_covariate(cur_data, stat_fit_scaled_y,
                              filter = stat_fit_scaled_y < 0.2)
 ```
 
+### Proportion of Individual Misfit 
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, prop_ns_nopb)
+compare_continuous_covariate(cur_data, prop_ns_nonpb)
+compare_continuous_covariate(cur_data, prop_ns_noasy)
+compare_continuous_covariate(cur_data, prop_ns_trait)
+```
+
+
 ### Relative Parameter Information
 
 ```{r, fig.width=20.5, fig.height=3, message=FALSE}
@@ -506,6 +516,15 @@ compare_continuous_covariate(cur_data, stat_fit_z_y)
 compare_continuous_covariate(cur_data, stat_fit_scaled_y)
 compare_continuous_covariate(cur_data, stat_fit_scaled_y, 
                              filter = stat_fit_scaled_y < 0.2)
+```
+
+### Proportion of Individual Misfit 
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, prop_ns_nopb)
+compare_continuous_covariate(cur_data, prop_ns_nonpb)
+compare_continuous_covariate(cur_data, prop_ns_noasy)
+compare_continuous_covariate(cur_data, prop_ns_trait)
 ```
 
 ### Relative Parameter Information
