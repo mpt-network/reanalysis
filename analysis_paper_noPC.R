@@ -21,7 +21,8 @@ all_pairs <- all_pairs %>%
     mutate(cond_x2 = cond_y,
          cond_y2 = cond_x) %>% 
   mutate(se_c = (se_x_w + se_y_w)/2) %>% 
-  filter(model != "pc", parameter != "rm:g")
+  filter(model != "pc") %>% 
+  filter(parameter != "rm:g")
 all_pairs <- all_pairs %>%
   mutate(cond_co = apply(cbind(as.character(cond_x), 
             as.character(cond_y)), 1, 
@@ -582,6 +583,7 @@ rmse_tab_1
 rmse_tab_2 <- targ_both %>% 
   group_by(cond_label, cond_iv_label) %>% 
   summarise(
+    control = sigma(lm(abs_dev ~ 1)),
     model = sigma(lm(abs_dev ~ model)),
     model2 = sigma(lm(abs_dev ~ model2)), 
     parameter = sigma(lm(abs_dev ~ parameter)),

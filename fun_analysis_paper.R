@@ -137,7 +137,7 @@ new_method_labels <- function(levels) {
                   "Beta PP", "Trait_u PP", "Trait PP")
   new_levels <- c("CP-MLE", "CP-Bayes",
                   "NP-MLE", "NP-PB", "NP-NPB", "NP-BAYES",
-                  "PP-LT-C", "PP-LT-NC", "PP-B")
+                  "PP-B", "PP-LT-C", "PP-LT-NC")
   names(new_levels) <- old_levels
   new_levels[levels]
 }
