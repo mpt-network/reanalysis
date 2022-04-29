@@ -65,7 +65,7 @@ MIN_REL_RHO <- 0.1
 
 If we compare the absolute deviation across method pairs and whether or not SAI holds for a model, the following plot shows that for models for which SAI does not hold (i.e., the pair clustering model) the absolute deviation is on average larger. The red points is the mean in each plot. Consequently, all following analyses are based on the data excluding the non SAI (i.e., pair clustering) model.
 
-```{r, fig.width=11.4, fig.height=11, message=FALSE, eval=FALSE}
+```{r, fig.width=11.4, fig.height=11, message=FALSE, eval=TRUE}
 all_pairs %>% 
   ggplot(aes(x = SAI, y = abs_dev)) +
   geom_boxplot() +
@@ -96,7 +96,7 @@ theme_set(theme_bw(base_size = 15) +
             theme(legend.position="right"))
 ```
 
-```{r, fig.width=18, fig.height=5, message=FALSE}
+```{r, fig.width=18, fig.height=5, message=FALSE, eval=FALSE}
 make_emp_biv_plot(cur_data, 
                   rhos_max, "rel. correlations (max)",
                   se_y, "SE (reference method)")
@@ -123,29 +123,30 @@ make_emp_biv_plot(cur_data,
 ```
 
 ```{r, fig.width=18, fig.height=5, message=FALSE, warning=FALSE}
-make_gam_biv_plot(cur_data, 
-                  rhos_max, "rel. correlations (max)",
-                  se_y, "SE (reference method)")
+# make_gam_biv_plot(cur_data, 
+#                   rhos_max, "rel. correlations (max)",
+#                   se_y, "SE (reference method)")
+# 
+# make_gam_biv_plot(cur_data, 
+#                   rhos_max, "rel. correlations (max)",
+#                   se_x, "SE (comparison method)")
 
 make_gam_biv_plot(cur_data, 
                   rhos_max, "rel. correlations (max)",
-                  se_x, "SE (comparison method)")
+                  se_c, "SE (combined)") +
+  facet_grid(~cond_label+cond_iv_label)
 
-make_gam_biv_plot(cur_data, 
-                  rhos_max, "rel. correlations (max)",
-                  se_c, "SE (combined)")
-
-make_gam_biv_plot(cur_data, 
-                  rhos_mean, "rel. correlations (mean)",
-                  se_y, "SE (reference method)")
-
-make_gam_biv_plot(cur_data, 
-                  rhos_mean, "rel. correlations (mean)",
-                  se_x, "SE (comparison method)")
-
-make_gam_biv_plot(cur_data, 
-                  rhos_mean, "rel. correlations (mean)",
-                  se_x, "SE (combined)")
+# make_gam_biv_plot(cur_data, 
+#                   rhos_mean, "rel. correlations (mean)",
+#                   se_y, "SE (reference method)")
+# 
+# make_gam_biv_plot(cur_data, 
+#                   rhos_mean, "rel. correlations (mean)",
+#                   se_x, "SE (comparison method)")
+# 
+# make_gam_biv_plot(cur_data, 
+#                   rhos_mean, "rel. correlations (mean)",
+#                   se_x, "SE (combined)")
 ```
 
 ### Selected Pairs: SE < .025, Rho < .1
@@ -334,7 +335,7 @@ theme_set(theme_bw(base_size = 15) +
             theme(legend.position="right"))
 ```
 
-```{r, fig.width=18, fig.height=5, message=FALSE}
+```{r, fig.width=18, fig.height=5, message=FALSE, eval=FALSE}
 make_emp_biv_plot(cur_data, 
                   rhos_max, "rel. correlations (max)",
                   se_y, "SE (reference method)")
@@ -361,29 +362,30 @@ make_emp_biv_plot(cur_data,
 ```
 
 ```{r, fig.width=18, fig.height=5, message=FALSE, warning=FALSE}
-make_gam_biv_plot(cur_data, 
-                  rhos_max, "rel. correlations (max)",
-                  se_y, "SE (reference method)")
+# make_gam_biv_plot(cur_data, 
+#                   rhos_max, "rel. correlations (max)",
+#                   se_y, "SE (reference method)")
+# 
+# make_gam_biv_plot(cur_data, 
+#                   rhos_max, "rel. correlations (max)",
+#                   se_x, "SE (comparison method)")
 
 make_gam_biv_plot(cur_data, 
                   rhos_max, "rel. correlations (max)",
-                  se_x, "SE (comparison method)")
+                  se_c, "SE (combined)") +
+  facet_grid(~cond_label+cond_iv_label)
 
-make_gam_biv_plot(cur_data, 
-                  rhos_max, "rel. correlations (max)",
-                  se_c, "SE (combined)")
-
-make_gam_biv_plot(cur_data, 
-                  rhos_mean, "rel. correlations (mean)",
-                  se_y, "SE (reference method)")
-
-make_gam_biv_plot(cur_data, 
-                  rhos_mean, "rel. correlations (mean)",
-                  se_x, "SE (comparison method)")
-
-make_gam_biv_plot(cur_data, 
-                  rhos_mean, "rel. correlations (mean)",
-                  se_x, "SE (combined)")
+# make_gam_biv_plot(cur_data, 
+#                   rhos_mean, "rel. correlations (mean)",
+#                   se_y, "SE (reference method)")
+# 
+# make_gam_biv_plot(cur_data, 
+#                   rhos_mean, "rel. correlations (mean)",
+#                   se_x, "SE (comparison method)")
+# 
+# make_gam_biv_plot(cur_data, 
+#                   rhos_mean, "rel. correlations (mean)",
+#                   se_x, "SE (combined)")
 ```
 
 ### Selected Pairs: SE < .025, Rho < .1

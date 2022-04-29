@@ -53,7 +53,7 @@ make_gam_biv_plot <- function(data, var1, label1, var2, label2) {
   te_term <- paste0("te(", var2name, ",",var1name, ")")
   
   bigams <- bigams %>% 
-    mutate(nd = map(res, ~gratia::evaluate_smooth(., te_term, n = 100))) %>% 
+    mutate(nd = map(res, ~gratia::smooth_estimates(., te_term, n = 100))) %>% 
     mutate(nd = map2(res, nd, ~mutate(.y, abs_dev = predict(.x, newdata = .y, 
                                                             type = "response"))))
   ## mgcv::gam(formula(expr(abs_dev ~ s(!!enexpr(covariate), bs = "ts"))
