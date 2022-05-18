@@ -18,9 +18,9 @@ make_emp_biv_plot <- function(data, var1, label1, var2, label2) {
   sum1[[var2name]] <- make_cut_num(sum1[[var2name]])
   
   sum1 %>% 
-    mutate(mean_abs_dev = if_else(n >= 3, mean_abs_dev, NA_real_)) %>% 
+    mutate(mean_abs_dev = if_else(n >= 0, mean_abs_dev, NA_real_)) %>% 
     ggplot(aes(x = {{var2}}, y = {{var1}}, fill = mean_abs_dev)) +
-    geom_raster() +
+    geom_tile() +
     scale_fill_gradientn(limits = c(0, 0.3), 
                          colours = c("darkgreen", "yellow", 
                                      "orange", "red", "darkred"), 
@@ -28,14 +28,14 @@ make_emp_biv_plot <- function(data, var1, label1, var2, label2) {
                            scales::rescale(c(0, 0.01, 0.05, 0.1, 0.2, 0.3)),
                          name = "Mean abs. deviation", 
                          na.value = "transparent") +
-    facet_grid(~cond_iv_label) +
+    #facet_grid(~cond_iv_label) +
     coord_fixed(ratio = 1, xlim = c(0, 0.5), ylim = c(0, 0.9)) +
     scale_x_continuous(guide = guide_axis(angle = -90, check.overlap = TRUE)) +
-    # scale_y_discrete(guide = guide_axis(check.overlap = TRUE)) +
     labs(x = label2, y = label1) 
 }
 
-make_gam_biv_plot <- function(data, var1, label1, var2, label2) {
+make_gam_biv_plot <- function(data, var1, label1, var2, label2, 
+                              return = "plot") {
   
   bigams <- data %>% 
     filter(abs_dev != 0) %>% 
@@ -64,7 +64,7 @@ make_gam_biv_plot <- function(data, var1, label1, var2, label2) {
     ggplot(., aes(x = {{var2}}, y = {{var1}})) +
     geom_raster(mapping = aes(fill = abs_dev)) +
     geom_contour(aes(z = abs_dev), 
-                 breaks = c(0, 0.01, 0.05, 0.1, 0.2, 0.3)) +
+                 breaks = c(0, 0.01, 0.05, 0.1, 0.2, 0.3), colour = "darkgrey") +
     scale_fill_gradientn(limits = c(0, 0.3), 
                          colours = c("darkgreen", "yellow", 
                                      "orange", "red", "darkred"), 
@@ -75,7 +75,8 @@ make_gam_biv_plot <- function(data, var1, label1, var2, label2) {
     coord_fixed(ratio = 1, xlim = c(0, 0.5), ylim = c(0, 0.9)) +
     labs(x = label2, y = label1)  +
     scale_x_continuous(guide = guide_axis(angle = -90, check.overlap = TRUE))
-  pout
+  if (return == "plot") return(pout)
+  else return(list(gams = bigams, plot = pout))
 }
 
 make_cor_plot <- function(data, x, y, filter, alpha = 0.3) {

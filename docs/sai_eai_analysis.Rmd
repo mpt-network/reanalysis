@@ -52,8 +52,8 @@ all_pairs <- all_pairs %>%
 
 ```{r PARAMETERS}
 
-CUT_WIDTH_RHO <- 0.05
-CUT_WIDTH_SE <- 0.025
+CUT_WIDTH_RHO <- 0.025
+CUT_WIDTH_SE <- 0.02
 
 MIN_REL_SE <- 0.025
 MIN_REL_RHO <- 0.1
@@ -96,33 +96,34 @@ theme_set(theme_bw(base_size = 15) +
             theme(legend.position="right"))
 ```
 
-```{r, fig.width=18, fig.height=5, message=FALSE, eval=FALSE}
-make_emp_biv_plot(cur_data, 
+```{r, fig.width=18, fig.height=5, message=FALSE, eval=TRUE}
+# make_emp_biv_plot(cur_data, 
+#                   rhos_max, "rel. correlations (max)",
+#                   se_y, "SE (reference method)")
+# 
+# make_emp_biv_plot(cur_data, 
+#                   rhos_max, "rel. correlations (max)",
+#                   se_x, "SE (comparison method)")
+# 
+make_emp_biv_plot(cur_data,
                   rhos_max, "rel. correlations (max)",
-                  se_y, "SE (reference method)")
+                  se_c, "SE (combined)") +
+  facet_grid(~cond_iv_label)
 
-make_emp_biv_plot(cur_data, 
-                  rhos_max, "rel. correlations (max)",
-                  se_x, "SE (comparison method)")
-
-make_emp_biv_plot(cur_data, 
-                  rhos_max, "rel. correlations (max)",
-                  se_c, "SE (combined)")
-
-make_emp_biv_plot(cur_data, 
-                  rhos_mean, "rel. correlations (mean)",
-                  se_y, "SE (reference method)")
-
-make_emp_biv_plot(cur_data, 
-                  rhos_mean, "rel. correlations (mean)",
-                  se_x, "SE (comparison method)")
-
-make_emp_biv_plot(cur_data, 
-                  rhos_mean, "rel. correlations (mean)",
-                  se_x, "SE (combined)")
+# make_emp_biv_plot(cur_data, 
+#                   rhos_mean, "rel. correlations (mean)",
+#                   se_y, "SE (reference method)")
+# 
+# make_emp_biv_plot(cur_data, 
+#                   rhos_mean, "rel. correlations (mean)",
+#                   se_x, "SE (comparison method)")
+# 
+# make_emp_biv_plot(cur_data, 
+#                   rhos_mean, "rel. correlations (mean)",
+#                   se_x, "SE (combined)")
 ```
 
-```{r, fig.width=18, fig.height=5, message=FALSE, warning=FALSE}
+```{r, fig.width=18, fig.height=5.3, message=FALSE, warning=FALSE}
 # make_gam_biv_plot(cur_data, 
 #                   rhos_max, "rel. correlations (max)",
 #                   se_y, "SE (reference method)")
@@ -149,7 +150,7 @@ make_gam_biv_plot(cur_data,
 #                   se_x, "SE (combined)")
 ```
 
-### Selected Pairs: SE < .025, Rho < .1
+
 
 ```{r PARAMETERS2}
 MIN_REL_SE <- 0.025
@@ -157,6 +158,10 @@ MIN_REL_RHO <- 0.1
 
 ```
 
+### Selected Pairs: SE < `r MIN_REL_SE`, Rho < `r MIN_REL_RHO`
+
+The following table provides an overview of thirty observations with SE_c < `r MIN_REL_SE` and rho_max < `r MIN_REL_RHO` ordered by `z_abs_dev` which is calculated as `abs_dev`/`se_c`. It is clear that the largest deviations involve NP-Bayes.
+
 ```{r}
 cur_data %>% 
   filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>% 
@@ -168,7 +173,7 @@ cur_data %>%
   knitr::kable(digits = 3)
 ```
 
-```{r, fig.width=10, fig.height=3.5, message=FALSE}
+```{r, fig.width=10, fig.height=3.5, message=FALSE, eval=FALSE}
 cur_data %>% 
   filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>% 
   mutate(z_abs_dev = abs_dev/se_c) %>% 
@@ -189,7 +194,7 @@ cur_data %>%
 
 ```
 
-```{r, fig.width=10, fig.height=3, message=FALSE}
+```{r, fig.width=10, fig.height=3, message=FALSE, eval=FALSE}
 
 cur_data %>% 
   filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
@@ -233,92 +238,6 @@ cur_data %>%
   filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
   make_cor_plot(x = prop_ns_trait, y = abs_dev)
 ```
-
-### Selected Pairs: SE < .02, Rho < .05
-
-```{r PARAMETERS3}
-MIN_REL_SE <- 0.02
-MIN_REL_RHO <- 0.05
-
-```
-
-```{r}
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>% 
-  select(model2, dataset, parameter, cond_x, cond_y, 
-         abs_dev, se_c, rhos_max, x, y, starts_with("prop_ns")) %>% 
-  mutate(z_abs_dev = abs_dev/se_c) %>% 
-  arrange(desc(z_abs_dev)) %>% 
-  slice(1:30) %>% 
-  knitr::kable(digits = 3)
-```
-
-```{r, fig.width=10, fig.height=3.5, message=FALSE}
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>% 
-  mutate(z_abs_dev = abs_dev/se_c) %>% 
-  mutate(misfit = ifelse(prop_ns_nonpb 	== 0, "none", "some")) %>% 
-  ggplot(aes(x = misfit, y = z_abs_dev)) +
-  geom_boxplot() +
-  stat_summary(color = "red") +
-  facet_grid(~cond_iv_label)
-
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>% 
-  mutate(z_abs_dev = abs_dev/se_c) %>% 
-  mutate(misfit = ifelse(prop_ns_nonpb 	== 0, "none", "some")) %>% 
-  ggplot(aes(x = misfit, y = abs_dev)) +
-  geom_boxplot() +
-  stat_summary(color = "red") +
-  facet_grid(~cond_iv_label)
-
-```
-
-```{r, fig.width=10, fig.height=3, message=FALSE}
-
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns, y = z_abs_dev)
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns, y = z_abs_dev, 
-                filter = prop_ns < 0.4)
-
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns_nopb, y = z_abs_dev)
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns_nonpb, y = z_abs_dev)
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns_noasy, y = z_abs_dev)
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns_trait, y = z_abs_dev)
-
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns, y = abs_dev)
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns, y = abs_dev, 
-                filter = prop_ns < 0.4)
-
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns_nopb, y = abs_dev)
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns_nonpb, y = abs_dev)
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns_noasy, y = abs_dev)
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns_trait, y = abs_dev)
-```
-
 
 ## Reference Method:PP-LT-C
 
@@ -335,33 +254,34 @@ theme_set(theme_bw(base_size = 15) +
             theme(legend.position="right"))
 ```
 
-```{r, fig.width=18, fig.height=5, message=FALSE, eval=FALSE}
-make_emp_biv_plot(cur_data, 
-                  rhos_max, "rel. correlations (max)",
-                  se_y, "SE (reference method)")
+```{r, fig.width=18, fig.height=5, message=FALSE, eval=TRUE}
+# make_emp_biv_plot(cur_data, 
+#                   rhos_max, "rel. correlations (max)",
+#                   se_y, "SE (reference method)")
+# 
+# make_emp_biv_plot(cur_data, 
+#                   rhos_max, "rel. correlations (max)",
+#                   se_x, "SE (comparison method)")
 
 make_emp_biv_plot(cur_data, 
                   rhos_max, "rel. correlations (max)",
-                  se_x, "SE (comparison method)")
+                  se_c, "SE (combined)") +
+  facet_grid(~cond_iv_label)
 
-make_emp_biv_plot(cur_data, 
-                  rhos_max, "rel. correlations (max)",
-                  se_c, "SE (combined)")
-
-make_emp_biv_plot(cur_data, 
-                  rhos_mean, "rel. correlations (mean)",
-                  se_y, "SE (reference method)")
-
-make_emp_biv_plot(cur_data, 
-                  rhos_mean, "rel. correlations (mean)",
-                  se_x, "SE (comparison method)")
-
-make_emp_biv_plot(cur_data, 
-                  rhos_mean, "rel. correlations (mean)",
-                  se_x, "SE (combined)")
+# make_emp_biv_plot(cur_data, 
+#                   rhos_mean, "rel. correlations (mean)",
+#                   se_y, "SE (reference method)")
+# 
+# make_emp_biv_plot(cur_data, 
+#                   rhos_mean, "rel. correlations (mean)",
+#                   se_x, "SE (comparison method)")
+# 
+# make_emp_biv_plot(cur_data, 
+#                   rhos_mean, "rel. correlations (mean)",
+#                   se_x, "SE (combined)")
 ```
 
-```{r, fig.width=18, fig.height=5, message=FALSE, warning=FALSE}
+```{r, fig.width=18, fig.height=5.3, message=FALSE, warning=FALSE}
 # make_gam_biv_plot(cur_data, 
 #                   rhos_max, "rel. correlations (max)",
 #                   se_y, "SE (reference method)")
@@ -407,7 +327,7 @@ cur_data %>%
   knitr::kable(digits = 3)
 ```
 
-```{r, fig.width=10, fig.height=3.5, message=FALSE}
+```{r, fig.width=10, fig.height=3.5, message=FALSE, eval=FALSE}
 cur_data %>% 
   filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>% 
   mutate(z_abs_dev = abs_dev/se_c) %>% 
@@ -428,7 +348,7 @@ cur_data %>%
 
 ```
 
-```{r, fig.width=10, fig.height=3, message=FALSE}
+```{r, fig.width=10, fig.height=3, message=FALSE, eval=FALSE}
 
 cur_data %>% 
   filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
@@ -473,177 +393,4 @@ cur_data %>%
   make_cor_plot(x = prop_ns_trait, y = abs_dev)
 ```
 
-### Selected Pairs: SE < .02, Rho < .05
-
-```{r PARAMETERSb2}
-MIN_REL_SE <- 0.02
-MIN_REL_RHO <- 0.05
-
-```
-
-```{r}
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>% 
-  select(model2, dataset, parameter, cond_x, cond_y, 
-         abs_dev, se_c, rhos_max, x, y, starts_with("prop_ns")) %>% 
-  mutate(z_abs_dev = abs_dev/se_c) %>% 
-  arrange(desc(z_abs_dev)) %>% 
-  slice(1:30) %>% 
-  knitr::kable(digits = 3)
-```
-
-```{r, fig.width=10, fig.height=3.5, message=FALSE}
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>% 
-  mutate(z_abs_dev = abs_dev/se_c) %>% 
-  mutate(misfit = ifelse(prop_ns_nonpb 	== 0, "none", "some")) %>% 
-  ggplot(aes(x = misfit, y = z_abs_dev)) +
-  geom_boxplot() +
-  stat_summary(color = "red") +
-  facet_grid(~cond_iv_label)
-
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>% 
-  mutate(z_abs_dev = abs_dev/se_c) %>% 
-  mutate(misfit = ifelse(prop_ns_nonpb 	== 0, "none", "some")) %>% 
-  ggplot(aes(x = misfit, y = abs_dev)) +
-  geom_boxplot() +
-  stat_summary(color = "red") +
-  facet_grid(~cond_iv_label)
-
-```
-
-```{r, fig.width=10, fig.height=3, message=FALSE}
-
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns, y = z_abs_dev)
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns, y = z_abs_dev, 
-                filter = prop_ns < 0.4)
-
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns_nopb, y = z_abs_dev)
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns_nonpb, y = z_abs_dev)
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns_noasy, y = z_abs_dev)
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns_trait, y = z_abs_dev)
-
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns, y = abs_dev)
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns, y = abs_dev, 
-                filter = prop_ns < 0.4)
-
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns_nopb, y = abs_dev)
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns_nonpb, y = abs_dev)
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns_noasy, y = abs_dev)
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns_trait, y = abs_dev)
-```
-
-### Selected Pairs: SE < .05, Rho < .1
-
-```{r PARAMETERSb3}
-MIN_REL_SE <- 0.05
-MIN_REL_RHO <- 0.1
-
-```
-
-```{r}
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>% 
-  select(model2, dataset, parameter, cond_x, cond_y, 
-         abs_dev, se_c, rhos_max, x, y, starts_with("prop_ns")) %>% 
-  mutate(z_abs_dev = abs_dev/se_c) %>% 
-  arrange(desc(z_abs_dev)) %>% 
-  slice(1:30) %>% 
-  knitr::kable(digits = 3)
-```
-
-```{r, fig.width=10, fig.height=3.5, message=FALSE}
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>% 
-  mutate(z_abs_dev = abs_dev/se_c) %>% 
-  mutate(misfit = ifelse(prop_ns 	== 0, "none", "some")) %>% 
-  ggplot(aes(x = misfit, y = z_abs_dev)) +
-  geom_boxplot() +
-  stat_summary(color = "red") +
-  facet_grid(~cond_iv_label)
-
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>% 
-  mutate(z_abs_dev = abs_dev/se_c) %>% 
-  mutate(misfit = ifelse(prop_ns 	== 0, "none", "some")) %>% 
-  ggplot(aes(x = misfit, y = abs_dev)) +
-  geom_boxplot() +
-  stat_summary(color = "red") +
-  facet_grid(~cond_iv_label)
-
-```
-
-```{r, fig.width=10, fig.height=3, message=FALSE}
-
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns, y = z_abs_dev)
-
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns, y = z_abs_dev, 
-                filter = prop_ns < 0.4)
-
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns_nopb, y = z_abs_dev,
-                filter = prop_ns_nopb < 0.4)
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns_nonpb, y = z_abs_dev,
-                filter = prop_ns_nonpb < 0.1)
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns_noasy, y = z_abs_dev,
-                filter = prop_ns_noasy < 0.5)
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns_trait, y = z_abs_dev,
-                filter = prop_ns_trait < 0.15)
-
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns, y = abs_dev)
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns, y = abs_dev,
-                filter = prop_ns < 0.4)
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns_nopb, y = abs_dev)
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns_nonpb, y = abs_dev)
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns_noasy, y = abs_dev)
-cur_data %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot(x = prop_ns_trait, y = abs_dev)
-```
 

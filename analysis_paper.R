@@ -24,17 +24,6 @@ all_pairs <- all_pairs %>%
       function(x) paste(sort(x), collapse = " - ")))
 
 
-##---------------------------------------------------------------
-##                  absolute deviation by model                 -
-##---------------------------------------------------------------
-
-all_pairs %>% 
-  mutate(SAI = factor(if_else(model == "pc", "Not SAI", "SAI"), 
-                      levels = c("SAI", "Not SAI"))) %>% 
-  ggplot(aes(x = SAI, y = abs_dev)) +
-  geom_boxplot() +
-  stat_summary(color = "red") +
-  facet_grid(cond_x2~ cond_y2, switch = "both", as.table = TRUE)
 
 
 ##----------------------------------------------------------------
@@ -127,6 +116,31 @@ unique_pairs %>%
     l75 = mean(abs_dev > .75),
     l90 = mean(abs_dev > .90),
   )
+
+## same without PC model
+
+unique_pairs_nopc <- all_pairs %>% 
+  filter(model != "pc") %>% 
+  distinct(model, model2, dataset, parameter, cond_co, 
+           parameter_o, condition, orig_condition, .keep_all = TRUE) %>% 
+  filter(cond_x != "No Bayes", cond_y != "No Bayes", cond_x != cond_y) 
+
+unique_pairs_nopc %>% 
+  summarise(
+    l05 = mean(abs_dev > .05),
+    l10 = mean(abs_dev > .10),
+    l25 = mean(abs_dev > .25),
+    l33 = mean(abs_dev > .33),
+    l50 = mean(abs_dev > .50),
+    l75 = mean(abs_dev > .75),
+    l90 = mean(abs_dev > .90),
+  )
+
+
+##---------------
+##  Worst Cases  
+##---------------
+
 
 unique_pairs %>% 
   group_by(cond_co) %>% 
@@ -223,6 +237,34 @@ all_pairs %>%
   arrange(max) %>% 
   print(n = Inf)
 
+## same but without PC model
+
+all_pairs %>% 
+  filter(model != "pc") %>% 
+  group_by(cond_x, cond_y) %>% 
+  summarise(max = max(abs_dev),
+            model = model[which.max(abs_dev)]) %>% 
+  ungroup %>% 
+  arrange(max) %>% 
+  print(n = Inf)
+
+
+#################################################################
+##               Testing Theoretical Predictions               ##
+#################################################################
+
+
+##---------------------------------------------------------------
+##                  absolute deviation by model                 -
+##---------------------------------------------------------------
+
+all_pairs %>% 
+  mutate(SAI = factor(if_else(model == "pc", "Not SAI", "SAI"), 
+                      levels = c("SAI", "Not SAI"))) %>% 
+  ggplot(aes(x = SAI, y = abs_dev)) +
+  geom_boxplot() +
+  stat_summary(color = "red") +
+  facet_grid(cond_x2~ cond_y2, switch = "both", as.table = TRUE)
 
 
 ##################################################################
