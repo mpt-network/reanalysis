@@ -474,11 +474,12 @@ pmulti <- ggplot(best3_pars, aes(y = term, x = estimate)) +
        y = "Multiple regression coefficient") + 
   scale_color_manual("", values = "red") + 
   theme(legend.position="bottom", legend.box = "vertical") +
-  guides(shape=guide_legend(nrow=2,byrow=TRUE, title = "Method pair"))
+  guides(shape=guide_legend(nrow=3,byrow=FALSE, title = "Method pair")) +
+  theme(legend.box="horizontal", legend.margin=margin())
   #stat_summary(fun.y = mean, fun.ymax = mean, fun.ymin = mean, color = "red")
 pmulti
 ggsave("../figures_man/multi_estimates_noPC.png", device = "png", 
-       width = 20.5, height = 12.5, units = "cm", 
+       width = 20.5, height = 11.5, units = "cm", 
        dpi = 600)
 ```
 
