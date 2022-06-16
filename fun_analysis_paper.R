@@ -102,7 +102,7 @@ compare_continuous_covariate <- function(data,
                       2, 5), "'"), 
       x = xpos_label1), #"')")), 
               #x = rx[2] - 0.4*diff(rx), 
-              y = 0.94, parse = TRUE, colour = "blue")
+              y = 0.5, parse = TRUE, colour = "blue")
   if (INCLUDE_GAM) {
     outp <- outp + 
       geom_label(data = dgam, aes(label = paste0(#"paste(italic(R) ^ 2, ' = ", 
@@ -111,11 +111,11 @@ compare_continuous_covariate <- function(data,
                       2, 5)), 
                       x = xpos_label2),#"')")), 
               #x = rx[2] - 0.12*diff(rx), 
-              y = 0.94, parse = FALSE, colour = "red")
+              y = 0.5, parse = FALSE, colour = "red")
   }
   
   outp +
-    coord_cartesian(ylim = c(0, 1)) +
+    coord_cartesian(ylim = c(0, 0.6)) +
     labs(x = new_xlab, y = ylab)
 }
 

@@ -26,7 +26,8 @@ all_pairs <- all_pairs %>%
   mutate(prop_ns = rowMeans(cbind(prop_ns_nopb, prop_ns_nonpb, 
                                   prop_ns_noasy, prop_ns_trait), 
                             na.rm = TRUE)) %>% 
-  mutate(se_c = (se_x_w + se_y_w)/2) %>% 
+  #mutate(se_c = (se_x_w + se_y_w)/2) %>%
+  mutate(se_c = rowMeans(cbind(se_x_w, se_y_w), na.rm = TRUE)) %>% 
   mutate(SAI = factor(if_else(model == "pc", "Not SAI", "SAI"), 
                       levels = c("SAI", "Not SAI"))) %>% 
   mutate(z_abs_dev = abs_dev/se_c) %>% 
@@ -331,75 +332,316 @@ res_pred %>%
 ##        Selected Pairs of Target and Predicting Method        ##
 ##################################################################
 
-rel_vars <- c("se_x_w", "se_y_w", "fungi_max", "rel_weight", "rel_n_w")
-other_vars <- c("y", "sd_emp_inv", "rho_med", "p_hetero", "p_fit_x")
+rel_vars <- c("se_c", "y", "rel_weight", "rel_n_w", "rhos_max")
+other_vars <- c("sd_emp_inv", "fungi_max", "p_hetero", "p_fit_x")
 all_vars <- c(rel_vars, other_vars)
 form_main <- paste0("abs_dev ~ ", paste(all_vars, collapse = " + "))
 
-all_pairs_red <- all_pairs %>% 
+all_pairs_nopc_red <- all_pairs_nopc %>% 
   mutate(filtervar = create_filter_from_formula(form_main)) %>% 
   filter(filtervar)
 
-1 - nrow(all_pairs_red)/nrow(all_pairs)
+1 - nrow(all_pairs_nopc_red)/nrow(all_pairs_nopc)
 
 ## see corresponding Report in docs folder for full overview
 str(all_pairs)
 
-targ_cmle <- all_pairs_red %>% 
+targ_cmle_2 <- all_pairs_nopc_red %>% 
   filter(cond_y == "CP-MLE") %>% 
   filter(cond_x != "CP-MLE")
-targ_lpp <- all_pairs_red %>% 
+targ_lpp_2 <- all_pairs_nopc_red %>% 
   filter(cond_y == "PP-LT-C") %>% 
-  filter(cond_x != "PP-LT-C")
+  filter(cond_x != "PP-LT-C", 
+         cond_x != "CP-MLE")
 
-targ_both <- bind_rows(targ_cmle, targ_lpp) %>% 
+targ_both_2 <- bind_rows(targ_cmle_2, targ_lpp_2) %>% 
   filter(cond_x %in% sel_methods) %>% 
-  droplevels %>% 
-  mutate(cond_label = factor(paste("R:", cond_y), 
-                             levels = c("R: CP-MLE", "R: PP-LT-C"))) %>% 
-  mutate(cond_iv_label = factor(paste("C:", cond_x), levels = 
-                                  paste(paste("C:", levels(cond_x)))))
+  droplevels
 ylab <- "Abs. deviation"
 
-targ_both_nopc <- targ_both %>% 
-  filter(model != "pc")
+######
 
 
+##----------------------------------------------------------------
+##                  Absolute Mean Deviation Plot                 -
+##----------------------------------------------------------------
+
+targ_both_2 %>% 
+  ggplot(aes(x = cond_x, y = abs_dev)) +
+  geom_boxplot(width = 0.1, outlier.shape = NA) +
+  geom_violin(fill = "transparent", width = 1.1) +
+  stat_summary(fun = mean, fun.max = mean, fun.min = mean, fatten = 0.9) +
+  facet_grid(cols = vars(cond_label), scales = "free_x", space = "free_x") +
+  labs(x = "Comparison method", y = ylab)
+ggsave("figures_man/mad.pdf", 
+       width = 16, height = 7, units = "cm", 
+       dpi = 500)
+
+
+##----------------------------------------------------------------
+##                          RMSE table                           -
+##----------------------------------------------------------------
+
+rmse_tab_1 <- targ_both_2 %>% 
+  group_by(cond_label, cond_iv_label) %>% 
+  summarise(mean = mean(abs_dev), 
+            sd = sd(abs_dev), 
+            rmse = sqrt(mean((mean(abs_dev) - abs_dev)^2)), 
+            sigma = sigma(lm(abs_dev ~ 1))) %>% 
+  mutate(across(where(is.double), ~formatC(.x, digits = 3, format = "f")))
+rmse_tab_1
+
+rmse_tab_2 <- targ_both_2 %>% 
+  group_by(cond_label, cond_iv_label) %>% 
+  summarise(
+    model = sigma(lm(abs_dev ~ model)),
+    model2 = sigma(lm(abs_dev ~ model2)), 
+    parameter = sigma(lm(abs_dev ~ parameter)),
+    dataset = sigma(lm(abs_dev ~ dataset)), 
+    population = sigma(lm(abs_dev ~ population)), 
+    sci_goal = sigma(lm(abs_dev ~ sci_goal)) 
+  ) %>% 
+  mutate(across(where(is.double), ~formatC(.x, digits = 3, format = "f")))
+rmse_tab_2
+
+rmse_tab_3 <- targ_both_2 %>% 
+  group_by(cond_label, cond_iv_label) %>% 
+  summarise(
+    model = length(unique(model)),
+    model2 = length(unique(model2)), 
+    parameter = length(unique(parameter)),
+    dataset = length(unique(dataset)), 
+    population = length(unique(population)),
+    sci_goal = length(unique(sci_goal))
+  ) %>% 
+  mutate(across(where(is.double), ~formatC(.x, digits = 3, format = "f")))
+rmse_tab_3
+
+
+##----------------------------------------------------------------
+##                    Univariate Relationships                   -
+##----------------------------------------------------------------
+
+
+### parameter-level covariates
+pest <- compare_continuous_covariate(data = targ_both_2, covariate = poly(y, 2), 
+                                     cond_label, cond_iv_label, ylab = ylab) +
+  xlab("Value of parameter estimate (reference method, quadratic)")
+
+psec <- compare_continuous_covariate(data = targ_both_2, covariate = se_c, 
+                                     cond_label, cond_iv_label, ylab = ylab) +
+  xlab("SE (combined)")
+psd <- compare_continuous_covariate(data = targ_both_2, covariate = sd_emp_inv, 
+                                     cond_label, cond_iv_label, ylab = ylab) +
+  xlab("Individual variability (SD)")
+prho <- compare_continuous_covariate(data = targ_both_2, covariate = rhos_max, 
+                                     cond_label, cond_iv_label, ylab = ylab) +
+  xlab("Parameter correlations (max)")
+pfungi <- compare_continuous_covariate(data = targ_both_2, covariate = fungi_max, 
+                                     cond_label, cond_iv_label, ylab = ylab) +
+  xlab("Parameter trade-offs (max)")
+prelw <- compare_continuous_covariate(data = targ_both_2, covariate = log(rel_weight), 
+                                     cond_label, cond_iv_label, ylab = ylab) +
+  xlab("Relative information (log)")
+preln <- compare_continuous_covariate(data = targ_both_2, covariate = log(rel_n_w), 
+                                     cond_label, cond_iv_label, ylab = ylab) +
+  xlab("Relative N (log)")
+
+## data-set-level covariates
+phetero <- compare_continuous_covariate(data = targ_both_2, covariate = log1p(p_hetero), 
+                                     cond_label, cond_iv_label, ylab = ylab) +
+  xlab("Hetereogeneity (log p + 1)")
+pfit <- compare_continuous_covariate(data = targ_both_2, covariate = log1p(p_fit_x), 
+                                     cond_label, cond_iv_label, ylab = ylab) +
+  xlab("Model fit (comparison method, log p + 1)")
+
+#breaks1 <- c(0, 0.2, 0.4, 0.6, 0.8, 1)
+#labels1 <- c("0", "0.2", "0.4", "0.6", "0.8", "1")
+breaks1 <- c(0, 0.25, 0.5, 0.75, 1)
+labels1 <- c("0", "0.25", "0.5", "0.75", "1")
+
+library("cowplot")
+puniv_good <- cowplot::plot_grid(
+  psec + theme(axis.title.y = element_text(colour = "transparent")) +
+    scale_x_continuous(breaks = c(0, 0.1, 0.2)),
+  prho + theme(strip.text = element_blank(), 
+               axis.title.y = element_text(colour = "transparent")), 
+  pest + theme(strip.text = element_blank(), 
+               axis.title.y = element_text(colour = "transparent")) + 
+    scale_x_continuous(breaks = breaks1, labels = labels1),
+  psd + theme(strip.text = element_blank(), 
+              axis.title.y = element_text(colour = "transparent")),
+  #pfungi + theme(strip.text = element_blank()), 
+  ncol = 1, rel_heights = c(1.33, rep(1, 4))) +
+  draw_text("Abs. deviation", angle = 90, x = 0.015)
+
+ggsave("figures_man/univariate_good.png", plot = puniv_good, 
+       width = 24.5, height = 21, units = "cm", 
+       dpi = 500)
+
+puniv_notgood <- cowplot::plot_grid(
+   prelw + theme(axis.title.y = element_text(colour = "transparent")) +
+   scale_x_continuous(breaks = breaks1, labels = labels1),  
+  preln + theme(strip.text = element_blank(),
+                axis.title.y = element_text(colour = "transparent")) +
+     scale_x_continuous(breaks = c(0, 5000, 10000, 15000), 
+                       labels = c("0", "5k", "10k", "15k")), 
+  pfungi + theme(strip.text = element_blank()),
+  phetero + theme(strip.text = element_blank(),
+                  axis.title.y = element_text(colour = "transparent")) + 
+    scale_x_continuous(breaks = breaks1, labels = labels1), 
+  pfit + theme(strip.text = element_blank(),
+               axis.title.y = element_text(colour = "transparent")) + 
+    scale_x_continuous(breaks = breaks1, labels = labels1), 
+  ncol = 1, rel_heights = c(1.35, rep(1, 4)))
+ggsave("figures_man/univariate_notgood.png", plot = puniv_notgood, 
+       width = 24.5, height = 25, units = "cm", 
+       dpi = 500)
+
+
+##----------------------------------------------------------------
+##                      Multivariate Results                     -
+##----------------------------------------------------------------
+
+### See corresponding RMarkdown document:
+### multivariate_relationships_with_abs_dev_rmse_noPC_2
 
 
 ##---------------------------------------------------------------
-##                        EAI GAM Plots                         -
+##                      Table of Covariates                     -
 ##---------------------------------------------------------------
 
-make_gam_biv_plot(targ_both_nopc, 
-                  rhos_max, "rel. correlations (max)",
-                  se_c, "SE (combined)") +
-   facet_grid(~cond_label+cond_iv_label)
+sing_dat <- all_pairs %>% 
+  filter(cond_y == "CP-MLE") %>% 
+  filter(cond_x == "PP-LT-C")
 
-# make_gam_biv_plot(all_pairs_nopc, 
-#                   rhos_max, "rel. correlations (max)",
-#                   se_c, "SE (combined)") +
-#    facet_wrap(~cond_label+cond_iv_label)
+ns <- sing_dat %>% 
+  group_by(model2) %>% 
+  summarise(n = n())
 
-ggsave("figures_talk/bigam.png",
-       width = 21, height = 12, units = "cm", 
+meansd <- sing_dat %>% 
+  group_by(model2) %>% 
+  summarise(across(c(sd_emp_inv, rho_med, fungi_max, 
+                     rel_weight, rel_n_w, p_hetero, 
+                     p_fit_x), .fns = ~ paste0(
+                       formatC(mean(.), format = "f", digits = 2),
+                       " ±",
+                       formatC(sd(.), format = "f", digits = 2)
+                     )))
+
+minmax <- sing_dat %>% 
+  group_by(model2) %>% 
+  summarise(across(c(sd_emp_inv, rho_med, fungi_max, 
+                     rel_weight, rel_n_w, p_hetero, 
+                     p_fit_x), .fns = ~ paste0(
+                       formatC(min(.), format = "f", digits = 2),
+                       " - ", 
+                       formatC(max(.), format = "f", digits = 2)
+                     )))
+
+left_join(ns, meansd)
+
+left_join(ns, minmax)
+
+
+  
+
+#################################################################
+##                     Plots in Discussion                     ##
+#################################################################
+
+all_pairs_red <- all_pairs_red %>% 
+  mutate(par = str_remove(parameter, ".+:")) %>% 
+  mutate(par = str_remove(par, "_")) %>% 
+  mutate(par2 = case_when(
+    model == "quad" ~ paste0("scriptstyle(",
+                            str_extract(par, "[[:upper:]]+"), 
+                            "[", 
+                            str_extract(par, "[[:lower:]]+"), 
+                            "])"),
+    model == "hb" & nchar(par) > 1 ~ paste0("italic(", 
+                            substr(par, 1, nchar(par)-1), 
+                            ")[", 
+                            toupper(substr(par, nchar(par), nchar(par))), 
+                            "]"),
+    nchar(par) > 1 ~ paste0("italic(", 
+                            substr(par, 1, nchar(par)-1), 
+                            "[", 
+                            substr(par, nchar(par), nchar(par)), 
+                            "])"),
+    TRUE ~ paste0("italic(", par, ")")
+  ))
+# %>% 
+#   select(par, par2) %>% 
+#   {table(.$par2)}
+
+all_pairs_red$mlab <- factor(
+  all_pairs_red$model2, 
+  levels = c("2htsm_4", "2htsm_5d","2htsm_6e","c2ht6","c2ht8",
+             "pc","pd_s","pd_e","pm","hb","rm","real","quad"),
+  labels = c("2HTSM 4", "2HTSM 5d","2HTSM 6e","c2HT 6","c2HT 8",
+             "PC","PD","PD_e","PM","HB","RM","ReAL","QUAD")
+)
+
+##----------------------------------------------------------------
+##            Absolute Mean Deviation Plot (Model)               -
+##----------------------------------------------------------------
+
+targ_cmle_lpp<- all_pairs_red %>% 
+  filter(cond_y == "Comp MLE") %>% 
+  filter(cond_x == "Trait PP") %>%
+  filter(model2 != "pd_e")
+
+targ_cmle_lpp %>% 
+  ggplot(aes(x = par2, y = abs_dev)) +
+  geom_boxplot(width = 0.08, outlier.shape = NA) +
+  geom_violin(fill = "transparent", width = 0.8) +
+  stat_summary(fun = mean, fun.max = mean, fun.min = mean, fatten = 0.9) +
+  facet_wrap("mlab", scales = "free_x", ncol=4) +
+  labs(x = "Parameter", y = ylab)+
+  theme(axis.text.x = element_text(angle = 0,size=10)) +
+  scale_x_discrete(labels = ggplot2:::parse_safe) 
+# guide = guide_axis(check.overlap = TRUE)
+
+ggsave("figures_man/mad_model.png", 
+       width = 16, height = 16, units = "cm", 
        dpi = 500)
 
 ##----------------------------------------------------------------
-##        Zoom in: Effect of individual differences on EAI       -
+##                          Trade off Plot                       -
 ##----------------------------------------------------------------
 
-MIN_REL_SE <- 0.025
-MIN_REL_RHO <- 0.15
+targ_cmle_lpp %>% 
+  ggplot(aes(x = par2, y = fungi_max)) +
+  geom_boxplot(width = 0.08, outlier.shape = NA) +
+  geom_violin(fill = "transparent", width = 0.8) +
+  stat_summary(fun = mean, fun.max = mean, fun.min = mean, fatten = 0.9) +
+  facet_wrap("mlab", scales = "free_x", ncol=4) +
+  labs(x = "Parameter", y = "Max. trade-off")+
+  theme(axis.text.x = element_text(angle = 0,size=10))  +
+  scale_x_discrete(labels = ggplot2:::parse_safe)
 
-targ_both_nopc %>% 
-  filter(rhos_max < MIN_REL_RHO, se_c < MIN_REL_SE) %>%
-  make_cor_plot2(x = prop_ns, y = abs_dev, 
-                 filter = prop_ns < 0.4) +
-  labs(x = "Proportion individual misfits (NP and PP-LT p < .05)", 
-       y = ylab)
 
-ggsave("figures_talk/corr.png",
-       width = 18, height = 9, units = "cm", 
+ggsave("figures_man/trade_model.png", 
+       width = 16, height = 16, units = "cm", 
        dpi = 500)
+
+##----------------------------------------------------------------
+##                           SE Plot                             -
+##----------------------------------------------------------------
+
+targ_cmle_lpp %>% 
+  ggplot(aes(x = par2, y = se_c)) +
+  geom_boxplot(width = 0.08, outlier.shape = NA) +
+  geom_violin(fill = "transparent", width = 0.8) +
+  stat_summary(fun = mean, fun.max = mean, fun.min = mean, fatten = 0.9) +
+  facet_wrap("mlab", scales = "free_x", ncol=4) +
+  labs(x = "Parameter", y = "Standard error") +
+  theme(axis.text.x = element_text(angle = 0,size=10))  +
+  scale_x_discrete(labels = ggplot2:::parse_safe)
+
+ggsave("figures_man/se_model.png", 
+       width = 16, height = 16, units = "cm", 
+       dpi = 500)
+
 

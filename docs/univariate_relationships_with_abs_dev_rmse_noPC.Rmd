@@ -30,6 +30,7 @@ INCLUDE_GAM <- TRUE
 load("../all_pairs_core.RData")
 all_pairs <- all_pairs %>% 
   filter(model != "pc", parameter != "rm:g") %>% 
+  mutate(se_c = rowMeans(cbind(se_x, se_y), na.rm = TRUE)) %>% 
   droplevels()
 str(all_pairs)
 ```
@@ -89,6 +90,32 @@ In the following plots, the blue line shows the fitted model (in case it is not 
 
 In case observations had to be removed for the analysis, the percentage of removed (`rem`) observations is also shown in the x-axis caption. In some cases, some observationds are filtered to show a clearer picture, this is indicated with `filter`.
 
+### Standard Error
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, se_c)
+compare_continuous_covariate(cur_data, se_c, filter = se_c < 1)
+compare_continuous_covariate(cur_data, se_c, filter = se_c < 0.25)
+
+compare_continuous_covariate(cur_data, se_y)
+compare_continuous_covariate(cur_data, se_y, filter = se_y < 1)
+compare_continuous_covariate(cur_data, se_y, filter = se_y < 0.25)
+
+compare_continuous_covariate(cur_data, se_x)
+compare_continuous_covariate(cur_data, se_x, filter = se_x < 1)
+compare_continuous_covariate(cur_data, se_x, filter = se_x < 0.25)
+```
+
+### Rho (only pairs on same branch)
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, rhos_max)
+compare_continuous_covariate(cur_data, rhos_mean)
+compare_continuous_covariate(cur_data, rhos_fzmean)
+compare_continuous_covariate(cur_data, rhos_med)
+compare_continuous_covariate(cur_data, rhos_propl5)
+```
+
 ### Effect of Parameter Estimate
 
 ```{r, fig.width=20.5, fig.height=3, message=FALSE}
@@ -99,17 +126,6 @@ compare_continuous_covariate(cur_data, x)
 compare_continuous_covariate(cur_data, poly(x, 2))
 ```
 
-### Standard Error
-
-```{r, fig.width=20.5, fig.height=3, message=FALSE}
-compare_continuous_covariate(cur_data, se_y)
-compare_continuous_covariate(cur_data, se_y, filter = se_y < 1)
-compare_continuous_covariate(cur_data, se_y, filter = se_y < 0.25)
-
-compare_continuous_covariate(cur_data, se_x)
-compare_continuous_covariate(cur_data, se_x, filter = se_x < 1)
-compare_continuous_covariate(cur_data, se_x, filter = se_x < 0.25)
-```
 
 ### Hetereogeneity
 
@@ -179,15 +195,6 @@ compare_continuous_covariate(cur_data, rho_med)
 compare_continuous_covariate(cur_data, rho_propl5)
 ```
 
-### Rho (only pairs on same branch)
-
-```{r, fig.width=20.5, fig.height=3, message=FALSE}
-compare_continuous_covariate(cur_data, rhos_max)
-compare_continuous_covariate(cur_data, rhos_mean)
-compare_continuous_covariate(cur_data, rhos_fzmean)
-compare_continuous_covariate(cur_data, rhos_med)
-compare_continuous_covariate(cur_data, rhos_propl5)
-```
 
 
 ### Fungibility
@@ -380,6 +387,33 @@ In the following plots, the blue line shows the fitted model (in case it is not 
 
 In case observations had to be removed for the analysis, the percentage of removed (`rem`) observations is also shown in the x-axis caption. In some cases, some observationds are filtered to show a clearer picture, this is indicated with `filter`.
 
+
+### Standard Error
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, se_c)
+compare_continuous_covariate(cur_data, se_c, filter = se_c < 1)
+compare_continuous_covariate(cur_data, se_c, filter = se_c < 0.25)
+
+compare_continuous_covariate(cur_data, se_y)
+compare_continuous_covariate(cur_data, se_y, filter = se_y < 1)
+compare_continuous_covariate(cur_data, se_y, filter = se_y < 0.25)
+
+compare_continuous_covariate(cur_data, se_x)
+compare_continuous_covariate(cur_data, se_x, filter = se_x < 1)
+compare_continuous_covariate(cur_data, se_x, filter = se_x < 0.25)
+```
+
+### Rho (only pairs on same branch)
+
+```{r, fig.width=20.5, fig.height=3, message=FALSE}
+compare_continuous_covariate(cur_data, rhos_max)
+compare_continuous_covariate(cur_data, rhos_mean)
+compare_continuous_covariate(cur_data, rhos_fzmean)
+compare_continuous_covariate(cur_data, rhos_med)
+compare_continuous_covariate(cur_data, rhos_propl5)
+```
+
 ### Effect of Parameter Estimate
 
 ```{r, fig.width=20.5, fig.height=3, message=FALSE}
@@ -390,17 +424,6 @@ compare_continuous_covariate(cur_data, x)
 compare_continuous_covariate(cur_data, poly(x, 2))
 ```
 
-### Standard Error
-
-```{r, fig.width=20.5, fig.height=3, message=FALSE}
-compare_continuous_covariate(cur_data, se_y)
-compare_continuous_covariate(cur_data, se_y, filter = se_y < 1)
-compare_continuous_covariate(cur_data, se_y, filter = se_y < 0.25)
-
-compare_continuous_covariate(cur_data, se_x)
-compare_continuous_covariate(cur_data, se_x, filter = se_x < 1)
-compare_continuous_covariate(cur_data, se_x, filter = se_x < 0.25)
-```
 
 
 ### Hetereogeneity
@@ -461,16 +484,6 @@ compare_continuous_covariate(cur_data, rho_mean)
 compare_continuous_covariate(cur_data, rho_fzmean)
 compare_continuous_covariate(cur_data, rho_med)
 compare_continuous_covariate(cur_data, rho_propl5)
-```
-
-### Rho (only pairs on same branch)
-
-```{r, fig.width=20.5, fig.height=3, message=FALSE}
-compare_continuous_covariate(cur_data, rhos_max)
-compare_continuous_covariate(cur_data, rhos_mean)
-compare_continuous_covariate(cur_data, rhos_fzmean)
-compare_continuous_covariate(cur_data, rhos_med)
-compare_continuous_covariate(cur_data, rhos_propl5)
 ```
 
 
