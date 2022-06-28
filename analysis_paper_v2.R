@@ -10,6 +10,7 @@ INCLUDE_GAM <- TRUE
 
 library("mgcv")
 library("gratia")
+library("cowplot")
 
 load("all_pairs_core.RData")
 levels(all_pairs$cond_x) <- new_method_labels(levels(all_pairs$cond_x))
@@ -133,7 +134,7 @@ theme_set(theme_bw(base_size = 15) +
 library("ggthemes")
 
 all_pairs_nopc %>% 
-  filter(cond_x != "NP-BAYES", cond_y != "NP-BAYES") %>% 
+  filter(cond_x != "NP-Bayes", cond_y != "NP-Bayes") %>% 
   ggplot(aes(abs_dev, color = cond_y2)) +
   stat_ecdf(geom = "step", 
             mapping = aes(y = after_stat(1 - y))) +
@@ -157,7 +158,7 @@ theme_set(theme_bw(base_size = 15) +
 unique_pairs_nopc <- all_pairs_nopc %>% 
   distinct(model, model2, dataset, parameter, cond_co, 
            parameter_o, condition, orig_condition, .keep_all = TRUE) %>% 
-  filter(cond_x != "NP-BAYES", cond_y != "NP-BAYES", cond_x != cond_y) 
+  filter(cond_x != "NP-Bayes", cond_y != "NP-Bayes", cond_x != cond_y) 
 
 unique_pairs_nopc %>% 
   summarise(
@@ -173,7 +174,7 @@ unique_pairs_nopc %>%
 unique_pairs <- all_pairs %>% 
   distinct(model, model2, dataset, parameter, cond_co, 
            parameter_o, condition, orig_condition, .keep_all = TRUE) %>% 
-   filter(cond_x != "NP-BAYES", cond_y != "NP-BAYES", cond_x != cond_y)
+   filter(cond_x != "NP-Bayes", cond_y != "NP-Bayes", cond_x != cond_y)
 
 unique_pairs %>% 
   summarise(
@@ -302,7 +303,7 @@ ppred_gam <- make_gam_biv_plot(targ_both,
                                se_c, "SE (combined)", 
                                return = "both") 
 
-ppred_gam$plot +
+ppred_gam_plot <- ppred_gam$plot +
   facet_grid(~cond_label+cond_iv_label) +
   scale_y_continuous(breaks = seq(0, 0.9, by = 0.1)) +
   coord_fixed(ratio = 1, xlim = c(0, 0.27), ylim = c(0, 0.95)) +
@@ -318,6 +319,21 @@ ppred_gam$plot +
 
 ggsave("figures_man/bigam.pdf",
        width = 19, height = 13, units = "cm")
+
+ppred_legend <- get_legend(ppred_emp)
+
+pl_left <- plot_grid(
+  ppred_emp + theme(legend.position = "none", 
+                    axis.text.x = element_blank(), 
+                    axis.title.x = element_blank()),
+  ppred_gam_plot + theme(legend.position = "none"),
+  nrow = 2, rel_heights = c(0.9, 1)
+  )
+
+plot_out <- plot_grid(
+  pl_left, ppred_legend, nrow = 1, rel_widths = c(1, 0.1)
+)
+ggsave("figures_man/ppred_both.pdf", width = 19, height = 25, units = "cm")
 
 nd <- data.frame(se_c = 0, rhos_max = 0)
 
