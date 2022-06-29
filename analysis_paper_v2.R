@@ -326,14 +326,15 @@ pl_left <- plot_grid(
   ppred_emp + theme(legend.position = "none", 
                     axis.text.x = element_blank(), 
                     axis.title.x = element_blank()),
-  ppred_gam_plot + theme(legend.position = "none"),
-  nrow = 2, rel_heights = c(0.9, 1)
+  ppred_gam_plot + theme(legend.position = "none", 
+                         strip.text = element_blank()),
+  nrow = 2, rel_heights = c(1, 0.975)
   )
 
 plot_out <- plot_grid(
   pl_left, ppred_legend, nrow = 1, rel_widths = c(1, 0.1)
 )
-ggsave("figures_man/ppred_both.pdf", width = 19, height = 25, units = "cm")
+ggsave("figures_man/ppred_both.pdf", width = 19, height = 24, units = "cm")
 
 nd <- data.frame(se_c = 0, rhos_max = 0)
 
