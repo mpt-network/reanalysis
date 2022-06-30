@@ -265,7 +265,7 @@ ppred_emp <- make_emp_biv_plot(targ_both,
                                      "orange", "red", "darkred"), 
                          values = 
                            scales::rescale(c(0, 0.01, 0.05, 0.1, 0.2, 0.3)),
-                         name = "Mean\nabsol.\ndev.", 
+                         name = "Absol.\ndev.", 
                          na.value = "transparent")
 
 ggsave("figures_man/pred_empirical.pdf", plot = ppred_emp,
