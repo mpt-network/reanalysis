@@ -58,7 +58,7 @@ ylab <- "Abs. deviation (Comp MLE)"
 ```
 
 
-We begin by investigating the abolsute relationship from the simplest method, the complete pooling MLE method (i.e., `y` always refers to `Comp MLE"` and `x` refers to the other method in the pair). This leaves us with `r nrow(targ_cmle)` observations for the analysis.
+We begin by investigating the absolute relationship from the simplest method, the complete pooling MLE method (i.e., `y` always refers to `Comp MLE"` and `x` refers to the other method in the pair). This leaves us with `r nrow(targ_cmle)` observations for the analysis.
 
 ## Effect of Method
 
@@ -88,7 +88,7 @@ cur_data %>%
 
 In the following plots, the blue line shows the fitted model (in case it is not a simple linear relationship, the transformation of the independent variable is given in parentheses in the x-axis label), The RMSE value shown in the plot is the RMSE of this model (i.e., the blue line). The red line shows a GAM on the independent variable with shrinkage applied thin plate regression spline and the red number is the corresponding RMSE.
 
-In case observations had to be removed for the analysis, the percentage of removed (`rem`) observations is also shown in the x-axis caption. In some cases, some observationds are filtered to show a clearer picture, this is indicated with `filter`.
+In case observations had to be removed for the analysis, the percentage of removed (`rem`) observations is also shown in the x-axis caption. In some cases, some observations are filtered to show a clearer picture, this is indicated with `filter`.
 
 ### Standard Error
 

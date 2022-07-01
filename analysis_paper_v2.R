@@ -524,44 +524,41 @@ ggsave("figures_man/univariate_notgood.png", plot = puniv_notgood,
 ### multivariate_relationships_with_abs_dev_rmse_noPC_2
 
 
-##---------------------------------------------------------------
-##                      Table of Covariates                     -
-##---------------------------------------------------------------
-
-sing_dat <- all_pairs %>% 
-  filter(cond_y == "CP-MLE") %>% 
-  filter(cond_x == "PP-LT-C")
-
-ns <- sing_dat %>% 
-  group_by(model2) %>% 
-  summarise(n = n())
-
-meansd <- sing_dat %>% 
-  group_by(model2) %>% 
-  summarise(across(c(sd_emp_inv, rho_med, fungi_max, 
-                     rel_weight, rel_n_w, p_hetero, 
-                     p_fit_x), .fns = ~ paste0(
-                       formatC(mean(.), format = "f", digits = 2),
-                       " ±",
-                       formatC(sd(.), format = "f", digits = 2)
-                     )))
-
-minmax <- sing_dat %>% 
-  group_by(model2) %>% 
-  summarise(across(c(sd_emp_inv, rho_med, fungi_max, 
-                     rel_weight, rel_n_w, p_hetero, 
-                     p_fit_x), .fns = ~ paste0(
-                       formatC(min(.), format = "f", digits = 2),
-                       " - ", 
-                       formatC(max(.), format = "f", digits = 2)
-                     )))
-
-left_join(ns, meansd)
-
-left_join(ns, minmax)
+##################################################################
+##                          Discussion                          ##
+##################################################################
 
 
+all_pairs %>% 
+  distinct(model, model2, dataset, parameter, cond_co, 
+           parameter_o, condition, orig_condition, .keep_all = TRUE) %>% 
+  filter(cond_x != cond_y) %>% 
+  group_by(model, cond_x, cond_y) %>% 
+  summarise(max = max(abs_dev)) %>% 
+  arrange(max)
   
+
+all_pairs %>% 
+  distinct(model, model2, dataset, parameter, cond_co, 
+           parameter_o, condition, orig_condition, .keep_all = TRUE) %>% 
+  filter(cond_x != cond_y) %>% 
+  filter(cond_x == "PP-LT-C") %>% 
+  group_by(model, cond_x, cond_y) %>% 
+  summarise(max = max(abs_dev)) %>% 
+  arrange(max)
+
+all_pairs %>% 
+  distinct(model, model2, dataset, parameter, cond_co, 
+           parameter_o, condition, orig_condition, .keep_all = TRUE) %>% 
+  filter(cond_x != cond_y) %>% 
+  #filter(cond_x == "PP-LT-C") %>% 
+  group_by(model) %>% 
+  arrange(desc(abs_dev)) %>% 
+  slice(1:3) %>% 
+  select(model:abs_dev, cond_x, cond_y, -dataset) %>% 
+  print(n = Inf)
+
+
 
 #################################################################
 ##                     Plots in Discussion                     ##

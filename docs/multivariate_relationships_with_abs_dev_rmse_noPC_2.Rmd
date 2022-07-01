@@ -424,11 +424,11 @@ all_lm2 <- all_lm2 %>%
 
 all_lm2 %>% 
   select(cond_label, cond_iv_label, b2_1:b3_3) %>% 
-  slice(1, 8, 7, 9, 15) 
+  slice(1, 8, 6, 9, 15) 
 
 all_lm2 %>% 
   select(cond_label, cond_iv_label, b4_1:b4_4) %>% 
-  slice(1, 8, 7, 9, 15) 
+  slice(1, 8, 6, 9, 15) 
 
 ```
 

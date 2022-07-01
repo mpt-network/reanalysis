@@ -134,7 +134,7 @@ make_cut_num <- function(labels) {
 new_method_labels <- function(levels) {
   old_levels <- c("Comp MLE", "Comp Bayes", 
                   "No asy", "No PB", "No NPB", "No Bayes", 
-                  "Beta PP", "Trait_u PP", "Trait PP")
+                  "Beta PP", "Trait PP", "Trait_u PP")
   new_levels <- c("CP-MLE", "CP-Bayes",
                   "NP-MLE", "NP-PB", "NP-NPB", "NP-Bayes",
                   "PP-B", "PP-LT-C", "PP-LT-NC")
