@@ -56,7 +56,7 @@ all_pairs <- all_pairs %>%
   mutate(cond_iv_label = factor(paste("C:", cond_x)))
 
 rel_vars <- c("se_c", "y", "rel_weight", "rel_n_w", "rhos_max")
-other_vars <- c("sd_emp_inv", "fungi_max", "p_hetero", "p_fit_x")
+other_vars <- c("sd_emp_inv", "fungis_max", "p_hetero", "p_fit_x")
 
 rel_vars2 <- c("se_x_w", "se_y_w", "rhos_max", "fungis_max", 
                "poly(y_c, 2, raw = TRUE)")

@@ -350,7 +350,7 @@ res_pred %>%
 ##################################################################
 
 rel_vars <- c("se_c", "y", "rel_weight", "rel_n_w", "rhos_max")
-other_vars <- c("sd_emp_inv", "fungi_max", "p_hetero", "p_fit_x")
+other_vars <- c("sd_emp_inv", "fungis_max", "hetero_cohenw", "p_fit_x") 
 all_vars <- c(rel_vars, other_vars)
 form_main <- paste0("abs_dev ~ ", paste(all_vars, collapse = " + "))
 
@@ -454,10 +454,11 @@ psd <- compare_continuous_covariate(data = targ_both_2, covariate = sd_emp_inv,
 prho <- compare_continuous_covariate(data = targ_both_2, covariate = rhos_max, 
                                      cond_label, cond_iv_label, ylab = ylab) +
   xlab("Parameter correlations (max)")
-pfungi <- compare_continuous_covariate(data = targ_both_2, covariate = fungi_max, 
+pfungi <- compare_continuous_covariate(data = targ_both_2, covariate = fungis_max, 
                                      cond_label, cond_iv_label, ylab = ylab) +
   xlab("Parameter trade-offs (max)")
-prelw <- compare_continuous_covariate(data = targ_both_2, covariate = log(rel_weight), 
+prelw <- compare_continuous_covariate(data = targ_both_2, 
+                                      covariate = log(rel_weight), 
                                      cond_label, cond_iv_label, ylab = ylab) +
   xlab("Relative information (log)")
 preln <- compare_continuous_covariate(data = targ_both_2, covariate = log(rel_n_w), 
@@ -465,9 +466,10 @@ preln <- compare_continuous_covariate(data = targ_both_2, covariate = log(rel_n_
   xlab("Relative N (log)")
 
 ## data-set-level covariates
-phetero <- compare_continuous_covariate(data = targ_both_2, covariate = log1p(p_hetero), 
+phetero <- compare_continuous_covariate(data = targ_both_2, 
+                                        covariate = hetero_cohenw, 
                                      cond_label, cond_iv_label, ylab = ylab) +
-  xlab("Hetereogeneity (log p + 1)")
+  xlab("Hetereogeneity (Cohen's w)")
 pfit <- compare_continuous_covariate(data = targ_both_2, covariate = log1p(p_fit_x), 
                                      cond_label, cond_iv_label, ylab = ylab) +
   xlab("Model fit (comparison method, log p + 1)")
@@ -488,31 +490,32 @@ puniv_good <- cowplot::plot_grid(
     scale_x_continuous(breaks = breaks1, labels = labels1),
   psd + theme(strip.text = element_blank(), 
               axis.title.y = element_text(colour = "transparent")),
+  phetero + theme(strip.text = element_blank(),
+                  axis.title.y = element_text(colour = "transparent")) + 
+    scale_x_continuous(breaks = breaks1, labels = labels1),
   #pfungi + theme(strip.text = element_blank()), 
-  ncol = 1, rel_heights = c(1.33, rep(1, 4))) +
+  ncol = 1, rel_heights = c(1.33, rep(1, 5))) +
   draw_text("Abs. deviation", angle = 90, x = 0.015)
 
 ggsave("figures_man/univariate_good.png", plot = puniv_good, 
-       width = 24.5, height = 21, units = "cm", 
+       width = 24.5, height = 25, units = "cm", ## 21 or 25
        dpi = 500)
 
 puniv_notgood <- cowplot::plot_grid(
-   prelw + theme(axis.title.y = element_text(colour = "transparent")) +
-   scale_x_continuous(breaks = breaks1, labels = labels1),  
-  preln + theme(strip.text = element_blank(),
-                axis.title.y = element_text(colour = "transparent")) +
+   pfungi + theme(axis.title.y = element_text(colour = "transparent")),  
+  prelw + theme(strip.text = element_blank(), 
+                 axis.title.y = element_text(colour = "transparent")) +
+    scale_x_continuous(breaks = breaks1, labels = labels1),
+   preln + theme(strip.text = element_blank(),
+                axis.title.y = element_text(hjust = -8)) +
      scale_x_continuous(breaks = c(0, 5000, 10000, 15000), 
                        labels = c("0", "5k", "10k", "15k")), 
-  pfungi + theme(strip.text = element_blank()),
-  phetero + theme(strip.text = element_blank(),
-                  axis.title.y = element_text(colour = "transparent")) + 
-    scale_x_continuous(breaks = breaks1, labels = labels1), 
   pfit + theme(strip.text = element_blank(),
                axis.title.y = element_text(colour = "transparent")) + 
     scale_x_continuous(breaks = breaks1, labels = labels1), 
   ncol = 1, rel_heights = c(1.35, rep(1, 4)))
 ggsave("figures_man/univariate_notgood.png", plot = puniv_notgood, 
-       width = 24.5, height = 25, units = "cm", 
+       width = 24.5, height = 21, units = "cm", 
        dpi = 500)
 
 

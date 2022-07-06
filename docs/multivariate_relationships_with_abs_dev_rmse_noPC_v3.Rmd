@@ -1,0 +1,354 @@
+---
+title: "Multivariate Relationships with Absolute Deviation (w/o PC)"
+author: "MPT Reanalysis Project (code and text current document: Henrik Singmann)"
+date: "Results from: `r Sys.Date()`"
+output: 
+  html_document:
+    toc: TRUE
+---
+
+<style>
+  .main-container {
+    max-width: 1200px !important;
+  }
+</style>
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
+options(width = 125)
+options(pillar.sigfig = 2)
+library("afex")
+library("glinternet")
+library("RAMP")
+library("MuMIn")
+library("tidyverse")
+theme_set(theme_bw(base_size = 15) + 
+            theme(legend.position="bottom"))
+source("../fun_analysis_paper.R")
+source("fun_multivariate_rmse.R")
+INCLUDE_GAM <- TRUE
+options('na.action' = NULL)   ## for MuMIn::dredge
+```
+
+```{r load, include=FALSE}
+load("../all_pairs_core.RData")
+levels(all_pairs$cond_x) <- new_method_labels(levels(all_pairs$cond_x))
+levels(all_pairs$cond_y) <- new_method_labels(levels(all_pairs$cond_y))
+all_pairs <- all_pairs %>% 
+  filter(model != "pc", parameter != "rm:g") %>% 
+  droplevels()
+str(all_pairs)
+all_pairs <- all_pairs %>% 
+  filter(cond_x != "NP-Bayes", cond_y != "NP-Bayes") %>% 
+  mutate(rel_weight = (rel_par_weight_x + rel_par_weight_y)/2,
+         rel_n = (rel_n_x + rel_n_y) / 2,
+         y_c = y - 0.5) %>% 
+  mutate(se_x_w = if_else(se_x > 0.25, 0.25, se_x),
+         se_y_w = if_else(se_y > 0.25, 0.25, se_y),
+         rel_n_w = if_else(rel_n > 15000, 15000, rel_n)) %>%
+  mutate(chisq_hetero = if_else(chisq_hetero > 7500, 7500, chisq_hetero)) %>% 
+  #mutate(se_c = (se_x_w + se_y_w)/2) %>% 
+  mutate(se_c = rowMeans(cbind(se_x_w, se_y_w), na.rm = TRUE)) %>% 
+    mutate(cond_x2 = cond_y,
+         cond_y2 = cond_x) %>% 
+  mutate(cond_label = factor(paste("R:", cond_y))) %>% 
+  mutate(cond_iv_label = factor(paste("C:", cond_x)))
+
+
+y_single <- "y_c"
+y_poly <- "poly(y_c, 2, raw = TRUE)"
+
+other_vars <- c("se_c", "sd_emp_inv", "fungis_max", "hetero_cohenw", 
+                "rel_weight", "rel_n_w", "rhos_max", "p_fit_x")
+
+form_main <- paste0("abs_dev ~ ", paste(c(y_poly, other_vars), collapse = " + "))
+form_main2 <- paste0("abs_dev ~ ", paste(c(y_single, other_vars), collapse = " + "))
+
+form_inter2 <- paste0("abs_dev ~ (", paste(c(y_poly, other_vars), 
+                                           collapse = " + "), ")^2")
+form_inter <- paste0("abs_dev ~ ", paste(c("y_c", other_vars), collapse = " * "))
+
+all_pairs <- all_pairs %>% 
+  mutate(filtervar = create_filter_from_formula(form_main2)) %>% 
+  filter(filtervar)
+
+```
+
+
+# Overview
+
+This document provides an overview of the multivariate relationships of all moderators with the absolute parameter deviation.  As in the analysis of the univariate relationships we focus on two reference methods, the complete pooling MLE method and the latent-trait partial pooling method. 
+
+In all the analyses reported here, we remove the no pooling Bayes method, as it behaved markedly different from all other methods.
+
+```{r}
+sel_methods <- c("CP-MLE", "NP-MLE", "PP-B", "PP-LT-C")
+targ_cmle <- all_pairs %>% 
+  filter(cond_y == "CP-MLE") %>% 
+  filter(cond_x != "CP-MLE")
+targ_lpp <- all_pairs %>% 
+  filter(cond_y == "PP-LT-C") %>% 
+  filter(cond_x != "PP-LT-C", 
+         cond_x != "CP-MLE")
+
+targ_both <- bind_rows(targ_cmle, targ_lpp) %>% 
+  #filter(cond_x %in% sel_methods) %>% 
+  droplevels
+```
+
+
+
+# Multiple Regression
+
+We then consider multiple regression models. 
+
+```{r, results='hide', include=FALSE}
+all_lm <- targ_both %>% 
+  group_by(cond_label, cond_iv_label)  %>% 
+  summarise(
+    mean = list(lm(abs_dev ~ 1)),
+    parameterr = list(lm(abs_dev ~ parameter)),
+    #mse_both = list(lm(abs_dev ~ se_x_w + se_y_w)),
+    mse_c = list(lm(abs_dev ~ se_c)),
+    #mse_pc = list(lm(abs_dev ~ se_c + parameter)),
+    main = list(lm(formula(form_main))), 
+    #main_good = list(lm(formula(form_main_sel))), 
+    #main_sel = list(lm(formula(form_selection))), 
+    #main_sel_beta = list(lm_scale(formula(form_main_sel))), 
+    inter2 = list(lm(formula(form_inter2))),
+    #inter_2_good = list(lm(formula(form_inter2_sel))),
+    se_y = list(lm(abs_dev ~ se_c + poly(y_c, 2, raw = TRUE))),
+    se_y_sd = list(lm(abs_dev ~ se_c + poly(y_c, 2, raw = TRUE) + sd_emp_inv)),
+    se_y_fungi = list(lm(abs_dev ~ se_c + poly(y_c, 2, raw = TRUE) + fungis_max)),
+    se_y_sd_fungi = list(lm(abs_dev ~ se_c + poly(y_c, 2, raw = TRUE) + sd_emp_inv + fungis_max))
+    #inter_all = list(lm(formula(form_inter)))
+  ) %>% 
+  ungroup
+all_lm2 <- targ_both %>% 
+  group_by(cond_label, cond_iv_label) %>% 
+  nest() %>% 
+  mutate(
+    # best2 = map(data, best_x, formula = form_main, fixed = ~se_c, x = 2),
+    # best3 = map(data, best_x, formula = form_main, fixed = ~se_c, x = 3)
+    best2 = map(data, best_x, formula = form_main, fixed = NULL, x = 2),
+    #best2_lin = map(data, best_x, formula = form_main2, fixed = NULL, x = 2),
+    best3 = map(data, best_x, formula = form_main, fixed = NULL, x = 3),
+    best4 = map(data, best_x, formula = form_main, fixed = NULL, x = 4)
+    #best3_lin = map(data, best_x, formula = form_main2, fixed = NULL, x = 3)
+  ) %>% 
+  ungroup
+all_lm <- left_join(all_lm, select(all_lm2, -data))
+```
+
+
+Here, we first consider several model variants (in addition to the baseline model, `mean`, and the `parameter` model) of the nine moderators (there are ten moderators initially, and because we combine both standard error estimates we end up with nine). As further possible models we also consider a model with both separate standard errors, `mse_both` (entered as main effects) and one with only the combined standard error (`mse_c`). Also, for the estimate itself (`y`) we consider a linear and quadratic trend which is why we add two coefficients for this moderator in each model. Also, we always use the same transformation as presented in the figures in the paper (e.g., log for relative information). The following additional models are included:
+
+
+- `main`: Main effects only (i.e., all effects are additive)
+- `inter_2`: main effects and second order interactions of all moderators.
+- `best2` best model with two moderators as main effects (one of which is the combined standard error)
+- `best3` best model with three moderators as main effects (one of which is the combined standard error)
+
+These models have the following numbers of parameters. 
+
+```{r}
+all_lm %>% 
+  mutate(across(where(is.list), ~map_dbl(.x, function(x) length(coef(x)))))
+```
+
+The following table shows the resulting RMSE for all models. 
+
+```{r}
+all_lm %>% 
+  mutate(across(where(is.list), ~map_dbl(.x, sigma)))
+```
+
+We can also reduce this table to only the comparison methods selected in the paper:
+
+```{r}
+all_lm %>% 
+  mutate(across(where(is.list), ~map_dbl(.x, sigma))) %>% 
+  slice(2, 5, 6, 9, 12) 
+```
+
+The results show that the model with all `main` effects usually provides an account that is very similar to the `parameter` model. The model only containing the "good" moderators fares slightly worse but not much. Even including interaction does not bring too much, akthough including all adds many parameters.
+
+The following table shows the additional variable in the model with the best two moderators and the two additional predictors in the model with the best three moderators.
+
+```{r}
+
+# all.vars(all_lm2$best2[[1]]$call)[2]
+# all.vars(all_lm2$best2[[1]]$call)[2]
+all_lm2 <- all_lm2 %>% 
+  mutate(
+    b2_1 = map_chr(best2, ~all.vars(.$call[[2]])[3]),
+    b2_2 = map_chr(best2, ~all.vars(.$call[[2]])[2]),
+    #b2l_1 = map_chr(best2_lin, ~all.vars(.$call[[2]])[3]),
+    #b2l_2 = map_chr(best2_lin, ~all.vars(.$call[[2]])[2]),
+    b3_1 = map_chr(best3, ~all.vars(.$call[[2]])[4]),
+    b3_2 = map_chr(best3, ~all.vars(.$call[[2]])[3]),
+    b3_3 = map_chr(best3, ~all.vars(.$call[[2]])[2]),
+    b4_1 = map_chr(best4, ~all.vars(.$call[[2]])[5]),
+    b4_2 = map_chr(best4, ~all.vars(.$call[[2]])[4]),
+    b4_3 = map_chr(best4, ~all.vars(.$call[[2]])[3]),
+    b4_4 = map_chr(best4, ~all.vars(.$call[[2]])[2])
+    # b3l_1 = map_chr(best3_lin, ~all.vars(.$call[[2]])[4]),
+    # b3l_2 = map_chr(best3_lin, ~all.vars(.$call[[2]])[3]),
+    # b3l_3 = map_chr(best3_lin, ~all.vars(.$call[[2]])[2])
+  )
+
+all_lm2 %>% 
+  select(cond_label, cond_iv_label, b2_1:b3_3) %>% 
+  slice(1, 7, 5, 8, 13) 
+
+all_lm2 %>% 
+  select(cond_label, cond_iv_label, b4_1:b4_4) %>% 
+  slice(1, 7, 5, 8, 13) 
+
+```
+
+The following plot shows the coeffcicients for the model with SE, value (linear and quadratic) and fungibility.
+
+```{r, fig.width=7.5, fig.height=5}
+best3_pars <- all_lm %>% 
+  slice(2, 5, 6, 9, 12)  %>% 
+  group_by(cond_label, cond_iv_label) %>%
+  #summarise(map_df(main_sel, ~broom::tidy(.))) %>% 
+  summarise(map_df(se_y_sd, ~broom::tidy(.))) %>% 
+  ungroup() %>% 
+  mutate(Methods = cond_label:cond_iv_label)
+levels(best3_pars$Methods) <- str_remove(levels(best3_pars$Methods), "R: ")
+levels(best3_pars$Methods) <- str_replace(levels(best3_pars$Methods), 
+                                          ":C: ", " - ")
+
+best3_pars$term <- factor(
+  x = best3_pars$term,
+  levels = rev(c("(Intercept)", "se_c", "poly(y_c, 2, raw = TRUE)1", 
+             "poly(y_c, 2, raw = TRUE)2", "sd_emp_inv")), 
+  labels = rev(c("Intercept", "SE", "Value (lin)", "Value (quad)", 
+             "SD"))
+    )
+
+# best3_pars %>% 
+#   filter(term == "poly(y_c, 2, raw = TRUE)2")
+
+best3_agg <- best3_pars %>% 
+  group_by(term) %>% 
+  summarise(mean = mean(estimate),
+            median = median(estimate))
+
+best3_agg
+
+pmulti <- ggplot(best3_pars, aes(y = term, x = estimate)) +
+  geom_vline(xintercept = 0, colour = "darkgrey") +
+  geom_point(aes(shape = Methods)) +
+  geom_point(data = best3_agg, aes(x = mean, colour = "Mean estimate"), 
+             shape = 4, size = 2, stroke = 2) +
+  # geom_point(data = best3_agg, aes(x = median), color = "blue")
+  labs(x = "Multiple regression estimate", 
+       y = "Multiple regression coefficient") + 
+  scale_color_manual("", values = "red") + 
+  theme(legend.position="bottom", legend.box = "vertical") +
+  guides(shape=guide_legend(nrow=3,byrow=FALSE, title = "Method pair")) +
+  theme(legend.box="horizontal", legend.margin=margin())
+  #stat_summary(fun.y = mean, fun.ymax = mean, fun.ymin = mean, color = "red")
+pmulti
+ggsave("../figures_man/multi_estimates_noPC.png", device = "png", 
+       width = 20.5, height = 11.5, units = "cm", 
+       dpi = 600)
+```
+
+
+
+
+# RAMP Model selection
+
+
+
+```{r}
+
+all_ramp <- targ_both %>% 
+  group_by(cond_label, cond_iv_label)  %>% 
+  summarise(
+    r = list(fit_ramp(form_main2)),
+    r_c = list(fit_ramp(form_main2, center = TRUE))
+  )
+all_ramp <- left_join(all_ramp, select(all_lm2, cond_label:data))
+all_ramp <- all_ramp %>% 
+  mutate(
+    rmse = map2_dbl(r, data, get_rmse_ramp),
+    rmsec = map2_dbl(r_c, data, get_rmse_ramp)
+  )
+all_ramp <- all_ramp %>% 
+  mutate(main = map(r_c, ~.$mainInd), 
+         inter = map(r_c, ~.$interInd))
+
+```
+
+RAMP results for selected method pairs (`rmsec`) and number of coefficients in RAMP model:
+
+```{r}
+all_ramp %>% 
+  ungroup %>% 
+  mutate(n = 1 + map_dbl(main, length) + map_dbl(inter, length)) %>% 
+  slice(2, 5, 6, 9, 12) 
+```
+
+Inclusion probability of interactions (only selected method pairs):
+
+```{r}
+tmp_ramp <- all_ramp %>% 
+  ungroup() %>% 
+  slice(2, 5, 6, 9, 12) 
+  
+imat <- Reduce(`+`, map(tmp_ramp$inter, produce_interaction_matrix, 
+    length = length(all.vars(formula(form_main2))) -1)) / nrow(tmp_ramp)
+dimnames(imat) <- list(colnames(tmp_ramp$r[[1]]$X), colnames(tmp_ramp$r[[1]]$X))
+round(imat, 2)
+
+```
+
+We can also calculate how many cells appear how often. The first value in the following list is the number of cells that appear in all 6 possible pairs, the second number is the number of cells that appear in five pairs, and so forth. The last number is the number of cells that appear in no pair.
+
+```{r}
+imat <- Reduce(`+`, map(tmp_ramp$inter, produce_interaction_matrix, 
+    length = length(all.vars(formula(form_main2))) -1))
+dimnames(imat) <- list(colnames(tmp_ramp$r[[1]]$X), colnames(tmp_ramp$r[[1]]$X))
+
+sum(imat == 5)
+sum(imat == 4)
+sum(imat == 3)
+sum(imat == 2)
+sum(imat == 1)
+sum(imat[upper.tri(imat, diag = TRUE)] == 0)
+sum(c(sum(imat == 5), sum(imat == 4), sum(imat == 3), sum(imat == 2), sum(imat == 1), sum(imat[upper.tri(imat, diag = TRUE)] == 0)))
+```
+
+Inclusion vector of main effects
+
+```{r}
+mevec <- Reduce(`+`, map(tmp_ramp$main, produce_me_vector, 
+    length = length(all.vars(formula(form_main2))) -1)) / nrow(tmp_ramp)
+names(mevec) <- colnames(tmp_ramp$r_c[[1]]$X)
+mevec
+```
+
+
+RAMP results for all method pairs:
+
+```{r}
+all_ramp %>% 
+  ungroup 
+```
+
+Inclusion of interaction for all method pairs:
+
+```{r}
+imat <- Reduce(`+`, map(all_ramp$inter, produce_interaction_matrix, 
+    length = length(all.vars(formula(form_main2))) -1)) / nrow(all_ramp)
+dimnames(imat) <- list(colnames(all_ramp$r[[1]]$X), colnames(all_ramp$r[[1]]$X))
+round(imat, 2)
+```
+
+
