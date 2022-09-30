@@ -255,7 +255,7 @@ CUT_WIDTH_SE <- 0.02
 ### empirical plot
 ppred_emp <- make_emp_biv_plot(targ_both, 
                                rhos_max, "Correlations (max)",
-                               se_c, "SE (combined)") +
+                               se_c, "SE (average)") +
   facet_grid(~cond_label+cond_iv_label) +
   scale_y_continuous(breaks = seq(0, 0.9, by = 0.1)) +
   coord_fixed(ratio = 1, xlim = c(0, 0.27), ylim = c(0, 0.95)) +
@@ -300,7 +300,7 @@ options(pillar.sigfig = 2)
 
 ppred_gam <- make_gam_biv_plot(targ_both, 
                                rhos_max, "Correlations (max)",
-                               se_c, "SE (combined)", 
+                               se_c, "SE (average)", 
                                return = "both") 
 
 ppred_gam_plot <- ppred_gam$plot +
@@ -447,7 +447,7 @@ pest <- compare_continuous_covariate(data = targ_both_2, covariate = poly(y, 2),
 
 psec <- compare_continuous_covariate(data = targ_both_2, covariate = se_c, 
                                      cond_label, cond_iv_label, ylab = ylab) +
-  xlab("SE (combined)")
+  xlab("SE (average)")
 psd <- compare_continuous_covariate(data = targ_both_2, covariate = sd_emp_inv, 
                                      cond_label, cond_iv_label, ylab = ylab) +
   xlab("Individual variability (SD)")
