@@ -532,55 +532,73 @@ ggsave("figures_man/univariate_notgood.png", plot = puniv_notgood,
 ##################################################################
 
 
-all_pairs %>% 
-  distinct(model, model2, dataset, parameter, cond_co, 
-           parameter_o, condition, orig_condition, .keep_all = TRUE) %>% 
-  filter(cond_x != cond_y) %>% 
-  group_by(model, cond_x, cond_y) %>% 
-  summarise(max = max(abs_dev)) %>% 
-  arrange(max)
-  
-
-all_pairs %>% 
-  distinct(model, model2, dataset, parameter, cond_co, 
-           parameter_o, condition, orig_condition, .keep_all = TRUE) %>% 
-  filter(cond_x != cond_y) %>% 
-  filter(cond_x == "PP-LT-C") %>% 
-  group_by(model, cond_x, cond_y) %>% 
-  summarise(max = max(abs_dev)) %>% 
-  arrange(max)
-
-all_pairs %>% 
-  distinct(model, model2, dataset, parameter, cond_co, 
-           parameter_o, condition, orig_condition, .keep_all = TRUE) %>% 
-  filter(cond_x != cond_y) %>% 
-  #filter(cond_x == "PP-LT-C") %>% 
-  group_by(model) %>% 
-  arrange(desc(abs_dev)) %>% 
-  slice(1:3) %>% 
-  select(model:abs_dev, cond_x, cond_y, -dataset) %>% 
-  print(n = Inf)
-
 
 
 #################################################################
 ##                     Plots in Discussion                     ##
 #################################################################
 
-all_pairs_red <- all_pairs_red %>% 
+
+### correlations figure in Appendix
+
+all_rhos <- all_pairs %>% 
+  filter(cond_x == "PP-LT-C", cond_y == "CP-MLE") %>% 
+  select(model2, dataset, parameter, starts_with("rho")) 
+
+cp1 <- all_rhos %>% 
+  ggplot(aes(x = rhos_mean)) +
+  geom_histogram(binwidth = 0.025, boundary = 0, 
+                 mapping = aes(y = after_stat(density))) +
+  stat_summary(aes(y = 0), fun.data = function(x) 
+    data.frame(ymin = mean(x), y = mean(x), ymax = mean(x)), 
+    orientation = "y") +
+  theme_bw(base_size = 15) + 
+  theme(legend.position="bottom") +
+  coord_cartesian(xlim = c(0, 1), ylim = c(0, 3.8)) +
+  labs(x = "Average correlation")
+
+cp2 <- all_rhos %>% 
+  ggplot(aes(x = rhos_max)) +
+  geom_histogram(binwidth = 0.025, boundary = 0, 
+                 mapping = aes(y = after_stat(density))) +
+  stat_summary(aes(y = 0), fun.data = function(x) 
+    data.frame(ymin = mean(x), y = mean(x), ymax = mean(x)), 
+    orientation = "y") +
+  theme_bw(base_size = 15) + 
+  theme(legend.position="bottom")  +
+  coord_cartesian(xlim = c(0, 1), ylim = c(0, 3.8)) +
+  labs(x = "Maximum correlation")
+
+plot_grid(cp1, cp2)
+ggsave("figures_man/all_corr.pdf", 
+       width = 19, height = 6, units = "cm", 
+       dpi = 500)
+
+all_rhos %>% 
+  summarise(
+    mean = mean(rhos_mean),
+    max = mean(rhos_max)
+  )
+
+
+##----------------------------------------------------------------
+##            Absolute Mean Deviation Plot (Model)               -
+##----------------------------------------------------------------
+
+all_pairs <- all_pairs %>% 
   mutate(par = str_remove(parameter, ".+:")) %>% 
   mutate(par = str_remove(par, "_")) %>% 
   mutate(par2 = case_when(
     model == "quad" ~ paste0("scriptstyle(",
-                            str_extract(par, "[[:upper:]]+"), 
-                            "[", 
-                            str_extract(par, "[[:lower:]]+"), 
-                            "])"),
+                             str_extract(par, "[[:upper:]]+"), 
+                             "[", 
+                             str_extract(par, "[[:lower:]]+"), 
+                             "])"),
     model == "hb" & nchar(par) > 1 ~ paste0("italic(", 
-                            substr(par, 1, nchar(par)-1), 
-                            ")[", 
-                            toupper(substr(par, nchar(par), nchar(par))), 
-                            "]"),
+                                            substr(par, 1, nchar(par)-1), 
+                                            ")[", 
+                                            toupper(substr(par, nchar(par), nchar(par))), 
+                                            "]"),
     nchar(par) > 1 ~ paste0("italic(", 
                             substr(par, 1, nchar(par)-1), 
                             "[", 
@@ -592,21 +610,18 @@ all_pairs_red <- all_pairs_red %>%
 #   select(par, par2) %>% 
 #   {table(.$par2)}
 
-all_pairs_red$mlab <- factor(
-  all_pairs_red$model2, 
+all_pairs$mlab <- factor(
+  all_pairs$model2, 
   levels = c("2htsm_4", "2htsm_5d","2htsm_6e","c2ht6","c2ht8",
              "pc","pd_s","pd_e","pm","hb","rm","real","quad"),
   labels = c("2HTSM 4", "2HTSM 5d","2HTSM 6e","c2HT 6","c2HT 8",
              "PC","PD","PD_e","PM","HB","RM","ReAL","QUAD")
 )
 
-##----------------------------------------------------------------
-##            Absolute Mean Deviation Plot (Model)               -
-##----------------------------------------------------------------
 
-targ_cmle_lpp<- all_pairs_red %>% 
-  filter(cond_y == "Comp MLE") %>% 
-  filter(cond_x == "Trait PP") %>%
+targ_cmle_lpp<- all_pairs %>% 
+  filter(cond_y == "CP-MLE") %>% 
+  filter(cond_x == "PP-LT-C") %>%
   filter(model2 != "pd_e")
 
 targ_cmle_lpp %>% 
@@ -624,41 +639,16 @@ ggsave("figures_man/mad_model.png",
        width = 16, height = 16, units = "cm", 
        dpi = 500)
 
-##----------------------------------------------------------------
-##                          Trade off Plot                       -
-##----------------------------------------------------------------
-
 targ_cmle_lpp %>% 
-  ggplot(aes(x = par2, y = fungi_max)) +
-  geom_boxplot(width = 0.08, outlier.shape = NA) +
-  geom_violin(fill = "transparent", width = 0.8) +
-  stat_summary(fun = mean, fun.max = mean, fun.min = mean, fatten = 0.9) +
-  facet_wrap("mlab", scales = "free_x", ncol=4) +
-  labs(x = "Parameter", y = "Max. trade-off")+
-  theme(axis.text.x = element_text(angle = 0,size=10))  +
-  scale_x_discrete(labels = ggplot2:::parse_safe)
+  group_by(mlab, par2) %>% 
+  summarise(max = max(abs_dev)) %>% 
+  arrange(desc(max))
 
+#### which N predicts SE?
 
-ggsave("figures_man/trade_model.png", 
-       width = 16, height = 16, units = "cm", 
-       dpi = 500)
-
-##----------------------------------------------------------------
-##                           SE Plot                             -
-##----------------------------------------------------------------
-
+colnames(targ_cmle_lpp)
 targ_cmle_lpp %>% 
-  ggplot(aes(x = par2, y = se_c)) +
-  geom_boxplot(width = 0.08, outlier.shape = NA) +
-  geom_violin(fill = "transparent", width = 0.8) +
-  stat_summary(fun = mean, fun.max = mean, fun.min = mean, fatten = 0.9) +
-  facet_wrap("mlab", scales = "free_x", ncol=4) +
-  labs(x = "Parameter", y = "Standard error") +
-  theme(axis.text.x = element_text(angle = 0,size=10))  +
-  scale_x_discrete(labels = ggplot2:::parse_safe)
-
-ggsave("figures_man/se_model.png", 
-       width = 16, height = 16, units = "cm", 
-       dpi = 500)
-
+  select(se_c, n_participant, n_trials) %>% 
+  filter(n_participant < 300) %>% 
+  GGally::ggpairs()
 

@@ -7,6 +7,7 @@ setwd(CURDIR)
 
 library(checkpoint)
 checkpoint("2020-07-01")  ## R 4.0.0 or higher is recommended.
+## 
 ## do not compile from source on windows!
 
 library("MPTmultiverse")
@@ -230,13 +231,13 @@ all_pars %>%
 
 
 ### N-participants (not used, we focus on SE instead)
-# uc <- unique(all_pars$condition)
-# uoc <- unique(n_participants$orig_condition)
-# uc[ !(uc %in% uoc)]
+uc <- unique(all_pars$condition)
+uoc <- unique(n_participants$orig_condition)
+uc[ !(uc %in% uoc)]
 # 
-# n_participants2 <- all_pars %>% 
-#   select(model, dataset, condition, model2, orig_condition) %>% 
-#   left_join(n_participants)
+n_participants2 <- all_pars %>% 
+ select(model, dataset, condition, model2, orig_condition) %>% 
+ left_join(n_participants)
 
 core_pars <- all_pars %>% 
   filter(core) %>% 
@@ -583,7 +584,7 @@ imisfit <- left_join(imisfit_noasy, imisfit_trait) %>%
 
 ## covariates not relative to parameter
 covariates_nopar <- left_join(p_vals, hetero_np) %>% 
-  left_join(imisfit)
+  left_join(imisfit) 
 
 ## should be of length 0
 covariates_nopar %>% 
@@ -638,7 +639,25 @@ anti_join(xx2, xx1)
 # covariates <- full_join(tt1, tt2)
 
 covariates <- full_join(select(all_par_covariates, -npar), 
-                        covariates_nopar)
+                        covariates_nopar) %>% 
+  left_join(unique(select(n_participants2, -condition)))
+
+n_trials <- dm %>% 
+  filter(pooling == "Comp", package == "MR", method == "MLE") %>% 
+  select(model, dataset, data_tree) 
+
+n_trials$n_trials <- map(n_trials$data_tree, ~{
+    tmp <- cbind(.[,c(1:2)], obs = rowSums(.[,-c(1:2)]))
+    tmp %>% 
+      group_by(condition) %>% 
+      summarise(n_trials = mean(obs)) %>% 
+      rename(orig_condition = condition)
+  })
+n_trials <- n_trials %>% 
+  select(-data_tree) %>% 
+  unnest(n_trials)
+
+covariates <- left_join(covariates, n_trials)
 
 # nrow(covariates_nopar)
 # nrow(all_par_covariates)
@@ -691,7 +710,8 @@ unique(covariates$dataset)[! (unique(covariates$dataset) %in% unique(ext_covaria
 
 all( sort(unique(covariates$model)) %in% sort(unique(ext_covariates$model)) )
 
-covariates <- left_join(covariates, ext_covariates)
+covariates <- left_join(covariates, ext_covariates) 
+
 
 #################################################################
 ##                  All Pairwise Combinations                  ##
@@ -822,6 +842,7 @@ all_pairs <- all_pairs_full %>%
          ## product of previous branches. Relative information available 
          starts_with("prop_ns_"),
          npar, ## number of parameters
+         n_participant, n_trials,
          population, sci_goal, ### external covariates
          condition, orig_condition, parameter_o
          )
