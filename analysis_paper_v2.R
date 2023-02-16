@@ -71,7 +71,7 @@ ppairs <- all_pairs %>%
   #filter(!(model %in% "pm")) %>% 
   ggplot(aes(x = x, y = y)) +
   geom_abline(slope = 1, intercept = 0) +
-  geom_point(mapping = aes(shape = SAI), alpha = 0.2) + #aes(size = trials)
+  geom_point(mapping = aes(shape = SAI, colour = SAI), alpha = 0.2) + #aes(size = trials)
   facet_grid(cond_x2~ cond_y2, switch = "both", as.table = TRUE) +
   geom_text(data=plot_rmse,
             aes(y = 0.13, x = 0.85, label=rmse),
@@ -85,6 +85,7 @@ ppairs <- all_pairs %>%
   scale_y_continuous(breaks = seq(0, 1, by = 0.25), 
                      labels = c("0  ", "", "0.5", "", "1  ")) +
   #scale_size(range = c(0.5, 2.5)) +
+  scale_colour_manual(values = c("Not SAI" = "blue", "SAI" = "black")) +
   geom_smooth(method = "gam", se = FALSE, 
                 formula = y ~ s(x, bs = "ts"), colour = "red") +
   labs(x = "", y = "") +
@@ -126,34 +127,8 @@ all_rmse %>%
     ))
 
 ##---------------------------------------------------------------
-##                          ECDF Plot                           -
+##                          ECDF analysis                       -
 ##---------------------------------------------------------------
-
-theme_set(theme_bw(base_size = 15) + 
-            theme(legend.position="bottom"))
-library("ggthemes")
-
-all_pairs_nopc %>% 
-  filter(cond_x != "NP-Bayes", cond_y != "NP-Bayes") %>% 
-  ggplot(aes(abs_dev, color = cond_y2)) +
-  stat_ecdf(geom = "step", 
-            mapping = aes(y = after_stat(1 - y))) +
-  facet_wrap("cond_x2", as.table = TRUE, nrow = 2) +
-  coord_cartesian(xlim = c(0.00, 0.35), expand = FALSE) + 
-  labs(y = expression(paste(
-    italic("Pr"), "(abs. deviation > ", italic("x"), ")")),  
-       x = "Abs. deviation") +
-  guides(color = guide_legend(title = NULL)) + scale_colour_colorblind() +
-  scale_y_continuous()
-ggsave("figures_man/eccdf.png", 
-       width = 15, height = 12.5, units = "cm", 
-       dpi = 500)
-
-theme_set(theme_bw(base_size = 15) + 
-            theme(legend.position="bottom", 
-                  panel.grid.major.x = element_blank()))
-
-### eccdf analysis
 
 unique_pairs_nopc <- all_pairs_nopc %>% 
   distinct(model, model2, dataset, parameter, cond_co, 
@@ -439,38 +414,50 @@ rmse_tab_3
 ##                    Univariate Relationships                   -
 ##----------------------------------------------------------------
 
+targ_both_2_plot <- targ_both_2 %>% 
+  left_join(select(rmse_tab_1, cond_label, cond_iv_label, sigma), 
+            c("cond_label", "cond_iv_label")) %>% 
+  left_join(select(rmse_tab_2, cond_label, cond_iv_label, parameter), 
+            by = c("cond_label", "cond_iv_label"), suffix = c("", "_mod")) %>% 
+  mutate(rmse_base = paste0("Baseline = ", substr(sigma, 2, 5)),
+         rmse_par = paste0("Parameter = ", substr(parameter_mod, 2, 5))) %>% 
+  ungroup()
 
 ### parameter-level covariates
-pest <- compare_continuous_covariate(data = targ_both_2, covariate = poly(y, 2), 
-                                     cond_label, cond_iv_label, ylab = ylab) +
+pest <- compare_continuous_covariate(data = targ_both_2_plot, 
+                                     covariate = poly(y, 2), 
+                                     cond_label, cond_iv_label, rmse_base, rmse_par,
+                                     ylab = ylab) +
   xlab("Value of parameter estimate (reference method, quadratic)")
 
-psec <- compare_continuous_covariate(data = targ_both_2, covariate = se_c, 
-                                     cond_label, cond_iv_label, ylab = ylab) +
+psec <- compare_continuous_covariate(data = targ_both_2_plot, covariate = se_c, 
+                                     cond_label, cond_iv_label, rmse_base, rmse_par,
+                                     ylab = ylab) +
   xlab("SE (average)")
-psd <- compare_continuous_covariate(data = targ_both_2, covariate = sd_emp_inv, 
+psd <- compare_continuous_covariate(data = targ_both_2_plot, covariate = sd_emp_inv, 
                                      cond_label, cond_iv_label, ylab = ylab) +
   xlab("Individual variability (SD)")
-prho <- compare_continuous_covariate(data = targ_both_2, covariate = rhos_max, 
+prho <- compare_continuous_covariate(data = targ_both_2_plot, covariate = rhos_max, 
                                      cond_label, cond_iv_label, ylab = ylab) +
   xlab("Parameter correlations (max)")
-pfungi <- compare_continuous_covariate(data = targ_both_2, covariate = fungis_max, 
-                                     cond_label, cond_iv_label, ylab = ylab) +
+pfungi <- compare_continuous_covariate(data = targ_both_2_plot, covariate = fungis_max, 
+                                     cond_label, cond_iv_label, rmse_base, rmse_par,
+                                     ylab = ylab) +
   xlab("Parameter trade-offs (max)")
-prelw <- compare_continuous_covariate(data = targ_both_2, 
+prelw <- compare_continuous_covariate(data = targ_both_2_plot, 
                                       covariate = log(rel_weight), 
                                      cond_label, cond_iv_label, ylab = ylab) +
   xlab("Relative information (log)")
-preln <- compare_continuous_covariate(data = targ_both_2, covariate = log(rel_n_w), 
+preln <- compare_continuous_covariate(data = targ_both_2_plot, covariate = log(rel_n_w), 
                                      cond_label, cond_iv_label, ylab = ylab) +
   xlab("Relative N (log)")
 
 ## data-set-level covariates
-phetero <- compare_continuous_covariate(data = targ_both_2, 
+phetero <- compare_continuous_covariate(data = targ_both_2_plot, 
                                         covariate = hetero_cohenw, 
                                      cond_label, cond_iv_label, ylab = ylab) +
   xlab("Hetereogeneity (Cohen's w)")
-pfit <- compare_continuous_covariate(data = targ_both_2, covariate = log1p(p_fit_x), 
+pfit <- compare_continuous_covariate(data = targ_both_2_plot, covariate = log1p(p_fit_x), 
                                      cond_label, cond_iv_label, ylab = ylab) +
   xlab("Model fit (comparison method, log p + 1)")
 
@@ -494,11 +481,11 @@ puniv_good <- cowplot::plot_grid(
                   axis.title.y = element_text(colour = "transparent")) + 
     scale_x_continuous(breaks = breaks1, labels = labels1),
   #pfungi + theme(strip.text = element_blank()), 
-  ncol = 1, rel_heights = c(1.33, rep(1, 5))) +
+  ncol = 1, rel_heights = c(1.7, rep(1, 5))) +
   draw_text("Abs. deviation", angle = 90, x = 0.015)
 
 ggsave("figures_man/univariate_good.png", plot = puniv_good, 
-       width = 24.5, height = 25, units = "cm", ## 21 or 25
+       width = 24.5, height = 26, units = "cm", ## 21 or 25
        dpi = 500)
 
 puniv_notgood <- cowplot::plot_grid(
@@ -513,9 +500,9 @@ puniv_notgood <- cowplot::plot_grid(
   pfit + theme(strip.text = element_blank(),
                axis.title.y = element_text(colour = "transparent")) + 
     scale_x_continuous(breaks = breaks1, labels = labels1), 
-  ncol = 1, rel_heights = c(1.35, rep(1, 4)))
+  ncol = 1, rel_heights = c(1.7, rep(1, 4)))
 ggsave("figures_man/univariate_notgood.png", plot = puniv_notgood, 
-       width = 24.5, height = 21, units = "cm", 
+       width = 24.5, height = 22, units = "cm", 
        dpi = 500)
 
 
@@ -524,7 +511,7 @@ ggsave("figures_man/univariate_notgood.png", plot = puniv_notgood,
 ##----------------------------------------------------------------
 
 ### See corresponding RMarkdown document:
-### multivariate_relationships_with_abs_dev_rmse_noPC_2
+### multivariate_relationships_with_abs_dev_rmse_noPC_3
 
 
 ##################################################################
