@@ -259,7 +259,7 @@ options(pillar.sigfig = 4)
 targ_both %>% 
   filter(se_c < CUT_WIDTH_SE, rhos_max < CUT_WIDTH_RHO) %>% 
   group_by(cond_label, cond_iv_label) %>% 
-  arrange(rhos_max) %>% 
+  arrange(cond_label, cond_iv_label, rhos_max) %>% 
   select(cond_label, cond_iv_label, abs_dev, rhos_max, se_c, 
          model2, dataset, parameter)
 options(pillar.sigfig = 2)
