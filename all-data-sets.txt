@@ -1,0 +1,203 @@
+# A tibble: 19 × 10
+   model model2  dataset                              population                  n     t `2htsm_4:b` `2htsm_4:d` `2htsm_4:D` `2htsm_4:g`
+   <fct> <fct>   <fct>                                <chr>                   <int> <dbl>       <dbl>       <dbl>       <dbl>       <dbl>
+ 1 2htsm 2htsm_4 A2013:2htsm_4                        students                   24    64     0.00503    0.0830       0.0120      0.0189 
+ 2 2htsm 2htsm_4 BG2008:2htsm_4                       older adults & students    10    54     0.0707     0.0607       0.0155      0.0476 
+ 3 2htsm 2htsm_4 BK2011_E1:2htsm_4                    students                   24    96     0.0405     0.0533       0.0172      0.0234 
+ 4 2htsm 2htsm_4 BK2011_E2:2htsm_4                    students                   24    96     0.0124     0.0923       0.0146      0.0255 
+ 5 2htsm 2htsm_4 Giang et al. (2012):2htsm_4          students                   58    80     0.0107     0.0504       0.00846     0.00990
+ 6 2htsm 2htsm_4 K2012_E1:2htsm_4                     students                   24    96     0.00399    0.0700       0.0136      0.0105 
+ 7 2htsm 2htsm_4 K2016_E1:2htsm_4                     older adults & students    24    72     0.0175     0.0239       0.00570     0.0115 
+ 8 2htsm 2htsm_4 K2016_E2:2htsm_4                     students                   24    72     0.0154     0.0246       0.00318     0.0195 
+ 9 2htsm 2htsm_4 KT2017:2htsm_4                       older adults & students    20   100     0.0272     0.0223       0.0124      0.0237 
+10 2htsm 2htsm_4 M2003:2htsm_4                        students                   33    72     0.0312     0.0357       0.00281     0.0143 
+11 2htsm 2htsm_4 MH2001:2htsm_4                       students                   20   108     0.0194     0.0388       0.00366     0.0208 
+12 2htsm 2htsm_4 S2002_E1:2htsm_4                     older adults & patients    12   240     0.0324     0.00806      0.00834     0.00295
+13 2htsm 2htsm_4 S2002_E2:2htsm_4                     older adults & patients     8   120     0.0467     0.000601     0.00379     0.00374
+14 2htsm 2htsm_4 S2002_E3:2htsm_4                     patients                    5   120     0.0282     0.0459       0.00846     0.00334
+15 2htsm 2htsm_4 Schuetz & Broeder (2011) Ex1:2htsm_4 students                   10   150     0.0145     0.0134       0.00185     0.00708
+16 2htsm 2htsm_4 Schuetz & Broeder (2011) Ex2:2htsm_4 students                   10   150     0.00266    0.00620      0.00176     0.00368
+17 2htsm 2htsm_4 Schuetz & Broeder (2011) Ex3:2htsm_4 students                   10    90     0.00354    0.0341       0.00352     0.00379
+18 2htsm 2htsm_4 Schuetz & Broeder (2011) Ex4:2htsm_4 students                   10    90     0.00647    0.0216       0.00366     0.00479
+19 2htsm 2htsm_4 Schuetz & Broeder (2011) Ex5:2htsm_4 students                   10    90     0.00368    0.0110       0.00445     0.00441
+# A tibble: 12 × 11
+   model model2   dataset                            population     n     t `2htsm_5d:b` `2htsm_5d:D` `2htsm_5d:d_1` `2htsm_5d:d_2` `2htsm_5d:g`
+   <fct> <fct>    <fct>                              <chr>      <int> <dbl>        <dbl>        <dbl>          <dbl>          <dbl>        <dbl>
+ 1 2htsm 2htsm_5d Bell et al. (2015) Ex3:2htsm_5d    students     100    80       0.0141      0.0105          0.0934         0.104        0.0342
+ 2 2htsm 2htsm_5d Bell et al. (2015) Ex4:2htsm_5d    students     135    80       0.0291      0.00661         0.0683         0.0765       0.0192
+ 3 2htsm 2htsm_5d DS2000_E1:2htsm_5d                 students      45    90       0.0391      0.0127          0.0777         0.0565       0.0299
+ 4 2htsm 2htsm_5d DS2000_E3:2htsm_5d                 students      36   120       0.0330      0.00927         0.0846         0.0690       0.0307
+ 5 2htsm 2htsm_5d DS2000_E4:2htsm_5d                 students      75   120       0.0451      0.00747         0.0577         0.0499       0.0240
+ 6 2htsm 2htsm_5d KM2000_E3:2htsm_5d                 students      20    98       0.0165      0.00608         0.0825         0.111        0.0275
+ 7 2htsm 2htsm_5d KM2000_E4:2htsm_5d                 students      60   108       0.0161      0.00800         0.0537         0.0915       0.0130
+ 8 2htsm 2htsm_5d Kueppers & Bayen 2014:2htsm_5d     students      48    96       0.0203      0.00409         0.0755         0.0803       0.0270
+ 9 2htsm 2htsm_5d Mieth et al. (2016) Ex1:2htsm_5d   students     112    80       0.0232      0.00568         0.0710         0.0802       0.0212
+10 2htsm 2htsm_5d Mieth et al. (2016) Ex2:2htsm_5d   students      96    80       0.0188      0.00582         0.0765         0.0814       0.0129
+11 2htsm 2htsm_5d Mieth et al. (2016) Ex3:2htsm_5d   students     101    80       0.0205      0.00945         0.0709         0.0902       0.0299
+12 2htsm 2htsm_5d Suessenbach et al. (2016):2htsm_5d students     104    80       0.0218      0.00945         0.0441         0.0771       0.0364
+# A tibble: 4 × 12
+  model model2   dataset                         population     n     t `2htsm_6e:b` `2htsm_6e:d_1` `2htsm_6e:D_1` `2htsm_6e:d_2` `2htsm_6e:D_2` `2htsm_6e:g`
+  <fct> <fct>    <fct>                           <chr>      <int> <dbl>        <dbl>          <dbl>          <dbl>          <dbl>          <dbl>        <dbl>
+1 2htsm 2htsm_6e Bell et al. (2015) Ex1:2htsm_6e students     138    80       0.0411         0.0790        0.00950         0.0763        0.0141        0.0253
+2 2htsm 2htsm_6e Bell et al. (2015) Ex2:2htsm_6e students     114    80       0.0190         0.0881        0.0129          0.0894        0.0172        0.0337
+3 2htsm 2htsm_6e KB2018:2htsm_6e                 students      40   160       0.0112         0.106         0.0120          0.0979        0.00326       0.0149
+4 2htsm 2htsm_6e Mieth et al. (2016):2htsm_6e    students     216    80       0.0300         0.101         0.00760         0.0782        0.00949       0.0384
+# A tibble: 12 × 9
+   model model2 dataset                   population     n     t `c2ht6:Dn` `c2ht6:Do` `c2ht6:g`
+   <fct> <fct>  <fct>                     <chr>      <int> <dbl>      <dbl>      <dbl>     <dbl>
+ 1 c2ht  c2ht6  Dube_2012-P:c2ht6         students      27   400     0.0697    0.0284    0.0463 
+ 2 c2ht  c2ht6  Dube_2012-W:c2ht6         students      22   400     0.0599    0.0202    0.0237 
+ 3 c2ht  c2ht6  Heathcote_2006_e1:c2ht6   students      16   558     0.0263    0.00884   0.00936
+ 4 c2ht  c2ht6  Heathcote_2006_e2:c2ht6   students      23   560     0.0197    0.00923   0.00946
+ 5 c2ht  c2ht6  Jaeger_2012:c2ht6         students      63   120     0.144     0.0572    0.0908 
+ 6 c2ht  c2ht6  Jang_2009:c2ht6           students      33   140     0.100     0.0281    0.0365 
+ 7 c2ht  c2ht6  Koen-2013_full:c2ht6      students      48   198     0.0646    0.0198    0.0292 
+ 8 c2ht  c2ht6  Koen-2013_immediate:c2ht6 students      48   300     0.0415    0.0175    0.0159 
+ 9 c2ht  c2ht6  Koen_2010_pure:c2ht6      students      32   320     0.104     0.0216    0.0387 
+10 c2ht  c2ht6  Koen_2011:c2ht6           students      20   600     0.0320    0.0178    0.0182 
+11 c2ht  c2ht6  Pratte_2010:c2ht6         students      97   480     0.0347    0.00621   0.0147 
+12 c2ht  c2ht6  Smith_2004:c2ht6          students      30   140     0.0550    0.0151    0.0261 
+# A tibble: 3 × 9
+  model model2 dataset                 population     n     t `c2ht8:Dn` `c2ht8:Do` `c2ht8:g`
+  <fct> <fct>  <fct>                   <chr>      <int> <dbl>      <dbl>      <dbl>     <dbl>
+1 c2ht  c2ht8  Benjamin_2013:c2ht8     students     124   120     0.0811    0.0219     0.0274
+2 c2ht  c2ht8  Onyper_2010-Pics:c2ht8  students     136   768     0.0344    0.00287    0.0119
+3 c2ht  c2ht8  Onyper_2010-Words:c2ht8 students     131   768     0.0441    0.00839    0.0131
+# A tibble: 9 × 9
+  model model2 dataset                                   population                          n     t `pc:c` `pc:r` `pc:u`
+  <fct> <fct>  <fct>                                     <chr>                           <int> <dbl>  <dbl>  <dbl>  <dbl>
+1 pc    pc     Broeder_sixTrials.csv:pc                  patients & older adults & other    24   120 0.0444 0.0934 0.0572
+2 pc    pc     Francis_fourTrials_english.csv:pc         students                          126    40 0.0745 0.185  0.0343
+3 pc    pc     Francis_fourTrials_englishDominant.csv:pc students                           62    40 0.0590 0.147  0.0286
+4 pc    pc     Francis_fourTrials_spanishDominant.csv:pc students                           63    40 0.0671 0.172  0.0345
+5 pc    pc     GolzErdfelder_sixTrials_afternoon.csv:pc  patients                           19    60 0.0804 0.144  0.0365
+6 pc    pc     GolzErdfelder_sixTrials_forenoon.csv:pc   patients                           19    60 0.0838 0.162  0.0386
+7 pc    pc     Matzke_fourTrials.csv:pc                  students                           65    60 0.0656 0.176  0.0368
+8 pc    pc     Riefer_sixTrials_alcoholics.csv:pc        patients                           21   120 0.0572 0.115  0.0278
+9 pc    pc     Riefer_sixTrials_schizos.csv:pc           patients                           29   121 0.0457 0.0896 0.0245
+# A tibble: 7 × 8
+  model model2 dataset                            population                  n     t `pd_s:A` `pd_s:C`
+  <fct> <fct>  <fct>                              <chr>                   <int> <dbl>    <dbl>    <dbl>
+1 pd    pd_s   bodner_2000_exp2.txt:pd_s          students                   30    80  0.00899  0.0154 
+2 pd    pd_s   bodner_2000_exp4.txt:pd_s          students                   28    80  0.0146   0.0200 
+3 pd    pd_s   caldwell_masson_2001_exp1.txt:pd_s older adults & students    30    48  0.00727  0.0140 
+4 pd    pd_s   caldwell_masson_2001_exp2.txt:pd_s students                   28   144  0.00617  0.00478
+5 pd    pd_s   rouder_2008_exp1.dat:pd_s          students                   66    96  0.0141   0.0590 
+6 pd    pd_s   rouder_2008_exp2.dat:pd_s          students                   44    32  0.0216   0.0269 
+7 pd    pd_s   stahl_2015_exp1.csv:pd_s           students                   33   211  0.00480  0.0170 
+# A tibble: 3 × 9
+  model model2 dataset                   population     n     t `pd_e:A_alt` `pd_e:C_Exclusion` `pd_e:C_Inclusion`
+  <fct> <fct>  <fct>                     <chr>      <int> <dbl>        <dbl>              <dbl>              <dbl>
+1 pd    pd_e   klauer_2015_exp1.csv:pd_e students      40   287       0.0549             0.0481              0.139
+2 pd    pd_e   klauer_2015_exp3.csv:pd_e students      40   335       0.0664             0.0693              0.127
+3 pd    pd_e   klauer_2015_exp5.csv:pd_e students     162   694       0.0273             0.107               0.106
+# A tibble: 14 × 10
+   model model2 dataset                                         population                  n     t `pm:C1` `pm:C2` `pm:M` `pm:P`
+   <fct> <fct>  <fct>                                           <chr>                   <int> <dbl>   <dbl>   <dbl>  <dbl>  <dbl>
+ 1 pm    pm     ArnoldBayenBoehm2015_data.csv:pm                students                  125   327 0.0197  0.00723 0.0234 0.0229
+ 2 pm    pm     Data Schnitzspahn et al 2012.csv:pm             older adults & students    45   306 0.0115  0.00784 0.0469 0.0359
+ 3 pm    pm     Horn_et_al_2011_Exp2A.csv:pm                    students                   27   128 0.0132  0.00653 0.0327 0.0502
+ 4 pm    pm     Horn_et_al_2011_Exp2B.csv:pm                    students                   29   128 0.0107  0.00922 0.0432 0.0487
+ 5 pm    pm     Pavawalla_etal2012_data.csv:pm                  patients & other           17    62 0.00941 0.0168  0.0635 0.0290
+ 6 pm    pm     Rummeletal2011_data.csv:pm                      students                   31    62 0.0349  0.0296  0.0331 0.0357
+ 7 pm    pm     Smith & Hunt 2013.csv:pm                        older adults & students    25    78 0.0235  0.0140  0.0693 0.0390
+ 8 pm    pm     Smith et al 2014 Exp1.csv:pm                    students                   27    62 0.196   0.221   0.239  0.103 
+ 9 pm    pm     SmithBayen2005_Experiment1.csv:pm               students                   10   136 0.00634 0.00429 0.0133 0.0193
+10 pm    pm     SmithBayen2005_Experiment2.csv:pm               students                   11   136 0.00474 0.00536 0.0176 0.0198
+11 pm    pm     SmithBayenMartin2010_data.csv:pm                children & students        45    66 0.0250  0.0104  0.0745 0.0584
+12 pm    pm     Smithetal2011_VersionArnoldetal2015_data.csv:pm students                  413   248 0.00361 0.00474 0.0624 0.0356
+13 pm    pm     Smithetal2014_Exp2.csv:pm                       students                   45    62 0.0142  0.00837 0.0434 0.0558
+14 pm    pm     Smithetal2014_Exp3.csv:pm                       students                   40   112 0.0171  0.00976 0.0776 0.0557
+# A tibble: 9 × 10
+  model model2 dataset                              population                             n     t `hb:b`  `hb:c` `hb:rc`  `hb:re`
+  <fct> <fct>  <fct>                                <chr>                              <int> <dbl>  <dbl>   <dbl>   <dbl>    <dbl>
+1 hb    hb     Bayen2006Exp1.csv:hb                 older adults & students               26    54 0.0838 0.0278  0.00252 0.00175 
+2 hb    hb     Bayen2006Exp2.csv:hb                 older adults & students               33    50 0.0715 0.0315  0.00603 0.0139  
+3 hb    hb     Bernstein2011.csv:hb                 children & older adults & students    35    19 0.171  0.111   0.00798 0.00972 
+4 hb    hb     Coolin2015.csv:hb                    older adults & students               64    50 0.0606 0.00922 0.00275 0.00508 
+5 hb    hb     Coolin2016.csv:hb                    older adults                          80    56 0.0859 0.0182  0.00788 0.00734 
+6 hb    hb     ErdfelderBrandtBröder2007Exp1.csv:hb students                              20    54 0.148  0.156   0.00338 0.00447 
+7 hb    hb     GroßBayen2015.csv:hb                 older adults & students               46    96 0.0295 0.0163  0.0407  0.0319  
+8 hb    hb     GroßBayen2017.csv:hb                 students                              63    60 0.0575 0.00744 0.00151 0.000657
+9 hb    hb     Pohl2010.csv:hb                      children & students                   60    49 0.151  0.0446  0.00279 0.00466 
+# A tibble: 42 × 9
+   model model2 dataset                                                             population                  n     t   `rm:a`   `rm:b`  `rm:r`
+   <fct> <fct>  <fct>                                                               <chr>                   <int> <dbl>    <dbl>    <dbl>   <dbl>
+ 1 rm    rm     Castela Erdfelder 2017b_Exp1 within1.csv:rm                         students                   73   190 0.00144  0.00387  0.0177 
+ 2 rm    rm     Castela Erdfelder 2017b_Exp1 within2.csv:rm                         students                   74   190 0.00387  0.00195  0.0235 
+ 3 rm    rm     Castela Erdfelder 2017b_Exp1 within3.csv:rm                         students                   72   190 0.00341  0.0122   0.0102 
+ 4 rm    rm     Castela Erdfelder 2017b_Exp2.csv:rm                                 students                   51   421 0.000858 0.00422  0.00896
+ 5 rm    rm     Data from Filevich Horn Kuehn 2017_within1.csv:rm                   other                      99    70 0.00145  0.0192   0.0487 
+ 6 rm    rm     Data from Filevich Horn Kuehn 2017_within2.csv:rm                   other                      99    70 0.00199  0.00404  0.0823 
+ 7 rm    rm     Hilbig et al 2015_exp1.csv:rm                                       students                   22   190 0.00238  0.00651  0.0190 
+ 8 rm    rm     Hilbig et al 2015_exp2.csv:rm                                       students                   21   190 0.00281  0.00349  0.0181 
+ 9 rm    rm     Hilbig et al 2015_exp3.csv:rm                                       students                   32    84 0.00112  0.00268  0.0133 
+10 rm    rm     Hilbig Richter.csv:rm                                               students                   28   190 0.00655  0.00510  0.0218 
+11 rm    rm     HilbigErdfelderPohl20106.csv:rm                                     students                   18   136 0.00351  0.0114   0.0260 
+12 rm    rm     HilbigErdfelderPohl20107b.csv:rm                                    students                   13    91 0.00684  0.00497  0.00889
+13 rm    rm     HilbigErdfelderPohl2011.csv:rm                                      students                   63   182 0.00234  0.00692  0.0128 
+14 rm    rm     HilbigErdfelderPohl2012exp1.csv:rm                                  students                   24   153 0.00242  0.00312  0.00871
+15 rm    rm     HilbigPohl09exp1.csv:rm                                             students                   24   190 0.00734  0.0133   0.0122 
+16 rm    rm     HilbigPohl09exp2.csv:rm                                             students                   72   135 0.00276  0.00443  0.0260 
+17 rm    rm     HilbigPohl09exp3.csv:rm                                             students                   62    91 0.00442  0.00361  0.0146 
+18 rm    rm     HilbigPohl2008exp5.csv:rm                                           students                  101    55 0.00171  0.00168  0.0216 
+19 rm    rm     HilbigPohlBroeder2009.csv:rm                                        students                   78    91 0.0112   0.0115   0.0234 
+20 rm    rm     HilbigSchollPohl2010exp1.csv:rm                                     students                   11   120 0.00255  0.00784  0.00899
+21 rm    rm     HilbigSchollPohl2010exp2.csv:rm                                     students                   19   120 0.00687  0.00792  0.0501 
+22 rm    rm     Horn Pachur Mata 2015.csv:rm                                        older adults & students    20   276 0.00312  0.00350  0.0274 
+23 rm    rm     Horn Ruggeri Pachur 2016 .csv:rm                                    children                   21   153 0.00668  0.0105   0.0462 
+24 rm    rm     Michalkiewicz Erdfelder 2016_Exp.1_day group_test1.csv:rm           students                   33   300 0.00139  0.00566  0.00703
+25 rm    rm     Michalkiewicz Erdfelder 2016_Exp.1_day group_test2.csv:rm           students                   33   300 0.00130  0.00490  0.00792
+26 rm    rm     Michalkiewicz Erdfelder 2016_Exp.1_week group_test1.csv:rm          students                   31   300 0.00223  0.00972  0.00793
+27 rm    rm     Michalkiewicz Erdfelder 2016_Exp.1_week group_test2.csv:rm          students                   31   300 0.00220  0.00602  0.00772
+28 rm    rm     Michalkiewicz Erdfelder 2016_Exp.2_day group_test1.csv:rm           students                   41   300 0.00347  0.00412  0.0141 
+29 rm    rm     Michalkiewicz Erdfelder 2016_Exp.2_day group_test2.csv:rm           students                   41   300 0.00238  0.00347  0.0189 
+30 rm    rm     Michalkiewicz Erdfelder 2016_Exp.2_week group_test1.csv:rm          students                   42   300 0.00260  0.00443  0.0148 
+31 rm    rm     Michalkiewicz Erdfelder 2016_Exp.2_week group_test2.csv:rm          students                   42   300 0.00136  0.00185  0.0175 
+32 rm    rm     Michalkiewicz Erdfelder 2016_Exp.3_different group_islands.csv:rm   students                   64   300 0.00155  0.00306  0.0173 
+33 rm    rm     Michalkiewicz Erdfelder 2016_Exp.3_different group_musicians.csv:rm students                   64   300 0.00734  0.00271  0.0245 
+34 rm    rm     Michalkiewicz Erdfelder 2016_Exp.3_related group_celebrities.csv:rm students                   68   300 0.00277  0.00229  0.0173 
+35 rm    rm     Michalkiewicz Erdfelder 2016_Exp.3_related group_movies.csv:rm      students                   68   300 0.00202  0.000714 0.0151 
+36 rm    rm     Michalkiewicz Erdfelder 2016_Exp.4_names.csv:rm                     students                   87   300 0.00194  0.00210  0.0225 
+37 rm    rm     Michalkiewicz Erdfelder 2016_Exp.4_pictures.csv:rm                  students                   87   300 0.00220  0.00392  0.0201 
+38 rm    rm     Michalkiewicz, Arden, Erdfelder 2017.csv:rm                         students                   48   300 0.00163  0.00335  0.0424 
+39 rm    rm     Pohl et al 2017.csv:rm                                              students                   81    66 0.00187  0.0135   0.0298 
+40 rm    rm     Pohl, Michalkiewicz, Erdfelder, Hilbig 2017_Exp1.csv:rm             students                   60   300 0.00335  0.00335  0.0139 
+41 rm    rm     Pohl, Michalkiewicz, Erdfelder, Hilbig 2017_Exp2.csv:rm             students                   15   300 0.00158  0.00244  0.0344 
+42 rm    rm     PohlErdfelderHilbigLiebkeStahlberg2013.csv:rm                       students                   31   105 0.00104  0.00541  0.0228 
+# A tibble: 9 × 13
+  model model2 dataset                     population     n     t `real:A1` `real:A2` `real:L1` `real:L2` `real:L3` `real:L4` `real:Re`
+  <fct> <fct>  <fct>                       <chr>      <int> <dbl>     <dbl>     <dbl>     <dbl>     <dbl>     <dbl>     <dbl>     <dbl>
+1 real  real   data_KM2015.csv:real        students      77   320   0.00870   0.00870   0.0130    0.0175    0.0125    0.00935    0.0311
+2 real  real   data_MR2013_Exp123.csv:real students      80   320   0.00922   0.0129    0.0111    0.0126    0.0138    0.0105     0.0454
+3 real  real   data_MR2013_Exp4.csv:real   students      40   320   0.00776   0.00395   0.0204    0.00948   0.0140    0.0108     0.0535
+4 real  real   data_MR2013_Exp5.csv:real   students      40   320   0.00898   0.00866   0.0130    0.00802   0.0108    0.0156     0.0177
+5 real  real   data_MR2013_Exp6.csv:real   students      41   320   0.00631   0.00775   0.00583   0.00558   0.00655   0.00794    0.0322
+6 real  real   data_MR2013_Exp7.csv:real   students      75   320   0.00797   0.0104    0.00850   0.00683   0.0115    0.00711    0.0342
+7 real  real   data_MR2015b_Exp1.csv:real  students      20   320   0.0132    0.00680   0.0124    0.00898   0.0125    0.0116     0.0430
+8 real  real   data_MR2015b_Exp2.csv:real  students      20   384   0.00905   0.00593   0.00835   0.00932   0.00955   0.0117     0.0205
+9 real  real   data_VMTD2017.csv:real      students      40   189   0.104     0.0919    0.00652   0.0185    0.00924   0.00329    0.310 
+# A tibble: 21 × 11
+   model model2 dataset                                 population     n     t `quad:ACbb1` `quad:ACwg1` `quad:D1` `quad:G1` `quad:OB1`
+   <fct> <fct>  <fct>                                   <chr>      <int> <dbl>        <dbl>        <dbl>     <dbl>     <dbl>      <dbl>
+ 1 quad  quad   BeerEtAl2008:quad                       students      16   381      0.0121       0.0192    0.00623   0.0102      0.142 
+ 2 quad  quad   CalanchiniEtAl2013:quad                 students      99   120      0.0231       0.0207    0.0237    0.0160      0.103 
+ 3 quad  quad   CalanchiniEtAl2014_1a_AsianWhite:quad   students     168   144      0.0186       0.0195    0.00914   0.00556     0.183 
+ 4 quad  quad   CalanchiniEtAl2014_1a_BlackWhite:quad   students     168   144      0.0167       0.0120    0.0107    0.0217      0.119 
+ 5 quad  quad   CalanchiniEtAl2014_1b_BlackWhite:quad   students      49   120      0.0207       0.00852   0.0123    0.0251      0.166 
+ 6 quad  quad   CalanchiniEtAl2014_1b_FlowerInsect:quad students      49   120      0.0147       0.0153    0.0157    0.0166      0.0615
+ 7 quad  quad   CalanchiniEtAl2014_1c_FlowerInsect:quad students      56   120      0.0216       0.0201    0.00621   0.0172      0.145 
+ 8 quad  quad   CalanchiniEtAl2014_1c_Stereotype:quad   students      56   144      0.0105       0.0184    0.0100    0.0163      0.0832
+ 9 quad  quad   CalanchiniEtAl2014_PI_ableMCMC:quad     other        200   120      0.0308       0.0255    0.0157    0.0161      0.253 
+10 quad  quad   CalanchiniEtAl2014_PI_ageMCMC:quad      other        200   120      0.0242       0.0239    0.0138    0.0327      0.0379
+11 quad  quad   CalanchiniEtAl2014_PI_careerMCMC:quad   other        200   120      0.0167       0.0267    0.0113    0.0115      0.106 
+12 quad  quad   CalanchiniEtAl2014_PI_raceMCMC:quad     other        200   120      0.0278       0.0251    0.0175    0.0159      0.117 
+13 quad  quad   CalanchiniEtAl2014_PI_skinMCMC:quad     other        200   120      0.0271       0.0238    0.0150    0.0196      0.112 
+14 quad  quad   CalanchiniEtAl2014_PI_straightMCMC:quad other        200   120      0.0276       0.0209    0.0133    0.0163      0.280 
+15 quad  quad   GonsalkoraleEtAl2011:quad               other         25   120      0.0201       0.0143    0.0102    0.0202      0.0713
+16 quad  quad   JinEtAl2016s1:quad                      students      64   120      0.0120       0.0101    0.00722   0.0198      0.155 
+17 quad  quad   JinEtAl2016s2:quad                      students      29   120      0.00672      0.0115    0.00521   0.0235      0.0777
+18 quad  quad   LuekeGibson2015age:quad                 students      37    80      0.0192       0.0256    0.0132    0.0163      0.181 
+19 quad  quad   LuekeGibson2015race:quad                students      36    80      0.0204       0.0197    0.0121    0.0187      0.101 
+20 quad  quad   WrzusEtAl_HappyUnhappy:quad             students     563   160      0.0326       0.0242    0.0156    0.0303      0.177 
+21 quad  quad   WrzusEtAl_NumberLetter:quad             students     564   160      0.0126       0.0138    0.00785   0.0171      0.0640

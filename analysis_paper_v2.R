@@ -11,6 +11,7 @@ INCLUDE_GAM <- TRUE
 library("mgcv")
 library("gratia")
 library("cowplot")
+library("kableExtra")
 
 load("all_pairs_core.RData")
 levels(all_pairs$cond_x) <- new_method_labels(levels(all_pairs$cond_x))
@@ -32,7 +33,7 @@ all_pairs <- all_pairs %>%
   mutate(SAI = factor(if_else(model == "pc", "Not SAI", "SAI"), 
                       levels = c("SAI", "Not SAI"))) %>% 
   mutate(z_abs_dev = abs_dev/se_c) %>% 
-  filter(parameter != "rm:g")
+  filter(parameter != "rm:g")  ## because it is just a relatvie frequency
 all_pairs <- all_pairs %>%
   mutate(cond_co = apply(cbind(as.character(cond_x), 
             as.character(cond_y)), 1, 
@@ -46,6 +47,62 @@ all_pairs_nopc <- all_pairs %>%
 
 sel_methods <- c("CP-MLE", "NP-MLE", "PP-B", "PP-LT-C")
 
+### table of deviations
+str(all_pairs)
+
+all_pairs %>% 
+  select()
+
+data_n <- all_pairs %>% 
+  group_by(model, model2, dataset, orig_condition) %>% 
+  summarise(
+    n = first(n_participant),
+    sd_n = sd(n_participant)) %>% 
+  ungroup()
+all(data_n$sd_n == 0)
+data_n <- data_n %>% 
+  group_by(model, model2, dataset) %>% 
+  summarise(
+    n = sum(n)) %>% 
+  ungroup()
+
+
+mean_devs <- all_pairs %>% 
+  filter(cond_x != "NP-Bayes", cond_y != "NP-Bayes") %>% 
+  group_by(model, model2, dataset, parameter) %>% 
+  summarise(
+    population = paste(unique(str_replace(population, "college students", "students")), collapse = " & "),
+    #n = max(n_participant),
+    t = ceiling(mean(n_trials)),
+    mean = mean(abs_dev), 
+            sd = sd(abs_dev)) %>% 
+  ungroup()
+
+mean_devs <- right_join(data_n, mean_devs)
+
+mean_devs2 <- split(mean_devs, mean_devs$model2)
+str(mean_devs2, 1)
+
+mean_devs3 <- map(mean_devs2, 
+                  ~ungroup(pivot_wider(select(., -sd), names_from = parameter, values_from = mean)))
+
+walk(mean_devs3, print, n = Inf)
+
+
+kable(x = select(mutate(select(mean_devs3$`2htsm_4`, -model, -model2)), 
+                             dataset, population, everything()), 
+                  format = "latex", digits = 2, booktabs = TRUE) %>% 
+  kable_styling()
+
+map(mean_devs3, ~kableExtra::kable(x = select(mutate(select(., -model, -model2)), 
+                             dataset, population, everything()), 
+                  format = "latex", digits = 2, booktabs = TRUE)
+)
+
+all_pairs %>% 
+  group_by(dataset) %>% 
+  reframe(unique(population)) %>% 
+  print(n = Inf)
 
 ##################################################################
 ##                    Magnitude of Deviation                    ##
@@ -573,6 +630,7 @@ all_rhos %>%
 ##----------------------------------------------------------------
 
 all_pairs <- all_pairs %>% 
+  filter(parameter != "rm:g") %>%   ## because it is just a relatvie frequency
   mutate(par = str_remove(parameter, ".+:")) %>% 
   mutate(par = str_remove(par, "_")) %>% 
   mutate(par2 = case_when(
