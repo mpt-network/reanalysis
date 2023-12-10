@@ -1,0 +1,19 @@
+18
+1 OLD_3new (1-Do)*(1-g)*q_1
+1 OLD_2new (1-Do)*(1-g)*(1-q_1)*q_2
+1 OLD_1new (1-Do)*(1-g)*(1-q_1)*(1-q_2)
+1 OLD_1old Do*(1-r_6)*(1-r_2)
+1 OLD_1old (1-Do)*g*(1-q_6)*(1-q_5)
+1 OLD_2old Do*(1-r_6)*r_2
+1 OLD_2old (1-Do)*g*(1-q_6)*q_5
+1 OLD_3old Do*r_6
+1 OLD_3old (1-Do)*g*q_6
+2 NEW_3new Dn*r_1
+2 NEW_3new (1-Dn)*(1-g)*q_1
+2 NEW_2new Dn*(1-r_1)*r_2
+2 NEW_2new (1-Dn)*(1-g)*(1-q_1)*q_2
+2 NEW_1new Dn*(1-r_1)*(1-r_2)
+2 NEW_1new (1-Dn)*(1-g)*(1-q_1)*(1-q_2)
+2 NEW_1old (1-Dn)*g*(1-q_6)*(1-q_5)
+2 NEW_2old (1-Dn)*g*(1-q_6)*q_5
+2 NEW_3old (1-Dn)*g*q_6

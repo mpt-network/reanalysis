@@ -8,6 +8,8 @@ source("fun_analysis_paper.R")
 source("docs/fun_eai.R")
 INCLUDE_GAM <- TRUE
 
+ylab <- "Abs. deviation"
+
 library("mgcv")
 library("gratia")
 library("cowplot")
@@ -98,6 +100,20 @@ map(mean_devs3, ~kableExtra::kable(x = select(mutate(select(., -model, -model2))
                              dataset, population, everything()), 
                   format = "latex", digits = 2, booktabs = TRUE)
 )
+
+## note that the QUAD model rows from Calanchini et al. 2014 are reodered:
+# Calanchini et al 2014 Exp 2a (Black-White) – currently called "race"
+# Calanchini et al 2014 Exp 2a (skin tone) – currently called "skin"
+# Calanchini et al 2014 Exp 2b (sexuality) – currently called "straight"
+# Calanchini et al 2014 Exp 2a (disability) – currently called "able"
+# Calanchini et al 2014 Exp 2c (age) – currently called "age"
+# Calanchini et al 2014 Exp 2c (gender stereotype) – currently called "career"
+## Please note that rows 9-14 of Table 8 will need to be re-ordered to reflect
+## these new labels. They are currently organized alphabetically (able, age…),
+## but they will need to be first re-ordered as 2a, 2b, 2c to match the rows
+## above them. I indicated above which of the new labels correspond with the old
+## labels (e.g., Black-White is currently called “race”) to help you match them
+## up.
 
 all_pairs %>% 
   group_by(dataset) %>% 
@@ -634,16 +650,23 @@ all_pairs <- all_pairs %>%
   mutate(par = str_remove(parameter, ".+:")) %>% 
   mutate(par = str_remove(par, "_")) %>% 
   mutate(par2 = case_when(
-    model == "quad" ~ paste0("scriptstyle(",
+    model == "quad" ~ paste0("italic(",
                              str_extract(par, "[[:upper:]]+"), 
                              "[", 
-                             str_extract(par, "[[:lower:]]+"), 
+                             case_when(
+                               str_extract(par, "[[:lower:]]+") == "bb" ~ "1",
+                               str_extract(par, "[[:lower:]]+") == "wg" ~ "2",
+                               TRUE ~ ""
+                                       ), 
                              "])"),
     model == "hb" & nchar(par) > 1 ~ paste0("italic(", 
                                             substr(par, 1, nchar(par)-1), 
                                             ")[", 
                                             toupper(substr(par, nchar(par), nchar(par))), 
                                             "]"),
+    model2 == "pd_s" & par == "A"  ~ "italic(a)",
+    model2 == "pd_s" & par == "C"  ~ "italic(r)",
+    par == "Re" ~ "italic(Re)",
     nchar(par) > 1 ~ paste0("italic(", 
                             substr(par, 1, nchar(par)-1), 
                             "[", 
@@ -681,7 +704,7 @@ targ_cmle_lpp %>%
 # guide = guide_axis(check.overlap = TRUE)
 
 ggsave("figures_man/mad_model.png", 
-       width = 16, height = 16, units = "cm", 
+       width = 18, height = 16, units = "cm", 
        dpi = 500)
 
 targ_cmle_lpp %>% 
