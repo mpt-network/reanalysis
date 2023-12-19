@@ -1,0 +1,19 @@
+
+A1	AA1	D*d
+A1	AA1	D*(1-d)*g
+A1	AB1	D*(1-d)*(1-g)
+A1	AA1	(1-D)*b*g
+A1	AB1	(1-D)*b*(1-g)
+A1	AN1	(1-D)*(1-b)
+
+B1	BB1	D*d
+B1	BA1	D*(1-d)*g
+B1	BB1	D*(1-d)*(1-g)
+B1	BA1	(1-D)*b*g
+B1	BB1	(1-D)*b*(1-g)
+B1	BN1	(1-D)*(1-b)
+
+N1	NN1	D
+N1	NA1	(1-D)*b*g
+N1	NB1	(1-D)*b*(1-g)
+N1	NN1	(1-D)*(1-b)

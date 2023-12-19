@@ -593,6 +593,85 @@ ggsave("figures_man/univariate_notgood.png", plot = puniv_notgood,
 
 
 
+##----------------------------------------------------------------
+##                        Prior Reanalysis                       -
+##----------------------------------------------------------------
+
+#unique(all_pairs$dataset)
+
+all_pairs %>% 
+  filter(dataset %in% c("Jaeger_2012:c2ht6", "BK2011_E1:2htsm_4", 
+                        "Coolin2016.csv:hb")) %>% 
+  filter(cond_x != "NP-Bayes", cond_y != "NP-Bayes") %>% 
+  #filter(cond_x == "PP-LT-C") %>% 
+  select(model, dataset, parameter, cond_x, cond_y, x, y, abs_dev) %>% 
+  group_by(dataset, parameter) %>% 
+  summarise(mean = mean(abs_dev), 
+            mean_trim = mean(abs_dev, trim = 0.2), 
+            median = median(abs_dev), 
+            max = max(abs_dev))
+
+
+load("prior_recalc.rda") ### see: "reanalysis-prior.R"
+
+abs_dev_jaeger <- abs(prio_pars_jaeger[,-1] - prio_pars_jaeger[,1])
+abs_dev_jaeger
+#    dataset           parameter    mean mean_trim  median    max
+#    <fct>             <fct>       <dbl>     <dbl>   <dbl>  <dbl>
+#  9 Jaeger_2012:c2ht6 c2ht6:Dn  0.144     0.110   0.0229  0.394 
+# 10 Jaeger_2012:c2ht6 c2ht6:Do  0.0572    0.0548  0.0569  0.131 
+# 11 Jaeger_2012:c2ht6 c2ht6:g   0.0908    0.0812  0.0577  0.231 
+
+apply(abs_dev_jaeger, 1, mean)
+apply(abs_dev_jaeger, 1, median)
+apply(abs_dev_jaeger, 1, max)
+
+abs_dev_bk <- abs(bk_means - bk_orig)
+rownames(abs_dev_bk) <- c("b", "d", "D", "g")
+abs_dev_bk
+#   dataset           parameter    mean mean_trim  median    max
+#   <fct>             <fct>       <dbl>     <dbl>   <dbl>  <dbl>
+# 1 BK2011_E1:2htsm_4 2htsm_4:b 0.0405    0.0308  0.0276  0.165 
+# 2 BK2011_E1:2htsm_4 2htsm_4:d 0.0533    0.0348  0.0299  0.338 
+# 3 BK2011_E1:2htsm_4 2htsm_4:D 0.0172    0.0125  0.0107  0.0831
+# 4 BK2011_E1:2htsm_4 2htsm_4:g 0.0234    0.0192  0.0171  0.0995
+
+apply(abs_dev_bk, 1, mean)
+apply(abs_dev_bk, 1, median)
+apply(abs_dev_bk, 1, max)
+
+
+abs_dev_cool <- abs(cool_means - cool_orig)
+rownames(abs_dev_cool) <- str_remove(names(cool_orig), "mean_")
+abs_dev_cool %>% 
+  round(3)
+
+all_pairs %>% 
+  filter(dataset %in% c("Coolin2016.csv:hb")) %>% 
+  filter(cond_x == "CP-MLE", cond_y == "NP-MLE") %>% 
+  select(dataset, parameter_o, parameter)
+
+abs_dev_cool %>% 
+  rownames_to_column() %>% 
+  pivot_longer(cols = -rowname, values_to = "abs_dev") %>% 
+  filter(rowname %in% c("b", "bw", "c", "cw", "rc", "re")) %>% 
+  mutate(rowname = str_remove(rowname, "w")) %>% 
+  group_by(rowname) %>% 
+  summarise(mean = mean(abs_dev), 
+            mean_trim = mean(abs_dev, trim = 0.2), 
+            median = median(abs_dev), 
+            max = max(abs_dev))
+
+#   dataset           parameter    mean mean_trim  median    max
+#   <fct>             <fct>       <dbl>     <dbl>   <dbl>  <dbl>
+# 5 Coolin2016.csv:hb hb:b      0.0859    0.0883  0.116   0.168 
+# 6 Coolin2016.csv:hb hb:c      0.0182    0.0156  0.0153  0.0579
+# 7 Coolin2016.csv:hb hb:rc     0.00788   0.00607 0.00474 0.0223
+# 8 Coolin2016.csv:hb hb:re     0.00734   0.00497 0.00269 0.0250
+
+
+
+
 
 #################################################################
 ##                     Plots in Discussion                     ##
